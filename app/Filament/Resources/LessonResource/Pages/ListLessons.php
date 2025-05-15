@@ -6,6 +6,7 @@ use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\LessonResource;
 use App\Filament\Widgets\ContentLessonsChart;
+use App\Filament\Resources\LessonResource\Widgets\StatsLesson;
 
 class ListLessons extends ListRecords
 {
@@ -20,14 +21,9 @@ class ListLessons extends ListRecords
     protected function getFooterWidgets(): array
     {
         return [
-            ContentLessonsChart::class,
+            // ContentLessonsChart::class,
+            StatsLesson::class,
         ];
     }
-    // protected function getHeader(): array
-    // {
-    //     return [
-    //         ContentLessonsChart::class,
-    //     ];
-    // }
-    
+
 }

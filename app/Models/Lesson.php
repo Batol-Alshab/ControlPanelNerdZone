@@ -7,6 +7,7 @@ use App\Models\Video;
 use App\Models\Course;
 use App\Models\Summery;
 use App\Models\Material;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,5 +41,14 @@ class Lesson extends Model
     public function courses()
     {
         return $this->hasMany(Course::class);
+    }
+    protected static function booted()
+    {
+        $keys = ['contentLesson'];
+        foreach ($keys as $key) {
+            static::created(fn () => Cache::forget($keys));
+            static::updated(fn () => Cache::forget($keys));
+            static::deleted(fn () => Cache::forget($keys));
+        }
     }
 }

@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\MaterialResource\Pages;
 
-use App\Filament\Resources\MaterialResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\MaterialResource;
+use App\Filament\Resources\MaterialResource\Widgets\StatsMaterial;
 
 class EditMaterial extends EditRecord
 {
@@ -14,6 +15,12 @@ class EditMaterial extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
+        ];
+    }
+    protected function getFooterWidgets(): array
+    {
+        return [
+            StatsMaterial::class,
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Resources\LessonResource\Widgets;
 
 use App\Models\Test;
 use App\Models\Video;
@@ -8,10 +8,9 @@ use App\Models\Course;
 use App\Models\Summery;
 use Filament\Widgets\ChartWidget;
 
-class ContentLessonsChart extends ChartWidget
+class LessonWidget extends ChartWidget
 {
-    protected static ?int $sort = 5;
-    protected static ?string $heading = 'Chart Lesson';
+    protected static ?string $heading = 'Lesson content';
 
     protected function getData(): array
     {
@@ -29,19 +28,34 @@ class ContentLessonsChart extends ChartWidget
                     'backgroundColor' => ['#BA68C8','#c785d2','#d4a2dd','#e1bee7'],
                     'borderColor' => '#d4a0dc',
                 ],
-                [
-                    'label' =>'ditels Lessons',
-                    'data' => [3, 7, ],
-                    'backgroundColor' => ['#BA6808','#c705d2'],
-                    'borderColor' => '#9575D0',
-                ],
             ],
             'labels' => ['Test', 'Course', 'Summery', 'Video'],
         ];
+
     }
 
     protected function getType(): string
     {
-        return 'bar';
+        return 'doughnut';
+    }
+    protected function getOptions(): array
+    {
+        return [
+            'plugins' => [
+                'legend' => [
+                    'position' => 'bottom',
+                ],
+            ],
+            'scales' => [
+                'x' => [
+                    'display' => false,
+                    'grid' => ['display' => false],
+                ],
+                'y' => [
+                    'display' => false,
+                    'grid' => ['display' => false],
+                ],
+            ],
+        ];
     }
 }

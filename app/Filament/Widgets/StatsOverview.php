@@ -2,7 +2,10 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Lesson;
 use App\Models\Section;
+use App\Models\Material;
+use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
@@ -13,7 +16,10 @@ class StatsOverview extends BaseWidget
     {
 
         return [
-            Stat::make('Number of Sections',Section::count())->color('#BA68C8')
+            Stat::make('All User',User::count()),
+            Stat::make('Number of Sections',Section::count()),
+            stat::make('Number of Materials',Material::count()),
+            stat::make('Number of Lessons',Lesson::count()),
 
         //     ->extraAttributes([
         // 'class' => 'border border-red-500 text-blue-600', // Tailwind CSS classes

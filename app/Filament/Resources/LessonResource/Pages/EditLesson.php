@@ -5,6 +5,8 @@ namespace App\Filament\Resources\LessonResource\Pages;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\LessonResource;
+use App\Filament\Resources\LessonResource\Widgets\StatsLesson;
+use App\Filament\Resources\LessonResource\Widgets\LessonWidget;
 
 class EditLesson extends EditRecord
 {
@@ -14,6 +16,19 @@ class EditLesson extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
+        ];
+    }
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            StatsLesson::class,
+        ];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            LessonWidget::class,
         ];
     }
 

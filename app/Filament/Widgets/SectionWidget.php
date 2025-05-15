@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Filament\Widgets;
+
+use App\Models\Section;
+use Filament\Widgets\ChartWidget;
+use Illuminate\Support\Facades\Cache;
+
+class SectionWidget extends ChartWidget
+{
+    protected static ?string $heading = 'Chart Section';
+
+    protected static ?int $sort = 4;
+    protected function getData(): array
+    {
+        return Cache::remember('materialSection', now()->addMinutes(60), function () {
+            $sections_name = Section::all();
+            $sections = Section::withCount('materials')->get();
+
+            return [
+            'datasets' => [
+                    [
+                        'label' =>'Section',
+                        'data' => $sections->pluck('materials_count'),
+                        'backgroundColor' => ['#BA68C8','#c785d2'],
+                        'borderColor' => '#e1bee7',
+                    ],
+                ],
+                'labels' => $sections_name->pluck('name'),
+            ];
+        });
+    }
+
+    protected function getType(): string
+    {
+        return 'doughnut';
+    }
+
+}

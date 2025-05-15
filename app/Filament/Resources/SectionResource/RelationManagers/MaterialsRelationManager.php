@@ -24,9 +24,9 @@ class MaterialsRelationManager extends RelationManager
         return $form
             ->schema([
                 TextInput::make('name')->required(),
-                Select::make('section_id')->required()
-                    ->label('section')
-                    ->relationship('section','name'),
+                // Select::make('section_id')->required()
+                //     ->label('section')
+                //     ->relationship('section','name'),
                 FileUpload::make('image')
                     ->image()
                     ->maxSize(1024)

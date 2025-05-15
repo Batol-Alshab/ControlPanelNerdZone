@@ -3,8 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
 use App\Models\Inquiry;
 use App\Models\Section;
+use PhpParser\Node\Stmt\Catch_;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -39,7 +42,17 @@ class User extends Authenticatable
         return $this->belongsToMany(Inquiry::class);
     }
 
-    /**
+    protected static function booted()
+    {
+        $keys=['Userjoin'];
+        foreach ($keys as $key) {
+            static::created(fn () => Cache::forget($keys));
+            static::updated(fn () => Cache::forget($keys));
+            static::deleted(fn () => Cache::forget($keys));
+        }
+    }
+
+        /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
