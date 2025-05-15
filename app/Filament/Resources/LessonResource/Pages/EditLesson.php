@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Filament\Resources\LessonResource\Pages;
+
+use Filament\Actions;
+use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\LessonResource;
+
+class EditLesson extends EditRecord
+{
+    protected static string $resource = LessonResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\DeleteAction::make(),
+        ];
+    }
+
+    public function mount($record): void
+    {
+        parent::mount($record);
+
+        // الآن يمكن استخدام $this->record وهو كائن Lesson
+        if ($this->record->material) {
+            $this->form->fill([
+                'name' => $this->record->name, // كل الحقول مثل name, material_id, ...
+                'section' => $this->record->material?->section_id, // نُضيف حقل section المشتق
+            ]);
+
+        }
+    }
+
+}
