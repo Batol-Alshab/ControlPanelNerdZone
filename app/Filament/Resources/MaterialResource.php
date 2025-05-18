@@ -13,6 +13,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\MaterialResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -49,14 +50,18 @@ class MaterialResource extends Resource
             ->columns([
                 TextColumn::make('id')
                     ->toggleable(),
-                TextColumn::make('name'),
+                TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('section.name')
                     ->label('section')
                     ->sortable(),
                 ImageColumn::make('image')
             ])
             ->filters([
-                //
+                SelectFilter::make('section_id')
+                    ->label('Section')
+                    ->relationship('section','name'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

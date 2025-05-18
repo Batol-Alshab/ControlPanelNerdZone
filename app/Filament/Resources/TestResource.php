@@ -75,7 +75,9 @@ class TestResource extends Resource
             ->columns([
                 TextColumn::make('id')
                     ->toggleable(),
-                TextColumn::make('name'),
+                    TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('lesson.name')
                     ->label('Lesson')
                     ->sortable(),
@@ -84,7 +86,10 @@ class TestResource extends Resource
                     ->sortable()
                     ->badge()
                     ->color(fn($state) => $state ? 'success' : 'danger'),
-
+                TextColumn::make('created_at')
+                    ->sortable()
+                    ->date('Y M d')
+                    ->toggleable(),
             ])
             ->filters([
                 SelectFilter::make('lesson_id')

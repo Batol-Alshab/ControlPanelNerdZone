@@ -39,13 +39,14 @@ class CoursesRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('id')
                     ->toggleable(),
-                TextColumn::make('name'),
-                TextColumn::make('lesson.name')
-                    ->sortable(),
+                TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
+                // TextColumn::make('lesson.name')
+                //     ->label('Lesson')
+                //     ->sortable(),
                 TextColumn::make('created_at')
-                    ->date('Y M d')
-                    ->toggleable(),
-                TextColumn::make('updated_at')
+                    ->sortable()
                     ->date('Y M d')
                     ->toggleable(),
             ])

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 
 class SectionWidget extends ChartWidget
 {
-    protected static ?string $heading = 'Chart Section';
+    protected static ?string $heading = 'Chart material Section';
 
     protected static ?int $sort = 4;
     protected function getData(): array

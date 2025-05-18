@@ -26,7 +26,7 @@ class QuestionsRelationManager extends RelationManager
         $record = static::getOwnerRecord();
         $numQuestions = $record->numQuestions;
         $countQuestions = $record->questions()->count();
-        if($countQuestions == $numQuestions && $record->is_complete == 0)
+        if($countQuestions == $numQuestions )
             {
                 $record->is_complete =1;
                 Notification::make()
@@ -35,7 +35,7 @@ class QuestionsRelationManager extends RelationManager
                     ->duration(1500)
                     ->success()
                     ->send();
-                $this->redirect(request()->header('Referer'));
+                // $this->redirect(request()->header('Referer'));
             }
         else
             {

@@ -55,7 +55,9 @@ class LessonResource extends Resource
             ->columns([
                 TextColumn::make('id')
                     ->toggleable(),
-                TextColumn::make('name'),
+                TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('material.name')
                     ->label('material')
                     ->sortable(),

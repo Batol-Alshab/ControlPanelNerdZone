@@ -6,6 +6,7 @@ use Filament\Actions;
 use App\Filament\Resources\UserResource;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ListRecords\Tab;
+use App\Filament\Resources\UserResource\Widgets\StatsUser;
 use App\Filament\Resources\UserResource\Widgets\UserStatsWidget;
 
 class ListUsers extends ListRecords
@@ -18,9 +19,22 @@ class ListUsers extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
-
-    
-
-
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            StatsUser::class,
+        ];
+    }
+    public function getTabs(): array{
+        return [
+            'All' => Tab::make(),
+            'scientific' => Tab::make()->modifyQueryUsing(function ( $query){
+                $query->where('section_id',1);
+            }),
+            'literary' => Tab::make()->modifyQueryUsing(function ( $query){
+                $query->where('section_id',2);
+            }),
+        ];
+    }
 
 }

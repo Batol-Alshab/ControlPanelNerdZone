@@ -10,6 +10,7 @@ use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\Actions\Action;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
 
@@ -42,14 +43,19 @@ class TestsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('id')
                     ->toggleable(),
-                TextColumn::make('name'),
-                TextColumn::make('lesson.name')
-                    ->label('Lesson')
-                    ->sortable(),
+                TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
+                // TextColumn::make('lesson.name')
+                //     ->label('Lesson')
+                //     ->sortable(),
+                TextColumn::make('is_complete')
+                    ->formatStateUsing(fn ($state) => $state ? 'Completed' : 'Not Completed')
+                    ->sortable()
+                    ->badge()
+                    ->color(fn($state) => $state ? 'success' : 'danger'),
                 TextColumn::make('created_at')
-                    ->date('Y M d')
-                    ->toggleable(),
-                TextColumn::make('updated_at')
+                    ->sortable()
                     ->date('Y M d')
                     ->toggleable(),
             ])

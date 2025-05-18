@@ -4,19 +4,27 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use Filament\Panel;
 use App\Models\Inquiry;
 use App\Models\Section;
 use PhpParser\Node\Stmt\Catch_;
 use Illuminate\Support\Facades\Cache;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    use HasRoles;
 
+    public function canAccessPanel(Panel $panel): bool{
+        //1 => admin , 2 => teacher
+        return $this->hasRole(1) || $this->hasRole(2);
+    }
     /**
      * The attributes that are mass assignable.
      *
@@ -46,9 +54,9 @@ class User extends Authenticatable
     {
         $keys=['Userjoin'];
         foreach ($keys as $key) {
-            static::created(fn () => Cache::forget($keys));
-            static::updated(fn () => Cache::forget($keys));
-            static::deleted(fn () => Cache::forget($keys));
+            static::created(fn () => Cache::forget($key));
+            static::updated(fn () => Cache::forget($key));
+            static::deleted(fn () => Cache::forget($key));
         }
     }
 

@@ -37,7 +37,8 @@ class SectionResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id'),
+                TextColumn::make('id')
+                    ->toggleable(),
                 TextColumn::make('name'),
             ])
             ->filters([

@@ -59,10 +59,16 @@ class SummeryResource extends Resource
                 ->columns([
                 TextColumn::make('id')
                     ->toggleable(),
-                TextColumn::make('name'),
+                TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('lesson.name')
                     ->label('Lesson')
+                    ->sortable(),
+                TextColumn::make('created_at')
                     ->sortable()
+                    ->date('Y M d')
+                    ->toggleable(),
             ])
             ->filters([
                 SelectFilter::make('lesson_id')

@@ -28,9 +28,9 @@ class Summery extends Model
     {
         $keys = ['contentLesson'];
         foreach ($keys as $key) {
-            static::created(fn () => Cache::forget($keys));
-            static::updated(fn () => Cache::forget($keys));
-            static::deleted(fn () => Cache::forget($keys));
+            static::created(fn () => Cache::forget($key));
+            static::updated(fn () => Cache::forget($key));
+            static::deleted(fn () => Cache::forget($key));
         }
     }
 }

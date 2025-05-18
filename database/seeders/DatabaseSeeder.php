@@ -21,12 +21,14 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        Section::create([
-            'name' => 'scientific']);
-        Section::create([
-                'name' => 'literary']);
+        // Section::create([
+        //     'name' => 'scientific']);
+        // Section::create([
+        //         'name' => 'literary']);
         $this->call([
-            UserSeeder::class
+            // UserSeeder::class,
+            RoleSeeder::class,
+
         ]);
     }
 }
