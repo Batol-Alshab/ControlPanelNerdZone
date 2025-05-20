@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('inquiry');
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('status')->default('No Answer');
             $table->morphs('inquiryable');
             $table->timestamps();
         });

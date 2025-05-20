@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('sex');
             $table->string('email')->unique();
             $table->string('password');
-            $table->foreignID('section_id')->constrained('sections')->cascadeOnDelete();
+            $table->foreignID('section_id')->nullable()->constrained('sections')->cascadeOnDelete();
             $table->integer('rate')->default(10);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();

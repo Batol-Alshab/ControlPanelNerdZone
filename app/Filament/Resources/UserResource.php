@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
+use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
@@ -41,11 +42,19 @@ class UserResource extends Resource
                         0 => 'Male',
                         1 => 'Female',
                     ]),
+                Select::make('roles')
+                    ->relationship('roles', 'name',fn ($query) => $query->whereIn('name',['student','teacher']))
+                    ->preload()
+                    ->reactive(),
                 Select::make('section_id')->required()
                     ->label('Section')
-                    ->relationship('section','name'),
-                ])
-            ;
+                    ->relationship('section','name')
+                    ->hidden(function (callable $get,callable $set) {
+                        $roles = $get('roles');
+                        return (is_array($roles) && in_array('2', $roles)) || $roles==2;
+                    })
+
+                ]);
     }
 
     public static function table(Table $table): Table
@@ -62,11 +71,12 @@ class UserResource extends Resource
                     TextColumn::make('sex')
                         ->label('Gender')
                         ->getStateUsing(fn($record) => $record->sex == 0 ?  'Male': 'Female'),
+                TextColumn::make('roles.name'),
                 TextColumn::make('section.name')
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('section_id')
+                SelectFilter::make('section.name')
                     ->label('Section')
                     ->relationship('section','name'),
 

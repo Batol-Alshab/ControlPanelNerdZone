@@ -27,9 +27,11 @@ class Material extends Model
     }
     protected static function booted()
     {
-        // مسح الكاش عند إضافة أو تحديث أو حذف قسم أو مادة
-        static::created(fn () => Cache::forget('materialSection'));
-        static::updated(fn () => Cache::forget('materialSection'));
-        static::deleted(fn () => Cache::forget('materialSection'));
+        $keys=['materialSection','stat'];
+        foreach ($keys as $key) {
+            static::created(fn () => Cache::forget($key));
+            static::updated(fn () => Cache::forget($key));
+            static::deleted(fn () => Cache::forget($key));
+        }
     }
 }

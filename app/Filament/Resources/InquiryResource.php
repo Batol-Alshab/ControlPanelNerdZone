@@ -45,6 +45,13 @@ class InquiryResource extends Resource
                         Type::make(Video::class)->titleAttribute('name'),
                         Type::make(Test::class)->titleAttribute('name'),
                         Type::make(Course::class)->titleAttribute('name')
+                    ]),
+                Select::make('status')->required()
+                    ->visibleOn('edit')
+                    ->options([
+                        'No Answer' => 'No Answer',
+                        'complete Answer' => 'complete Answer',
+                        'ignorance' => 'ignorance'
                     ])
             ]);
     }
@@ -60,9 +67,18 @@ class InquiryResource extends Resource
                 // TextColumn::make('inquiryable')
                 //     ->formatStateUsing(fn() => Lesson::where('id','inquiryable.lesson_id')
                 //     )
-                    
+
                     // ->toggleable(),
                 TextColumn::make('inquiry'),
+                TextColumn::make('status')
+                    ->badge()
+                    ->color(fn ($state) => match($state)
+                    {
+                        'No Answer' => 'danger',
+                        'complete Answer' => 'success',
+                        'ignorance' => 'warning'
+                    })
+                    ->sortable(),
                 TextColumn::make('user.id'),
                 TextColumn::make('user.name')
                     ->sortable(),
@@ -71,7 +87,7 @@ class InquiryResource extends Resource
                 TextColumn::make('inquiryable_type')
                     ->sortable()
                     ->formatStateUsing(fn ($state) => $extracted = basename($state))
-                    ->badge()
+                    // ->badge()
                     ->color(function ($state) : string {
                     $extracted = basename($state);
                     return match($extracted){
@@ -94,6 +110,12 @@ class InquiryResource extends Resource
                         'App\Models\Video'=> 'Video',
                         'App\Models\Test'=> 'Test',
                         'App\Models\Course'=> 'Course',
+                    ]),
+                SelectFilter::make('status')
+                    ->options([
+                        'No Answer' => 'No Answer',
+                        'complete Answer' => 'complete Answer',
+                        'ignorance' => 'ignorance'
                     ])
             ])
             ->actions([

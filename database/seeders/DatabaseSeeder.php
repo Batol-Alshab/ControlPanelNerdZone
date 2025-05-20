@@ -27,7 +27,8 @@ class DatabaseSeeder extends Seeder
         //         'name' => 'literary']);
         $this->call([
             // UserSeeder::class,
-            RoleSeeder::class,
+            // RoleSeeder::class,
+            PermissionSeeder::class,
 
         ]);
     }

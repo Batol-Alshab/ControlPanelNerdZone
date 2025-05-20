@@ -17,6 +17,7 @@ class Inquiry extends Model
         'user_id',
         'inquiryable_id',
         'inquiryable_type',
+        'status',
     ];
     public function inquiryable()
     {

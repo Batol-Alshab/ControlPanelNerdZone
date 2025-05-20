@@ -30,7 +30,7 @@ class Test extends Model
     }
     protected static function booted()
     {
-        $keys = ['contentLesson'];
+        $keys = ['contentLesson','statLesson'];
         foreach ($keys as $key) {
             static::created(fn () => Cache::forget($key));
             static::updated(fn () => Cache::forget($key));

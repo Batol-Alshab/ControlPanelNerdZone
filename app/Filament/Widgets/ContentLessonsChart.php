@@ -7,6 +7,7 @@ use App\Models\Video;
 use App\Models\Course;
 use App\Models\Summery;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Support\Facades\Cache;
 
 class ContentLessonsChart extends ChartWidget
 {
@@ -15,29 +16,25 @@ class ContentLessonsChart extends ChartWidget
 
     protected function getData(): array
     {
-        $t= Test::count();
-        $c= Course::count();
-        $s= Summery::count();
-        $v= Video::count();
+        return Cache::remember('statLesson', now()->addMinutes(60), function () {
 
-        return [
+            $t= Test::count();
+            $c= Course::count();
+            $s= Summery::count();
+            $v= Video::count();
 
-            'datasets' => [
-                [
-                    'label' =>'ditels Lessons',
-                    'data' => [$t, $c, $s, $v, ],
-                    'backgroundColor' => ['#BA68C8','#c785d2','#d4a2dd','#e1bee7'],
-                    'borderColor' => '#d4a0dc',
+            return [
+
+                'datasets' => [
+                    [
+                        'label' =>'ditels Lessons',
+                        'data' => [$t, $c, $s, $v, ],
+                        'backgroundColor' => ['#BA68C8','#c785d2','#d4a2dd','#e1bee7'],
+                        'borderColor' => '#d4a0dc',
+                    ],
                 ],
-                [
-                    'label' =>'ditels Lessons',
-                    'data' => [3, 7, ],
-                    'backgroundColor' => ['#BA6808','#c705d2'],
-                    'borderColor' => '#9575D0',
-                ],
-            ],
-            'labels' => ['Test', 'Course', 'Summery', 'Video'],
-        ];
+                'labels' => ['Test', 'Course', 'Summery', 'Video'],
+        ];});
     }
 
     protected function getType(): string

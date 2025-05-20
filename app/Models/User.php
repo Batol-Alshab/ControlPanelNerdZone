@@ -52,7 +52,7 @@ class User extends Authenticatable implements FilamentUser
 
     protected static function booted()
     {
-        $keys=['Userjoin'];
+        $keys=['Userjoin','stat'];
         foreach ($keys as $key) {
             static::created(fn () => Cache::forget($key));
             static::updated(fn () => Cache::forget($key));
