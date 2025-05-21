@@ -95,4 +95,13 @@ class LessonResource extends Resource
             'edit' => Pages\EditLesson::route('/{record}/edit'),
         ];
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query= parent::getEloquentQuery();
+        $roleNames = auth()->user()->getRoleNames();
+        $materials= Material::whereIn('name',$roleNames)->pluck('id');
+        $lessons = Lesson::whereIn('material_id',$materials);
+        return $query->whereIn('material_id',$materials);
+    }
 }

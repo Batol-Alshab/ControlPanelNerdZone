@@ -10,8 +10,10 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Tabs;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
@@ -30,31 +32,39 @@ class UserResource extends Resource
     public static function form(Form $form): Form
     {
         return
-        $form
-            ->schema([
-                TextInput::make('name')->required(),
-                TextInput::make('email')->required()->email()->unique(ignoreRecord: true),
-                TextInput::make('password')->required()->password()->visibleOn('create'),
-                TextInput::make('city')->required(),
-                Select::make('sex')->required()
-                    ->label('Gender')
-                    ->options([
-                        0 => 'Male',
-                        1 => 'Female',
-                    ]),
-                Select::make('roles')
-                    ->relationship('roles', 'name',fn ($query) => $query->whereIn('name',['student','teacher']))
-                    ->preload()
-                    ->reactive(),
-                Select::make('section_id')->required()
-                    ->label('Section')
-                    ->relationship('section','name')
-                    ->hidden(function (callable $get,callable $set) {
-                        $roles = $get('roles');
-                        return (is_array($roles) && in_array('2', $roles)) || $roles==2;
-                    })
+        $form ->schema([
+            Tabs::make('Tabs')
+                ->tabs([
+                    Tab::make('info')
+                        ->schema([
+                            TextInput::make('name')->required(),
+                            TextInput::make('email')->required()->email()->unique(ignoreRecord: true),
+                            TextInput::make('password')->required()->password()->visibleOn('create'),
+                            TextInput::make('city')->required(),
+                            Select::make('sex')->required()
+                                ->label('Gender')
+                                ->options([
+                                    0 => 'Male',
+                                    1 => 'Female',
+                                ]),
+                            ])->columns(2),
+                    Tab::make('Role')
+                        ->schema([
+                            Select::make('roles')->required()
+                                ->multiple()
+                                ->relationship('roles', 'name',fn ($query) => $query->where('name','!=','admin'))
+                                ->preload()
+                                ->reactive(),
+                            Select::make('section_id')->required()
+                                ->label('Section')
+                                ->relationship('section','name')
+                                ->visible(function (callable $get,callable $set) {
+                                    $roles = $get('roles');
+                                    return (is_array($roles) && in_array('3', $roles)) || $roles=='3';                        }),
+                        ])->columns(2),
+                    ])->columnSpanFull()
+        ]);
 
-                ]);
     }
 
     public static function table(Table $table): Table
@@ -63,7 +73,9 @@ class UserResource extends Resource
             ->columns([
                 TextColumn::make('id')
                     ->toggleable(),
-                TextColumn::make('name'),
+                TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('email')
                     ->toggleable(),
                 TextColumn::make('city')
@@ -72,13 +84,23 @@ class UserResource extends Resource
                         ->label('Gender')
                         ->getStateUsing(fn($record) => $record->sex == 0 ?  'Male': 'Female'),
                 TextColumn::make('roles.name'),
+                    // ->badge()
+                    // ->color(function ($state) {
+                    //     return match($state){
+                    //         'admin' => 'danger',
+                    //         'teacher' => 'warning',
+                    //         'student' =>'success',
+                    //     };
+                    // }),
                 TextColumn::make('section.name')
-                    ->sortable(),
+                    ->sortable()
             ])
             ->filters([
                 SelectFilter::make('section.name')
                     ->label('Section')
                     ->relationship('section','name'),
+                SelectFilter::make('roles.name')
+                    ->relationship('roles', 'name',fn ($query) => $query->where('name','!=','admin'))
 
             ])
             ->actions([
@@ -107,21 +129,12 @@ class UserResource extends Resource
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
-    public static function afterCreate(Forms\Form $form, User $record): void
-    {
-        $role = $form->getState()['role'];
-        $record->assignRole($role);
-        dd($record);
-    }
-    public static function afterUpdate(Forms\Form $form, User $record): void
-    {
-        $role = $form->getState()['role'];
-        $record->assignRole($role);
-        dd($record);
-    }
-    public static function afterSave(Forms\Form $form, User $record): void
-    {
-        $role = $form->getState()['role'];
-        $record->syncRoles([$role]); // Use syncRoles to handle updates as well
-    }
+    //ما عادت لازمة لان صار عندي سياسة
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     return parent::getEloquentQuery()->whereHas('roles', function (Builder $query) {
+    //             $query->where('name', '!=', 'admin');
+    //         });
+    // }
+
 }

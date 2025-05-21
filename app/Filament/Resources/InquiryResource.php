@@ -96,10 +96,7 @@ class InquiryResource extends Resource
                             'Course' => 'gray',
                             'Test' =>'primary',
                     };
-                }
-
-                    //  $state ? 'success' : 'danger'
-                     )
+                    })
             ])
             ->filters([
                 SelectFilter::make('user_id')

@@ -88,4 +88,18 @@ class MaterialResource extends Resource
             'edit' => Pages\EditMaterial::route('/{record}/edit'),
         ];
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $roleNames = auth()->user()->getRoleNames();
+
+        if ($roleNames->isNotEmpty()) {
+            $query->whereIn('name', $roleNames);
+        } else {
+            $query->whereRaw('0 = 1');
+        }
+
+        return $query;
+    }
 }
