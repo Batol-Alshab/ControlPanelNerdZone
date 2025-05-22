@@ -18,12 +18,12 @@ class ListLessons extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
-    protected function getFooterWidgets(): array
-    {
-        return [
-            // ContentLessonsChart::class,
-            StatsLesson::class,
-        ];
-    }
+    // protected function getFooterWidgets(): array
+    // {
+    //     return [
+    //         // ContentLessonsChart::class,
+    //         StatsLesson::class,
+    //     ];
+    // }
 
 }

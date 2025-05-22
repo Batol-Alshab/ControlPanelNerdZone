@@ -100,6 +100,10 @@ class LessonResource extends Resource
     {
         $query= parent::getEloquentQuery();
         $roleNames = auth()->user()->getRoleNames();
+
+        if ($roleNames->contains('admin'))
+            return $query;
+
         $materials= Material::whereIn('name',$roleNames)->pluck('id');
         $lessons = Lesson::whereIn('material_id',$materials);
         return $query->whereIn('material_id',$materials);

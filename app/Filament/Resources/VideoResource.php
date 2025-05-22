@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Video;
+use App\Models\Lesson;
 use App\Models\Material;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -36,7 +37,14 @@ class VideoResource extends Resource
             ->schema([
                 TextInput::make('name')->required(),
                 Select::make('material')->required()
-                    ->options(Material::all()->pluck('name','id'))
+                    ->options(function()
+                    {
+                        $roleNames = auth()->user()->getRoleNames();
+                        if ($roleNames->contains('admin'))
+                            return Material::pluck('name', 'id');
+                        else
+                            return Material::whereIn('name',$roleNames)->pluck('name','id');
+                    })
                     ->reactive(),
                 Select::make('lesson_id')->required()
                     ->label('Lesson')
@@ -104,5 +112,18 @@ class VideoResource extends Resource
             'create' => Pages\CreateVideo::route('/create'),
             'edit' => Pages\EditVideo::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $roleNames = auth()->user()->getRoleNames();
+
+        if($roleNames->contains('admin'))
+            return $query;
+
+        $materials = Material::whereIn('name', $roleNames)->pluck('id');
+        $lessons = Lesson::whereIn('material_id',$materials)->pluck('id');
+        return $query->whereIn('lesson_id',$lessons);
     }
 }

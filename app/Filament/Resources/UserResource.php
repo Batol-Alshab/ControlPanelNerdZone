@@ -99,8 +99,8 @@ class UserResource extends Resource
                 SelectFilter::make('section.name')
                     ->label('Section')
                     ->relationship('section','name'),
-                SelectFilter::make('roles.name')
-                    ->relationship('roles', 'name',fn ($query) => $query->where('name','!=','admin'))
+                // SelectFilter::make('roles.name')
+                //     ->relationship('roles', 'name',fn ($query) => $query->where('name','!=','admin'))
 
             ])
             ->actions([

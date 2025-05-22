@@ -15,16 +15,16 @@ class ListMaterials extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            // Actions\CreateAction::make(),
+            Actions\CreateAction::make(),
         ];
 
     }
-    protected function getFooterWidgets(): array
-    {
-        return [
-            StatsMaterial::class,
-        ];
-    }
+    // protected function getFooterWidgets(): array
+    // {
+    //     return [
+    //         StatsMaterial::class,
+    //     ];
+    // }
     public function getTabs(): array{
         return [
             'All' => Tab::make(),

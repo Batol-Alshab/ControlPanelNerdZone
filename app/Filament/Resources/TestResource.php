@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\Test;
 use Filament\Tables;
+use App\Models\Lesson;
 use App\Models\Material;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -43,7 +44,14 @@ class TestResource extends Resource
             ->schema([
                 TextInput::make('name')->required(),
                 Select::make('material')->required()
-                    ->options(Material::all()->pluck('name','id'))
+                    ->options(function()
+                    {
+                        $roleNames = auth()->user()->getRoleNames();
+                        if ($roleNames->contains('admin'))
+                            return Material::pluck('name', 'id');
+                        else
+                            return Material::whereIn('name',$roleNames)->pluck('name','id');
+                    })
                     ->reactive(),
 
                 Select::make('lesson_id')->required()
@@ -56,6 +64,7 @@ class TestResource extends Resource
 
                 Select::make('numQuestions')->required()
                     ->options([
+                        2=>2,
                         5=>5,
                         10=>10,
                         15=>15,
@@ -122,5 +131,18 @@ class TestResource extends Resource
             'create' => Pages\CreateTest::route('/create'),
             'edit' => Pages\EditTest::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $roleNames = auth()->user()->getRoleNames();
+
+        if($roleNames->contains('admin'))
+            return $query;
+
+        $materials = Material::whereIn('name', $roleNames)->pluck('id');
+        $lessons = Lesson::whereIn('material_id',$materials)->pluck('id');
+        return $query->whereIn('lesson_id',$lessons);
     }
 }

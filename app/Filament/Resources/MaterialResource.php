@@ -94,6 +94,9 @@ class MaterialResource extends Resource
         $query = parent::getEloquentQuery();
         $roleNames = auth()->user()->getRoleNames();
 
+        if ($roleNames->contains('admin'))
+            return $query;
+
         if ($roleNames->isNotEmpty()) {
             $query->whereIn('name', $roleNames);
         } else {

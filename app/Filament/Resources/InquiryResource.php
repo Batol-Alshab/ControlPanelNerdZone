@@ -10,6 +10,7 @@ use App\Models\Course;
 use App\Models\Lesson;
 use App\Models\Inquiry;
 use App\Models\Summery;
+use App\Models\Material;
 use Filament\Forms\Form;
 use Pest\Laravel\options;
 use Filament\Tables\Table;
@@ -21,6 +22,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use phpDocumentor\Reflection\Types\Self_;
 use Filament\Forms\Components\MorphToSelect;
+use Filament\Tables\Columns\Summarizers\Sum;
 use App\Filament\Resources\InquiryResource\Pages;
 use Filament\Forms\Components\MorphToSelect\Type;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -79,11 +81,10 @@ class InquiryResource extends Resource
                         'ignorance' => 'warning'
                     })
                     ->sortable(),
-                TextColumn::make('user.id'),
-                TextColumn::make('user.name')
-                    ->sortable(),
-                // TextColumn::make('inquiryable_id')
-                //     ->sortable(),
+
+                TextColumn::make('inquiryable.name')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('inquiryable_type')
                     ->sortable()
                     ->formatStateUsing(fn ($state) => $extracted = basename($state))
@@ -96,7 +97,9 @@ class InquiryResource extends Resource
                             'Course' => 'gray',
                             'Test' =>'primary',
                     };
-                    })
+                    }),
+                TextColumn::make('user.name')
+                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('user_id')
@@ -139,5 +142,28 @@ class InquiryResource extends Resource
             'create' => Pages\CreateInquiry::route('/create'),
             'edit' => Pages\EditInquiry::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        $roleNames = auth()->user()->getRoleNames();
+
+        if($roleNames->contains('admin'))
+            return $query;
+
+        $materials = Material::whereIn('name', $roleNames)->pluck('id');
+        $lessons = Lesson::whereIn('material_id',$materials)->pluck('id');
+
+        $summeries = Summery::whereIn('lesson_id',$lessons)->pluck('id');
+        $tests = Test::whereIn('lesson_id',$lessons)->pluck('id');
+        $videos = Video::whereIn('lesson_id',$lessons)->pluck('id');
+        $courses = Course::whereIn('lesson_id',$lessons)->pluck('id');
+
+        return $query
+            ->whereIn('inquiryable_id',$summeries)
+            ->orwhereIn('inquiryable_id',$tests)
+            ->orwhereIn('inquiryable_id',$videos)
+            ->orwhereIn('inquiryable_id',$courses);
     }
 }

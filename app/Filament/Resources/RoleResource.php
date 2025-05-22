@@ -22,6 +22,22 @@ class RoleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-finger-print';
 
+    // Role Policy
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->hasRole('admin');
+    }
+    
+    public static function canEdit($record): bool
+    {
+        return auth()->user()?->hasRole('admin');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()?->hasRole('admin');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -65,4 +81,20 @@ class RoleResource extends Resource
             'edit' => Pages\EditRole::route('/{record}/edit'),
         ];
     }
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     return parent::getEloquentQuery()->whereHas('roles', function (Builder $query) {
+    //             $query->where('name', '!=', 'admin');
+    //         });
+    // }
+
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     $query = parent::getEloquentQuery();
+    //     $roleNames = auth()->user()->getRoleNames();
+
+    //     if($roleNames->contains('admin'))
+    //         return $query;
+    //     return $query->whereRaw('0 = 1');
+    // }
 }

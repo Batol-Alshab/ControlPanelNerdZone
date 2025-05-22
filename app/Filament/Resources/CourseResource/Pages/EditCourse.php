@@ -17,5 +17,23 @@ class EditCourse extends EditRecord
         ];
     }
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    public function mount($record): void
+    {
+        parent::mount($record);
+           if ($this->record) {
+            $this->form->fill([
+                'name' => $this->record->name,
+                'lesson_id' => $this->record->lesson_id,
+                'material' => $this->record->lesson?->material_id,
+                'file' => $this->record->file,
+            ]);
+        }
+    }
+
 
 }

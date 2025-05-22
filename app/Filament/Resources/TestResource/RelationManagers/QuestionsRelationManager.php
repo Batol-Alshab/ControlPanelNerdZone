@@ -21,20 +21,17 @@ class QuestionsRelationManager extends RelationManager
 {
     protected static string $relationship = 'questions';
 
-        public  function canCreate(): bool
+    public  function canCreate(): bool
     {
         $record = static::getOwnerRecord();
         $numQuestions = $record->numQuestions;
         $countQuestions = $record->questions()->count();
         if($countQuestions == $numQuestions )
             {
-                $record->is_complete =1;
-                Notification::make()
-                    ->title('اكتمل عدد الأسئلة!')
-                    ->body('تم الوصول إلى الحد الأقصى لعدد الأسئلة لهذا الاختبار.')
-                    ->duration(1500)
-                    ->success()
-                    ->send();
+                if($record->is_complete ==0 )
+                {
+                    $this->redirect(request()->header('Referer'));
+                }
                 // $this->redirect(request()->header('Referer'));
             }
         else

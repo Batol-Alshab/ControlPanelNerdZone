@@ -18,20 +18,25 @@ class EditLesson extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            StatsLesson::class,
-        ];
-    }
+    // protected function getHeaderWidgets(): array
+    // {
+    //     return [
+    //         StatsLesson::class,
+    //     ];
+    // }
 
-    protected function getFooterWidgets(): array
-    {
-        return [
-            LessonWidget::class,
-        ];
-    }
+    // protected function getFooterWidgets(): array
+    // {
+    //     return [
+    //         LessonWidget::class,
+    //     ];
+    // }
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+    
     public function mount($record): void
     {
         parent::mount($record);
