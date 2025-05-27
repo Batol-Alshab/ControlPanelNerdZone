@@ -8,6 +8,7 @@ use App\Models\Material;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use PHPUnit\Framework\returnSelf;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -18,7 +19,9 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\MaterialResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\MaterialResource\RelationManagers;
+
 use App\Filament\Resources\MaterialResource\RelationManagers\LessonsRelationManager;
+use App\Filament\Resources\MaterialResource\RelationManagers\LessonsRelationManagereturnSelf;
 
 class MaterialResource extends Resource
 {
@@ -61,7 +64,8 @@ class MaterialResource extends Resource
             ->filters([
                 SelectFilter::make('section_id')
                     ->label('Section')
-                    ->relationship('section','name'),
+                    ->relationship('section','name')
+                    
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -92,13 +96,16 @@ class MaterialResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-        $roleNames = auth()->user()->getRoleNames();
+        $user = auth()->user();
+        $permissionNames = $user->getPermissionNames();
+        // dd(auth()->user()->getPermissionNames());
+        $roleNames = $user->getRoleNames();
 
         if ($roleNames->contains('admin'))
             return $query;
 
-        if ($roleNames->isNotEmpty()) {
-            $query->whereIn('name', $roleNames);
+        if ($permissionNames->isNotEmpty()) {
+            $query->whereIn('name', $permissionNames);
         } else {
             $query->whereRaw('0 = 1');
         }

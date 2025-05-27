@@ -6,7 +6,7 @@ use App\Models\User;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Cache;
 
-class UserWidget extends ChartWidget
+class UserSectionWidget extends ChartWidget
 {
     protected static ?string $heading = 'Chart User Section';
     protected static ?int $sort = 2;
@@ -28,11 +28,11 @@ class UserWidget extends ChartWidget
                 ],
                 'labels' => ['scientific','literary'],
             ];
-         });
+        });
     }
 
     protected function getType(): string
     {
-        return 'pie';
+        return 'doughnut';
     }
 }

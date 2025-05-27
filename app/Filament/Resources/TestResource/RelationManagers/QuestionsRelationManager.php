@@ -24,22 +24,33 @@ class QuestionsRelationManager extends RelationManager
     public  function canCreate(): bool
     {
         $record = static::getOwnerRecord();
+        $beforRecord = $record->is_complete;
         $numQuestions = $record->numQuestions;
         $countQuestions = $record->questions()->count();
         if($countQuestions == $numQuestions )
             {
                 if($record->is_complete ==0 )
                 {
-                    $this->redirect(request()->header('Referer'));
+                    $this->redirect('edit');
+                    Notification::make()
+                    ->body('Test become complete')
+                    ->send();
                 }
-                // $this->redirect(request()->header('Referer'));
+                $beforRecord = 1;
+                $record->is_complete =1;
+
+
             }
         else
             {
                 $record->is_complete =0;
-                // $this->redirect(request()->header('Referer'));
+                if($beforRecord == 1)
+                {
+                    $this->redirect('edit');
+                    $beforRecord = 0;
+                }
+
             }
-        // ? $countQuestions == $numQuestions : 0;
         $record->save();
         return $countQuestions < $numQuestions ;
     }

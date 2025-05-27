@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Cache;
 class UserJoinWidget extends ChartWidget
 {
     protected static ?string $heading = 'Chart Join User';
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 4;
 
     protected function getData(): array
     {
-        return Cache::remember('Userjoin',  now()->addMinutes(60), function () {
+        return Cache::remember('userJoin',  now()->addMinutes(60), function () {
             $data = Trend::model(User::class)
                 ->between(
                     start: Carbon::now()->subMonths(6), // آخر 6 أشهر

@@ -22,7 +22,7 @@ class SectionWidget extends ChartWidget
                     [
                         'label' =>'Section',
                         'data' => $sections->pluck('materials_count'),
-                        'backgroundColor' => ['#BA68C8','#c785d2'],
+                        'backgroundColor' => ['#c785d2','#d4a2dd'],
                         'borderColor' => '#e1bee7',
                     ],
                 ],
@@ -33,7 +33,7 @@ class SectionWidget extends ChartWidget
 
     protected function getType(): string
     {
-        return 'doughnut';
+        return 'pie' ;
     }
 
 }

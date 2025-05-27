@@ -13,7 +13,7 @@ class WidgetOverview extends ChartWidget
 {
     protected static ?string $heading = 'Chart Lesson';
 
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 5;
 
     protected function getData(): array
     {
@@ -28,12 +28,12 @@ class WidgetOverview extends ChartWidget
                 'datasets' => [
                     [
                         'label' =>'ditels Lessons',
-                        'data' => [$t, $c, $s, $v, ],
+                        'data' => [$s, $v, $t, $c,  ],
                         'backgroundColor' => ['#BA68C8','#c785d2','#d4a2dd','#e1bee7'],
                         'borderColor' => '#e1bee7',
                     ],
                 ],
-                'labels' => ['Test', 'Course', 'Summery', 'Video'],
+                'labels' => [ 'Summery', 'Video', 'Test', 'Course'],
             ];
 
         });
@@ -43,4 +43,22 @@ class WidgetOverview extends ChartWidget
     {
         return 'polarArea';
     }
+
+    protected function getOptions(): array
+    {
+
+        return [
+            'scales' => [
+                'r' => [
+                    'pointLabels' =>[
+                       'display' => true,
+                       'centerPointLabels' => true,
+                    ],
+
+                ],
+
+            ],
+        ];
+}
+
 }

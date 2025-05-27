@@ -27,7 +27,7 @@ class Material extends Model
     }
     protected static function booted()
     {
-        $keys=['materialSection','stat'];
+        $keys=['materialSection','stat','statmaterialForTeacher'];
         foreach ($keys as $key) {
             static::created(fn () => Cache::forget($key));
             static::updated(fn () => Cache::forget($key));

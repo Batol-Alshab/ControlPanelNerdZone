@@ -39,11 +39,14 @@ class VideoResource extends Resource
                 Select::make('material')->required()
                     ->options(function()
                     {
-                        $roleNames = auth()->user()->getRoleNames();
+                        $user = auth()->user();
+                        $roleNames = $user->getRoleNames();
+                        $permissionNames = $user->getPermissionNames();
                         if ($roleNames->contains('admin'))
                             return Material::pluck('name', 'id');
                         else
-                            return Material::whereIn('name',$roleNames)->pluck('name','id');
+                            return Material::whereIn('name',$permissionNames)->pluck('name','id');
+
                     })
                     ->reactive(),
                 Select::make('lesson_id')->required()
@@ -86,7 +89,25 @@ class VideoResource extends Resource
             ->filters([
                 SelectFilter::make('lesson_id')
                     ->label('lesson')
-                    ->relationship('lesson','name')
+                    // ->relationship('lesson','name')
+                    ->options(
+                        function()
+                        {
+                            $user= auth()->user();
+                            $roleNames = $user->getRoleNames();
+                            $permissionNames = $user->getPermissionNames();
+
+                            if ($roleNames->contains('admin'))
+                                return lesson::pluck('name', 'id');
+                            else
+                            {
+                                $materials = Material::whereIn('name',$permissionNames)->pluck('id');
+                                $lessons = Lesson::whereIn('material_id',$materials)->pluck('name','id');
+                                return $lessons;
+                            }
+
+                        }
+                    ),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -117,12 +138,14 @@ class VideoResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-        $roleNames = auth()->user()->getRoleNames();
+        $user = auth()->user();
+        $roleNames = $user->getRoleNames();
+        $permissionNames = $user->getPermissionNames();
 
         if($roleNames->contains('admin'))
             return $query;
 
-        $materials = Material::whereIn('name', $roleNames)->pluck('id');
+        $materials = Material::whereIn('name', $permissionNames)->pluck('id');
         $lessons = Lesson::whereIn('material_id',$materials)->pluck('id');
         return $query->whereIn('lesson_id',$lessons);
     }

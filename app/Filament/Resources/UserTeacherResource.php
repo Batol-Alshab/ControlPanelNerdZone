@@ -5,34 +5,28 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
-use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Filament\Actions\Action;
+use App\Models\UserTeacher;
 use Filament\Resources\Resource;
-use Spatie\Permission\Models\Role;
 use Filament\Forms\Components\Tabs;
-use Illuminate\Support\Facades\Hash;
-use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Forms\Components\CheckboxList;
-use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\UserResource\RelationManagers;
+use App\Filament\Resources\UserTeacherResource\Pages;
+use App\Filament\Resources\UserTeacherResource\RelationManagers;
 
-class UserResource extends Resource
+class UserTeacherResource extends Resource
 {
     protected static ?string $model = User::class;
     protected static ?string $navigationGroup = 'User';
-    protected static ?string $label = 'student';
+    protected static ?string $label = 'Teacher';
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function form(Form $form): Form
     {
@@ -59,9 +53,9 @@ class UserResource extends Resource
                             Select::make('roles')->required()
                                 ->relationship('roles' , 'name')
                                 ->options([
-                                    '3' => 'student'
+                                    '2' => 'Teacher'
                                 ])
-                                ->default(3)
+                                ->default(2)
                                 ->selectablePlaceholder(false)
                                 ->dehydrated(true),
 
@@ -70,9 +64,9 @@ class UserResource extends Resource
                                 ->preload()
                                 ->relationship('permissions','name'),
 
-                            Select::make('section_id')->required()
-                                ->label('Section')
-                                ->relationship('section','name')
+                            // Select::make('section_id')->required()
+                            //     ->label('Section')
+                            //     ->relationship('section','name')
 
                                 // ->visible(function (callable $get,callable $set) {
                                 //     $roles = $get('roles');
@@ -80,13 +74,14 @@ class UserResource extends Resource
                         ])->columns(2),
                     ])->columnSpanFull()
         ]);
-
     }
+
+
     public static function table(Table $table): Table
-    {
+     {
         return $table
-            ->query(User::whereHas('roles',
-                fn($query) => $query->where('name','student')))
+            ->query(User::query()->whereHas('roles',
+                fn($query) => $query->where('name','teacher')))
 
             ->columns([
                 TextColumn::make('id')
@@ -97,14 +92,15 @@ class UserResource extends Resource
                 TextColumn::make('email')
                     ->toggleable(),
                 TextColumn::make('city')
+                    ->toggleable()
                     ->sortable(),
                 TextColumn::make('sex')
+                        ->toggleable()
                         ->label('Gender')
                         ->getStateUsing(fn($record) => $record->sex == 0 ?  'Male': 'Female'),
-                TextColumn::make('section.name')
-                    ->sortable(),
                 TextColumn::make('roles.name'),
-                TextColumn::make('permissions.name'),
+                TextColumn::make('permissions.name')->sortable(),
+
                     // ->badge()
                     // ->color(function ($state) {
                     //     return match($state){
@@ -113,12 +109,13 @@ class UserResource extends Resource
                     //         'student' =>'success',
                     //     };
                     // }),
-
+                // TextColumn::make('section.name')
+                //     ->sortable()
             ])
             ->filters([
-                SelectFilter::make('section.name')
-                    ->label('Section')
-                    ->relationship('section','name'),
+                // SelectFilter::make('section.name')
+                //     ->label('Section')
+                //     ->relationship('section','name'),
                 // SelectFilter::make('roles.name')
                 //     ->relationship('roles', 'name',fn ($query) => $query->where('name','!=','admin'))
 
@@ -144,17 +141,9 @@ class UserResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'index' => Pages\ListUserTeachers::route('/'),
+            'create' => Pages\CreateUserTeacher::route('/create'),
+            'edit' => Pages\EditUserTeacher::route('/{record}/edit'),
         ];
     }
-    //ما عادت لازمة لان صار عندي سياسة
-    // public static function getEloquentQuery(): Builder
-    // {
-    //     return parent::getEloquentQuery()->whereHas('roles', function (Builder $query) {
-    //             $query->where('name', '!=', 'admin');
-    //         });
-    // }
-
 }

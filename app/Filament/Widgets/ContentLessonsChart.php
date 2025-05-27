@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Cache;
 
 class ContentLessonsChart extends ChartWidget
 {
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 6;
     protected static ?string $heading = 'Chart Lesson';
 
     protected function getData(): array
@@ -28,12 +28,12 @@ class ContentLessonsChart extends ChartWidget
                 'datasets' => [
                     [
                         'label' =>'ditels Lessons',
-                        'data' => [$t, $c, $s, $v, ],
+                        'data' => [$s, $v, $t, $c  ],
                         'backgroundColor' => ['#BA68C8','#c785d2','#d4a2dd','#e1bee7'],
                         'borderColor' => '#d4a0dc',
                     ],
                 ],
-                'labels' => ['Test', 'Course', 'Summery', 'Video'],
+                'labels' => ['Summery', 'Video','Test', 'Course'],
         ];});
     }
 

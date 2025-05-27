@@ -36,16 +36,29 @@ class LessonResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')->required(),
-                Select::make('section')->required()
-                    ->options(Section::all()->pluck('name','id'))
-                    ->reactive(),
+                // Select::make('section')->required()
+                //     ->options(
+                //         Section::all()->pluck('name','id'))
+                //     ->reactive(),
                 Select::make('material_id')->required()
                     ->label('Material')
-                    ->relationship('material', 'name', fn ($query, callable $get) =>
-                        $query->where('section_id', $get('section')))
+                    ->relationship('material', 'name')
+                    ->options(
+                        function()
+                        {
+                            $user= auth()->user();
+                            $roleNames = $user->getRoleNames();
+                            $permissionNames = $user->getPermissionNames();
+
+                             if ($roleNames->contains('admin'))
+                                return Material::pluck('name', 'id');
+                            else
+                                return Material::whereIn('name',$permissionNames)->pluck('name','id');
+                        }
+                    )
                     ->preload()
                     ->reactive()
-                    ->disabled(fn (callable $get) => !$get('section')),
+                    // ->disabled(fn (callable $get) => !$get('section')),
             ]);
     }
 
@@ -65,7 +78,20 @@ class LessonResource extends Resource
             ->filters([
                 SelectFilter::make('material_id')
                     ->label('Material')
-                    ->relationship('material','name')
+                    // ->relationship('material','name')
+                    ->options(
+                        function()
+                        {
+                            $user= auth()->user();
+                            $roleNames = $user->getRoleNames();
+                            $permissionNames = $user->getPermissionNames();
+
+                            if ($roleNames->contains('admin'))
+                                return Material::pluck('name', 'id');
+                            else
+                                return Material::whereIn('name',$permissionNames)->pluck('name','id');
+                        }
+                    ),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -99,13 +125,15 @@ class LessonResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query= parent::getEloquentQuery();
-        $roleNames = auth()->user()->getRoleNames();
+        $user = auth()->user();
+        $roleNames = $user->getRoleNames();
+        $permissionNames = $user->getPermissionNames();
 
         if ($roleNames->contains('admin'))
             return $query;
 
-        $materials= Material::whereIn('name',$roleNames)->pluck('id');
-        $lessons = Lesson::whereIn('material_id',$materials);
+        $materials= Material::whereIn('name',$permissionNames)->pluck('id');
+        // $lessons = Lesson::whereIn('material_id',$materials);
         return $query->whereIn('material_id',$materials);
     }
 }

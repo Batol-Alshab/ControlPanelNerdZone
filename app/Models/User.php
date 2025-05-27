@@ -23,7 +23,15 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool{
         //1 => admin , 2 => teacher
-        return $this->hasRole(1) || $this->hasRole(2);
+        if ($panel->getId() === 'admin') {
+            return $this->hasRole(1); // فقط الإداريين
+        }
+
+        if ($panel->getId() === 'teacher') {
+            return $this->hasRole(2); // فقط المعلمين
+        }
+        return false;
+        // return $this->hasRole(1) || $this->hasRole(2);
     }
     /**
      * The attributes that are mass assignable.
@@ -52,7 +60,7 @@ class User extends Authenticatable implements FilamentUser
 
     protected static function booted()
     {
-        $keys=['Userjoin','stat'];
+        $keys=['userJoin','userRole','userSection','stat'];
         foreach ($keys as $key) {
             static::created(fn () => Cache::forget($key));
             static::updated(fn () => Cache::forget($key));

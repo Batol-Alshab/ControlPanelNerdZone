@@ -83,7 +83,7 @@ class InquiryResource extends Resource
                     ->sortable(),
 
                 TextColumn::make('inquiryable.name')
-                    ->sortable()
+                    // ->sortable()
                     ->searchable(),
                 TextColumn::make('inquiryable_type')
                     ->sortable()
@@ -116,7 +116,7 @@ class InquiryResource extends Resource
                         'No Answer' => 'No Answer',
                         'complete Answer' => 'complete Answer',
                         'ignorance' => 'ignorance'
-                    ])
+                    ]),
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),
@@ -147,19 +147,21 @@ class InquiryResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-        $roleNames = auth()->user()->getRoleNames();
+        $user = auth()->user();
+        $roleNames = $user->getRoleNames();
+        $permissionNames = $user->getPermissionNames();
 
         if($roleNames->contains('admin'))
             return $query;
 
-        $materials = Material::whereIn('name', $roleNames)->pluck('id');
+        $materials = Material::whereIn('name', $permissionNames)->pluck('id');
         $lessons = Lesson::whereIn('material_id',$materials)->pluck('id');
 
         $summeries = Summery::whereIn('lesson_id',$lessons)->pluck('id');
         $tests = Test::whereIn('lesson_id',$lessons)->pluck('id');
         $videos = Video::whereIn('lesson_id',$lessons)->pluck('id');
         $courses = Course::whereIn('lesson_id',$lessons)->pluck('id');
-
+// dd($lessons);
         return $query
             ->whereIn('inquiryable_id',$summeries)
             ->orwhereIn('inquiryable_id',$tests)

@@ -3,11 +3,11 @@
 namespace App\Providers;
 
 use App\Models\User;
+use App\Models\Lesson;
 use App\Models\Material;
-use App\Policies\RolePolicy;
 use App\Policies\UserPolicy;
+use App\Policies\LessonPolicy;
 use App\Policies\MaterialPolicy;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
     [
         User:: class => UserPolicy:: class,
         Material:: class => MaterialPolicy:: class,
-        // Role:: class => RolePolicy:: class,
+        Lesson:: class => LessonPolicy:: class,
     ];
     public function register(): void
     {
