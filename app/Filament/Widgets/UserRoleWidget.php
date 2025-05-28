@@ -10,6 +10,12 @@ class UserRoleWidget extends ChartWidget
 {
     protected static ?string $heading = 'Chart User Role';
     protected static ?int $sort = 3;
+    protected int | string | array $columnSpan = 1;
+
+    protected function getCachedData(): array
+    {
+        return $this->cachedData ??= $this->getData();
+    }
 
     protected function getData(): array
     {
@@ -24,7 +30,8 @@ class UserRoleWidget extends ChartWidget
                         'label' =>'User',
                         'data' => [$teacher,$student],
                         // 'data' => [$scientific,$literary],
-                        'backgroundColor' => ['#BA68C8','#d4a2dd'],
+                        // 'backgroundColor' => ['#BA68C8','#d4a2dd'],
+                        'backgroundColor' => ['#973da7','#d4a0dc'],
                         'borderColor' => '#e1bee7',
                     ],
                 ],

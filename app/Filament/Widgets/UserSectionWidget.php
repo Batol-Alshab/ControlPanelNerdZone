@@ -10,6 +10,8 @@ class UserSectionWidget extends ChartWidget
 {
     protected static ?string $heading = 'Chart User Section';
     protected static ?int $sort = 2;
+    protected int | string | array $columnSpan = 1;
+
 
     protected function getData(): array
     {
@@ -22,7 +24,8 @@ class UserSectionWidget extends ChartWidget
                     [
                         'label' =>'User',
                         'data' => [$scientific,$literary],
-                        'backgroundColor' => ['#BA68C8','#d4a2dd'],
+                        // 'backgroundColor' => ['#BA68C8','#d4a2dd'],
+                        'backgroundColor' => ['#973da7','#d4a0dc'],
                         'borderColor' => '#e1bee7',
                     ],
                 ],

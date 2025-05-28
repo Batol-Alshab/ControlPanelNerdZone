@@ -28,7 +28,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             // UserSeeder::class,
             // RoleSeeder::class,
-            PermissionSeeder::class,
+            // PermissionSeeder::class,
+            $user= User::factory()->count(30)->create()
+                ->each(function ($user)
+                {
+                    $user->assignRole(rand(2,3)==2 ? 'teacher': 'student');
+                }),
+
 
         ]);
     }

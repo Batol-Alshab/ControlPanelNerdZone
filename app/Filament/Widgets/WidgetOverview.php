@@ -13,7 +13,8 @@ class WidgetOverview extends ChartWidget
 {
     protected static ?string $heading = 'Chart Lesson';
 
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 4;
+    protected int | string | array $columnSpan = 1;
 
     protected function getData(): array
     {

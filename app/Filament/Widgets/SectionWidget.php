@@ -10,7 +10,8 @@ class SectionWidget extends ChartWidget
 {
     protected static ?string $heading = 'Chart material Section';
 
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 6;
+    protected int | string | array $columnSpan = 1;
     protected function getData(): array
     {
         return Cache::remember('materialSection', now()->addMinutes(60), function () {

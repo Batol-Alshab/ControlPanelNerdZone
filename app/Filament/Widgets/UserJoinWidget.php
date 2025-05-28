@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Cache;
 class UserJoinWidget extends ChartWidget
 {
     protected static ?string $heading = 'Chart Join User';
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 5;
+    protected int | string | array $columnSpan = 2;
 
     protected function getData(): array
     {

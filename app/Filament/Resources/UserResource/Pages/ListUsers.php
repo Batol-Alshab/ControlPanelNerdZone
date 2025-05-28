@@ -19,12 +19,12 @@ class ListUsers extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            StatsUser::class,
-        ];
-    }
+    // protected function getHeaderWidgets(): array
+    // {
+    //     return [
+    //         StatsUser::class,
+    //     ];
+    // }
     public function getTabs(): array{
         return [
             'All' => Tab::make(),

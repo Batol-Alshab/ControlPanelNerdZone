@@ -11,8 +11,9 @@ use Illuminate\Support\Facades\Cache;
 
 class ContentLessonsChart extends ChartWidget
 {
-    protected static ?int $sort = 6;
+    protected static ?int $sort = 7;
     protected static ?string $heading = 'Chart Lesson';
+    protected int | string | array $columnSpan = 2;
 
     protected function getData(): array
     {

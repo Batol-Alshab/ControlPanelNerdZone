@@ -17,7 +17,7 @@ class StatsOverview extends BaseWidget
     {
 //          $value = Cache::get('stat');
 //          dd($value);
-        // return Cache::remember('statmaterialForTeacher', now()->addMinutes(1), function () {
+        // return Cache::remember('statmaterialForTeacher', now()->addMinutes(60), function () {
 
         $user = auth()->user();
         $permissionNames = $user->getPermissionNames();
