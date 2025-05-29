@@ -7,6 +7,7 @@ namespace App\Models;
 use Filament\Panel;
 use App\Models\Inquiry;
 use App\Models\Section;
+use App\Models\UserMaterial;
 use PhpParser\Node\Stmt\Catch_;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Traits\HasRoles;
@@ -49,13 +50,19 @@ class User extends Authenticatable implements FilamentUser
         'rate'
     ];
 
-    public function section(){
+    public function section()
+    {
         return $this->belongsTo(Section::class);
     }
 
     public function inquiries()
     {
         return $this->belongsToMany(Inquiry::class);
+    }
+
+    public function materials()
+    {
+        return $this->belongsToMany(Material::class, 'user_material');
     }
 
     protected static function booted()

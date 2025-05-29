@@ -48,12 +48,12 @@ class LessonResource extends Resource
                         {
                             $user= auth()->user();
                             $roleNames = $user->getRoleNames();
-                            $permissionNames = $user->getPermissionNames();
+                            $access_material_id =$user->materials()->pluck('material_id');
 
                              if ($roleNames->contains('admin'))
                                 return Material::pluck('name', 'id');
                             else
-                                return Material::whereIn('name',$permissionNames)->pluck('name','id');
+                                return Material::whereIn('id',$access_material_id)->pluck('name','id');
                         }
                     )
                     ->preload()
@@ -84,12 +84,12 @@ class LessonResource extends Resource
                         {
                             $user= auth()->user();
                             $roleNames = $user->getRoleNames();
-                            $permissionNames = $user->getPermissionNames();
+                            $access_material_id =$user->materials()->pluck('material_id');
 
                             if ($roleNames->contains('admin'))
                                 return Material::pluck('name', 'id');
                             else
-                                return Material::whereIn('name',$permissionNames)->pluck('name','id');
+                                return Material::whereIn('id',$access_material_id)->pluck('name','id');
                         }
                     ),
             ])
@@ -127,13 +127,11 @@ class LessonResource extends Resource
         $query= parent::getEloquentQuery();
         $user = auth()->user();
         $roleNames = $user->getRoleNames();
-        $permissionNames = $user->getPermissionNames();
+        $access_material_id =$user->materials()->pluck('material_id');
 
         if ($roleNames->contains('admin'))
             return $query;
 
-        $materials= Material::whereIn('name',$permissionNames)->pluck('id');
-        // $lessons = Lesson::whereIn('material_id',$materials);
-        return $query->whereIn('material_id',$materials);
+        return $query->whereIn('material_id',$access_material_id);
     }
 }

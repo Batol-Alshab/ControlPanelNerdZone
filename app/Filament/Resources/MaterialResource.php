@@ -17,9 +17,9 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\MaterialResource\Pages;
+
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\MaterialResource\RelationManagers;
-
 use App\Filament\Resources\MaterialResource\RelationManagers\LessonsRelationManager;
 use App\Filament\Resources\MaterialResource\RelationManagers\LessonsRelationManagereturnSelf;
 
@@ -65,7 +65,7 @@ class MaterialResource extends Resource
                 SelectFilter::make('section_id')
                     ->label('Section')
                     ->relationship('section','name')
-                    
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -97,19 +97,14 @@ class MaterialResource extends Resource
     {
         $query = parent::getEloquentQuery();
         $user = auth()->user();
-        $permissionNames = $user->getPermissionNames();
-        // dd(auth()->user()->getPermissionNames());
         $roleNames = $user->getRoleNames();
+        $access_material_id =$user->materials()->pluck('material_id');
+        // dd($access_material_id);
 
+        // dd($access_material_id);
         if ($roleNames->contains('admin'))
             return $query;
 
-        if ($permissionNames->isNotEmpty()) {
-            $query->whereIn('name', $permissionNames);
-        } else {
-            $query->whereRaw('0 = 1');
-        }
-
-        return $query;
+        return $query->whereIn('id', $access_material_id);
     }
 }

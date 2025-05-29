@@ -17,8 +17,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\SummeryResource\Pages;
 
+use App\Filament\Resources\SummeryResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SummeryResource\RelationManagerseturnSelf;
 
@@ -42,12 +42,12 @@ class SummeryResource extends Resource
                     {
                         $user = auth()->user();
                         $roleNames = $user->getRoleNames();
-                        $permisstionNames = $user->getPermissionNames();
+                        $access_material_id =$user->materials()->pluck('material_id');
 
                         if ($roleNames->contains('admin'))
                             return Material::pluck('name', 'id');
                         else
-                            return Material::whereIn('name',$permisstionNames)->pluck('name','id');
+                            return Material::whereIn('id',$access_material_id)->pluck('name','id');
                     })
                     ->reactive(),
 
@@ -92,14 +92,13 @@ class SummeryResource extends Resource
                         {
                             $user= auth()->user();
                             $roleNames = $user->getRoleNames();
-                            $permissionNames = $user->getPermissionNames();
+                            $access_material_id =$user->materials()->pluck('material_id');
 
                             if ($roleNames->contains('admin'))
                                 return lesson::pluck('name', 'id');
                             else
                             {
-                                $materials = Material::whereIn('name',$permissionNames)->pluck('id');
-                                $lessons = Lesson::whereIn('material_id',$materials)->pluck('name','id');
+                                $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('name','id');
                                 return $lessons;
                             }
 
@@ -137,13 +136,12 @@ class SummeryResource extends Resource
         $query = parent::getEloquentQuery();
         $user =auth()->user();
         $roleNames = $user->getRoleNames();
-        $permissionNames = $user->getpermissionNames();
+        $access_material_id =$user->materials()->pluck('material_id');
 
         if($roleNames->contains('admin'))
             return $query;
 
-        $materials = Material::whereIn('name', $permissionNames)->pluck('id');
-        $lessons = Lesson::whereIn('material_id',$materials)->pluck('id');
+        $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('id');
         return $query->whereIn('lesson_id',$lessons);
     }
 }

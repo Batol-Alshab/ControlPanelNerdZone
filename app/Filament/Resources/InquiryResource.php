@@ -149,13 +149,13 @@ class InquiryResource extends Resource
         $query = parent::getEloquentQuery();
         $user = auth()->user();
         $roleNames = $user->getRoleNames();
-        $permissionNames = $user->getPermissionNames();
+        $access_material_id =$user->materials()->pluck('material_id');
+
 
         if($roleNames->contains('admin'))
             return $query;
 
-        $materials = Material::whereIn('name', $permissionNames)->pluck('id');
-        $lessons = Lesson::whereIn('material_id',$materials)->pluck('id');
+        $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('id');
 
         $summeries = Summery::whereIn('lesson_id',$lessons)->pluck('id');
         $tests = Test::whereIn('lesson_id',$lessons)->pluck('id');

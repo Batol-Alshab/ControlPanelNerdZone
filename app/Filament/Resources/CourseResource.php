@@ -41,11 +41,12 @@ class CourseResource extends Resource
                     {
                         $user = auth()->user();
                         $roleNames = $user->getRoleNames();
-                        $permissionNames = $user->getPermissionNames();
+                        $access_material_id =$user->materials()->pluck('material_id');
+
                         if ($roleNames->contains('admin'))
                             return Material::pluck('name', 'id');
                         else
-                            return Material::whereIn('name',$permissionNames)->pluck('name','id');
+                            return Material::whereIn('id',$access_material_id)->pluck('name','id');
 
                     })
                     ->reactive(),
@@ -89,14 +90,13 @@ class CourseResource extends Resource
                         {
                             $user= auth()->user();
                             $roleNames = $user->getRoleNames();
-                            $permissionNames = $user->getPermissionNames();
+                            $access_material_id =$user->materials()->pluck('material_id');
 
                             if ($roleNames->contains('admin'))
                                 return lesson::pluck('name', 'id');
                             else
                             {
-                                $materials = Material::whereIn('name',$permissionNames)->pluck('id');
-                                $lessons = Lesson::whereIn('material_id',$materials)->pluck('name','id');
+                                $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('name','id');
                                 return $lessons;
                             }
 
@@ -134,13 +134,13 @@ class CourseResource extends Resource
         $query = parent::getEloquentQuery();
         $user = auth()->user();
         $roleNames = $user->getRoleNames();
-        $permissionNames = $user->getPermissionNames();
+        $access_material_id =$user->materials()->pluck('material_id');
+
 
         if($roleNames->contains('admin'))
             return $query;
 
-        $materials = Material::whereIn('name', $permissionNames)->pluck('id');
-        $lessons = Lesson::whereIn('material_id',$materials)->pluck('id');
+        $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('id');
         return $query->whereIn('lesson_id',$lessons);
     }
 }

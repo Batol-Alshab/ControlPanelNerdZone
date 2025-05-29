@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\User;
+use Filament\Support\RawJs;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Cache;
 
@@ -43,5 +44,28 @@ class UserRoleWidget extends ChartWidget
     protected function getType(): string
     {
         return 'doughnut';
+    }
+    protected function getOptions():   RawJs
+    {
+        return RawJs::make(<<<'JS'
+        {
+            animation: {
+                duration: 2000
+            },
+            interaction: {
+                intersect: false
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    type: 'category'
+                }
+            }
+        }
+    JS);
     }
 }

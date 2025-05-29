@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\Lesson;
 use App\Models\Section;
 use Illuminate\Support\Facades\Cache;
@@ -18,13 +19,22 @@ class Material extends Model
         'image',
         'section_id'
     ];
+
     public function section()
     {
         return $this->belongsTo(Section::class);
     }
-    public function lessons(){
+
+    public function lessons()
+    {
         return $this->hasMany(Lesson::class);
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_material');
+    }
+
     protected static function booted()
     {
         $keys=['materialSection','stat','statmaterialForTeacher'];
