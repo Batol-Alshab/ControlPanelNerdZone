@@ -28,45 +28,45 @@ class StatsOverview extends BaseWidget
     {
 //          dd($value);
         return Cache::remember('stat', now()->addMinutes(60), function () {
-        $data = Trend::model(User::class)
-                ->between(
-                    start: Carbon::now()->subMonths(2), // آخر 6 أشهر
-                    end: Carbon::now()
-                )
-                ->perMonth()
-                ->count()
-                ->map(fn($value) => $value->aggregate)
-                ->toArray()
-                ;
-                // dd($data);
-        $student = User::whereHas('roles',
-            fn($query) => $query->where('name','student'))
-            ->count();
-        $teacher = User::whereHas('roles',
-            fn($query) => $query->where('name','teacher'))
-            ->count();
-        $allUser = $student + $teacher;
+            $data = Trend::model(User::class)
+                    ->between(
+                        start: Carbon::now()->subDays(14),
+                        end: Carbon::now()
+                    )
+                    ->perMonth()
+                    ->count()
+                    ->map(fn($value) => $value->aggregate)
+                    ->toArray()
+                    ;
+                    // dd($data);
+            $student = User::whereHas('roles',
+                fn($query) => $query->where('name','student'))
+                ->count();
+            $teacher = User::whereHas('roles',
+                fn($query) => $query->where('name','teacher'))
+                ->count();
+            $allUser = $student + $teacher;
 
-        $section = Section::pluck('name');
-        return [
-            Stat::make('All User',$allUser)
-                ->description("Student: {$student},  Teacher: {$teacher}")
-                ->chart($data)
-                ->Color('#973da7')
-                ->icon('heroicon-o-users')
-                ->url(UserResource::getUrl())
-                ,
-            //     ->description("Teacher: {$teacher}")
-            //     ->descriptionIcon('heroicon-o-user-group', IconPosition::Before),
-            Stat::make('Number of Sections',Section::count())
-                ->description($section->implode(', '))
-                ->color('#973da7')
-                ->url(SectionResource::getUrl()),
-            stat::make('Number of Materials',Material::count())
-                ->url(MaterialResource::getUrl()),
-            stat::make('Number of Lessons',Lesson::count())
-                ->url(LessonResource::getUrl()),
-        ];
+            $section = Section::pluck('name');
+            return [
+                Stat::make('All User',$allUser)
+                    ->description("Student: {$student},  Teacher: {$teacher}")
+                    ->chart($data)
+                    // ->Color('#973da7')
+                    ->icon('heroicon-o-users')
+                    ->url(UserResource::getUrl())
+                    ,
+                //     ->description("Teacher: {$teacher}")
+                //     ->descriptionIcon('heroicon-o-user-group', IconPosition::Before),
+                Stat::make('Number of Sections',Section::count())
+                    ->description($section->implode(', '))
+                    ->color('#973da7')
+                    ->url(SectionResource::getUrl()),
+                stat::make('Number of Materials',Material::count())
+                    ->url(MaterialResource::getUrl()),
+                stat::make('Number of Lessons',Lesson::count())
+                    ->url(LessonResource::getUrl()),
+            ];
     });
     }
 }

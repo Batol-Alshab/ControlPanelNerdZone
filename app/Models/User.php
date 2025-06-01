@@ -62,12 +62,16 @@ class User extends Authenticatable implements FilamentUser
 
     public function materials()
     {
-        return $this->belongsToMany(Material::class, 'user_material');
+        return $this->belongsToMany(Material::class, 'user_material')
+                    ->using(UserMaterial::class);;
     }
 
     protected static function booted()
     {
-        $keys=['userJoin','userRole','userSection','stat'];
+        $keys=['userJoin','userRole','userSection','stat',
+            //   'statmaterialForTeacher',
+
+        ];
         foreach ($keys as $key) {
             static::created(fn () => Cache::forget($key));
             static::updated(fn () => Cache::forget($key));

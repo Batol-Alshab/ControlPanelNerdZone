@@ -26,7 +26,9 @@ class Course extends Model
     }
     protected static function booted()
     {
-        $keys = ['contentLesson','statLesson'];
+        $keys = ['contentLesson','statLesson',
+                'countTestCourceSummeryVideoForTeacher'
+            ];
         foreach ($keys as $key) {
             static::created(fn () => Cache::forget($key));
             static::updated(fn () => Cache::forget($key));

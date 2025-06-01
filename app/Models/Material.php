@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\Lesson;
 use App\Models\Section;
+use App\Models\UserMaterial;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -32,12 +33,13 @@ class Material extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'user_material');
+        return $this->belongsToMany(User::class, 'user_material')
+                    ->using(UserMaterial::class);;
     }
 
     protected static function booted()
     {
-        $keys=['materialSection','stat','statmaterialForTeacher'];
+        $keys=['materialSection','stat',];
         foreach ($keys as $key) {
             static::created(fn () => Cache::forget($key));
             static::updated(fn () => Cache::forget($key));

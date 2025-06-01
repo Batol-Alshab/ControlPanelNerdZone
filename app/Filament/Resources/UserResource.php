@@ -6,6 +6,7 @@ use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
 use Filament\Forms\Get;
+use App\Models\Material;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
@@ -15,6 +16,7 @@ use Filament\Forms\Components\Tabs;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
@@ -65,18 +67,31 @@ class UserResource extends Resource
                                 ->selectablePlaceholder(false)
                                 ->dehydrated(true),
 
-                            Select::make('permissions')
-                                ->multiple()
-                                ->preload()
-                                ->relationship('permissions','name'),
-
                             Select::make('section_id')->required()
                                 ->label('Section')
                                 ->relationship('section','name')
+                                ->reactive(),
+                            Fieldset::make('Access')
+                                ->schema([
+                                    CheckboxList::make('materials')
+                                        ->relationship('materials','name')
+                                        ->options(fn(callable $get) => Material::where('section_id',$get('section_id'))->pluck('name','id'))
+                                        // ->disableOptionWhen(function ($value,  $record)
+                                        // {
+                                        //     if($record)
+                                        //     {
+                                        //         $accessMaterial = UserMaterial::whereNot('user_id',$record->id)->pluck('material_id')->toArray();
+                                        //     }
+                                        //     else
+                                        //         $accessMaterial = UserMaterial::pluck('material_id')->toArray();
+                                        //     return in_array($value, $accessMaterial);
+                                        // })
+                                        // // ->disabled()
+                                        ->columns(2)
+                                        ->disabled(fn (callable $get) => !$get('section_id'))
+                                        ->reactive(),
+                                    ])
 
-                                // ->visible(function (callable $get,callable $set) {
-                                //     $roles = $get('roles');
-                                //     return (is_array($roles) && in_array('3', $roles)) || $roles=='3';                        }),
                         ])->columns(2),
                     ])->columnSpanFull()
         ]);
@@ -104,7 +119,7 @@ class UserResource extends Resource
                 TextColumn::make('section.name')
                     ->sortable(),
                 TextColumn::make('roles.name'),
-                TextColumn::make('permissions.name'),
+                TextColumn::make('materials.name'),
                     // ->badge()
                     // ->color(function ($state) {
                     //     return match($state){
@@ -119,8 +134,8 @@ class UserResource extends Resource
                 SelectFilter::make('section.name')
                     ->label('Section')
                     ->relationship('section','name'),
-                // SelectFilter::make('roles.name')
-                //     ->relationship('roles', 'name',fn ($query) => $query->where('name','!=','admin'))
+                SelectFilter::make('materials')
+                    ->relationship('materials', 'name')//,fn ($query) => $query->where('name','!=','admin'))
 
             ])
             ->actions([

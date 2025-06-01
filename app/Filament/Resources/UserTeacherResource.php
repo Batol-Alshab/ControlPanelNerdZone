@@ -5,17 +5,22 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
+use App\Models\Material;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use App\Models\UserTeacher;
+use App\Models\UserMaterial;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Split;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\CheckboxList;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserTeacherResource\Pages;
 use App\Filament\Resources\UserTeacherResource\RelationManagers;
@@ -48,6 +53,7 @@ class UserTeacherResource extends Resource
                                 ]),
                             ])->columns(2),
                     Tab::make('Role')
+
                         ->schema([
 
                             Select::make('roles')->required()
@@ -59,19 +65,46 @@ class UserTeacherResource extends Resource
                                 ->selectablePlaceholder(false)
                                 ->dehydrated(true),
 
-                            Select::make('permissions')
-                                ->multiple()
-                                ->preload()
-                                ->relationship('permissions','name'),
+                            Fieldset::make('Access')
+                                ->schema([
+                                    CheckboxList::make('materials')
+                                        ->label('scientific')
+                                        ->relationship('materials','name')
+                                        ->options(fn() => Material::where('section_id',1)->pluck('name','id'))
+                                        ->disableOptionWhen(function ($value,  $record)
+                                        {
+                                            if($record)
+                                            {
+                                                $accessMaterial = UserMaterial::whereNot('user_id',$record->id)->pluck('material_id')->toArray();
+                                            }
+                                            else
+                                                $accessMaterial = UserMaterial::pluck('material_id')->toArray();
+                                            return in_array($value, $accessMaterial);
+                                        })
+                                        // ->disabled()
+                                        ->columns(2),
 
-                            // Select::make('section_id')->required()
-                            //     ->label('Section')
-                            //     ->relationship('section','name')
+                                    CheckboxList::make('materials')
+                                        ->label('literary')
+                                        ->relationship('materials','name')
+                                        ->options(fn() => Material::where('section_id',2)->pluck('name','id'))
+                                        ->disableOptionWhen(function ($value,  $record)
+                                        {
+                                            if($record)
+                                            {
+                                                $accessMaterial = UserMaterial::whereNot('user_id',$record->id)->pluck('material_id')->toArray();
+                                                dd($accessMaterial);
+                                            }
+                                            else
+                                                $accessMaterial = UserMaterial::pluck('material_id')->toArray();
+                                            return in_array($value, $accessMaterial);
+                                        })
+                                        ->columns(2)
+                                ])
+                                ->columns(2),
 
-                                // ->visible(function (callable $get,callable $set) {
-                                //     $roles = $get('roles');
-                                //     return (is_array($roles) && in_array('3', $roles)) || $roles=='3';                        }),
-                        ])->columns(2),
+                        ])->columns(4),
+
                     ])->columnSpanFull()
         ]);
     }
@@ -99,7 +132,7 @@ class UserTeacherResource extends Resource
                         ->label('Gender')
                         ->getStateUsing(fn($record) => $record->sex == 0 ?  'Male': 'Female'),
                 TextColumn::make('roles.name'),
-                TextColumn::make('permissions.name')->sortable(),
+                TextColumn::make('materials.name')->sortable(),
 
                     // ->badge()
                     // ->color(function ($state) {
