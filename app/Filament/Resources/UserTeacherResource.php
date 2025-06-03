@@ -75,11 +75,18 @@ class UserTeacherResource extends Resource
                                         {
                                             if($record)
                                             {
-                                                $accessMaterial = UserMaterial::whereNot('user_id',$record->id)->pluck('material_id')->toArray();
+                                                //طلعت كل الاستاذة  لي عندهم مواد وخليت هي المواد غير قابلة للاختيار و التعديل الا مادة هاد المستخدم
+                                                $canCheck = UserMaterial::whereIn('user_id',User::whereHas('roles',
+                                                    fn($query) => $query->where('id',2))->pluck('id'))
+                                                    ->whereNot('user_id',$record->id)
+                                                    ->pluck('material_id')->toArray();
                                             }
                                             else
-                                                $accessMaterial = UserMaterial::pluck('material_id')->toArray();
-                                            return in_array($value, $accessMaterial);
+                                                $canCheck = UserMaterial::whereIn('user_id',User::whereHas('roles',
+                                                    fn($query) => $query->where('id',2))->pluck('id'))
+                                                    ->pluck('material_id')->toArray();
+
+                                            return in_array($value, $canCheck);
                                         })
                                         // ->disabled()
                                         ->columns(2),
@@ -92,12 +99,17 @@ class UserTeacherResource extends Resource
                                         {
                                             if($record)
                                             {
-                                                $accessMaterial = UserMaterial::whereNot('user_id',$record->id)->pluck('material_id')->toArray();
-                                                dd($accessMaterial);
+                                                $canCheck = UserMaterial::whereIn('user_id',User::whereHas('roles',
+                                                    fn($query) => $query->where('id',2))->pluck('id'))
+                                                    ->whereNot('user_id',$record->id)
+                                                    ->pluck('material_id')->toArray();
                                             }
                                             else
-                                                $accessMaterial = UserMaterial::pluck('material_id')->toArray();
-                                            return in_array($value, $accessMaterial);
+                                                $canCheck = UserMaterial::whereIn('user_id',User::whereHas('roles',
+                                                    fn($query) => $query->where('id',2))->pluck('id'))
+                                                    ->pluck('material_id')->toArray();
+
+                                            return in_array($value, $canCheck);
                                         })
                                         ->columns(2)
                                 ])

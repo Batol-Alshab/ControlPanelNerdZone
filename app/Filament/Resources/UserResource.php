@@ -70,6 +70,7 @@ class UserResource extends Resource
                             Select::make('section_id')->required()
                                 ->label('Section')
                                 ->relationship('section','name')
+                                ->disabledOn('edit')
                                 ->reactive(),
                             Fieldset::make('Access')
                                 ->schema([

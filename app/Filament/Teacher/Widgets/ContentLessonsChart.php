@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\TeacherPanel\Widgets;
+namespace App\Filament\Teacher\Widgets;
 
 use App\Models\Test;
 use App\Models\Video;

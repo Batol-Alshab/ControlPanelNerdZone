@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\TeacherPanel\Widgets;
+namespace App\Filament\Teacher\Widgets;
 
 
 use App\Models\Lesson;
@@ -16,7 +16,7 @@ class TeacherStatsOverMaterialview extends BaseWidget
 
     protected function getStats(): array
     {
-        return Cache::remember('statmaterialForTeacher', now()->addMinutes(60), function () {
+        // return Cache::remember('statmaterialForTeacher', now()->addMinutes(60), function () {
 
             $user = auth()->user();
             $access_material_id =$user->materials()->pluck('material_id');
@@ -31,5 +31,5 @@ class TeacherStatsOverMaterialview extends BaseWidget
             return
                 $stats;
         }
-); }
+// ); }
 }
