@@ -19,7 +19,7 @@ class UserMaterial extends Pivot
 
     protected static function booted()
     {
-        $keys=['statmaterialForTeacher',];
+        $keys=['statmaterialForTeacher','CountOfStudentsAccessMaterials'];
         foreach ($keys as $key) {
             static::created(fn () => Cache::forget($key));
             static::updated(fn () => Cache::forget($key));

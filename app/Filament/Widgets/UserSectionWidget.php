@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\User;
+use App\Models\Section;
 use Filament\Support\RawJs;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Cache;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Cache;
 class UserSectionWidget extends ChartWidget
 {
     protected static ?string $heading = 'Chart User Section';
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 3;
     protected int | string | array $columnSpan = 1;
 
 
@@ -18,19 +19,22 @@ class UserSectionWidget extends ChartWidget
     {
         return Cache::remember('userSection', now()->addMinutes(60), function () {
             $user = User::all();
-            $scientific= $user->where('section_id',1)->count();
-            $literary =$user->where('section_id',2)->count();
+            $sections = Section::all();
+            foreach($sections as $section)
+            {
+                $data[] = $user->where('section_id',$section->id)->count();
+                $label[] = $section->name;
+            }
             return [
                 'datasets'=>[
                     [
                         'label' =>'User',
-                        'data' => [$scientific,$literary],
-                        // 'backgroundColor' => ['#BA68C8','#d4a2dd'],
+                        'data' => $data,
                         'backgroundColor' => ['#973da7','#d4a0dc'],
                         'borderColor' => '#e1bee7',
                     ],
                 ],
-                'labels' => ['scientific','literary'],
+                'labels' => $label,
             ];
         });
     }
@@ -39,6 +43,7 @@ class UserSectionWidget extends ChartWidget
     {
         return 'doughnut';
     }
+
     protected function getOptions():   RawJs
     {
         return RawJs::make(<<<'JS'
@@ -52,12 +57,21 @@ class UserSectionWidget extends ChartWidget
             plugins: {
                 legend: {
                     display: false
-                }
+                },
             },
             scales: {
                 x: {
-                    type: 'category'
-                }
+                    type: 'category',
+                },
+                y: {
+                    grid:{
+                        display:false,
+                    },
+                    ticks:{
+                        display:false,
+                    },
+                },
+
             }
         }
     JS);

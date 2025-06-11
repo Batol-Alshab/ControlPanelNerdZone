@@ -15,6 +15,7 @@ class Test extends Model
     protected $fillable=[
         'name',
         'numQuestions',
+        'is_complete',
         'lesson_id',
     ];
     public function lesson()

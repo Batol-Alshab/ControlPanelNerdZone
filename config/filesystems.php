@@ -33,7 +33,6 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            // 'root' => storage_path('app/public'),
             'serve' => true,
             'throw' => false,
             'report' => false,
@@ -78,4 +77,5 @@ return [
         public_path('storage') => storage_path('app/public'),
     ],
 
+    
 ];

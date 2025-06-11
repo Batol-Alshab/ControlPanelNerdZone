@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\MarkdownEditor;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -61,7 +62,7 @@ class QuestionsRelationManager extends RelationManager
         // $questionCount = Question::where('test_id', $this->id)->count();
         return $form
             ->schema([
-                TextInput::make('content')->required(),
+                MarkdownEditor::make('content')->required(),
                 FileUpload::make('image')->nullable()
                     ->disk('public')->directory('Test-Image'),
 

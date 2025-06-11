@@ -9,7 +9,7 @@ use App\Models\Summery;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Cache;
 
-class WidgetOverview extends ChartWidget
+class LessonContent extends ChartWidget
 {
     protected static ?string $heading = 'Chart Lesson';
 
@@ -47,9 +47,22 @@ class WidgetOverview extends ChartWidget
 
     protected function getOptions(): array
     {
-
         return [
             'scales' => [
+                'x' => [
+                    'ticks' =>[
+                        'display' =>false,
+                    ]
+                ],
+                'y' =>[
+                    'grid'=> [
+                        'display'=> false //اخفاء الخطوط
+                    ],
+                    'ticks' => [
+                        'display' => false, // إخفاء أرقام الترقيم
+                    ],
+                    // 'beginAtZero' => true
+                ],
                 'r' => [
                     'pointLabels' =>[
                        'display' => true,
@@ -60,6 +73,6 @@ class WidgetOverview extends ChartWidget
 
             ],
         ];
-}
+    }
 
 }

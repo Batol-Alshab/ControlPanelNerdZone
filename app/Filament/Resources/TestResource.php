@@ -17,15 +17,13 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Checkbox;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\SelectColumn;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
-use Filament\Forms\Components\ToggleButtons;
 use App\Filament\Resources\TestResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TestResource\RelationManagers;
+use App\Filament\Resources\TestResource\RelationManagers\InquiriesRelationManager;
 use App\Filament\Resources\TestResource\RelationManagers\QuestionsRelationManager;
 
 class TestResource extends Resource
@@ -33,7 +31,7 @@ class TestResource extends Resource
     protected static ?string $model = Test::class;
     protected static ?string $navigationGroup = 'Lessons';
     protected static ?string $navigationParentItem = 'Lessons';
-     protected static ?int $navigationSort = 3;
+     protected static ?int $navigationSort = 5;
 
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -48,13 +46,15 @@ class TestResource extends Resource
                     {
                         $user = auth()->user();
                         $roleNames = $user->getRoleNames();
-                        $access_material_id =$user->materials()->pluck('material_id');
+
 
                         if ($roleNames->contains('admin'))
                             return Material::pluck('name', 'id');
                         else
+                        {
+                            $access_material_id =$user->materials()->pluck('material_id');
                             return Material::whereIn('id',$access_material_id)->pluck('name','id');
-
+                        }
                     })
                     ->reactive(),
 
@@ -66,14 +66,19 @@ class TestResource extends Resource
                     ->reactive()
                     ->disabled(fn (callable $get) => !$get('material')),
 
-                Select::make('numQuestions')->required()
-                    ->options([
-                        2=>2,
-                        5=>5,
-                        10=>10,
-                        15=>15,
-                        20=>20
-                    ]),
+                TextInput::make('numQuestions')->required()
+                    ->placeholder('اختر عدد الأسئلة بين 1 و 50')
+                    ->numeric()
+                    ->minValue(1)
+                    ->maxValue(50),
+                // Select::make('numQuestions')->required()
+                //     ->options([
+                //         2=>2,
+                //         5=>5,
+                //         10=>10,
+                //         15=>15,
+                //         20=>20
+                //     ]),
                 Toggle::make('is_complete')
                     ->disabled()
                 // TextInput::make('numQuestions')->required()
@@ -87,7 +92,7 @@ class TestResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                     TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
@@ -113,12 +118,12 @@ class TestResource extends Resource
                         {
                             $user= auth()->user();
                             $roleNames = $user->getRoleNames();
-                            $access_material_id =$user->materials()->pluck('material_id');
 
                             if ($roleNames->contains('admin'))
                                 return lesson::pluck('name', 'id');
                             else
                             {
+                                $access_material_id =$user->materials()->pluck('material_id');
                                 $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('name','id');
                                 return $lessons;
                             }
@@ -142,6 +147,7 @@ class TestResource extends Resource
     {
         return [
             QuestionsRelationManager::class,
+            InquiriesRelationManager::class,
         ];
     }
 
@@ -159,11 +165,12 @@ class TestResource extends Resource
         $query = parent::getEloquentQuery();
         $user =  auth()->user();
         $roleNames = $user->getRoleNames();
-        $access_material_id =$user->materials()->pluck('material_id');
+
 
         if($roleNames->contains('admin'))
             return $query;
 
+        $access_material_id =$user->materials()->pluck('material_id');
         $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('id');
         return $query->whereIn('lesson_id',$lessons);
     }

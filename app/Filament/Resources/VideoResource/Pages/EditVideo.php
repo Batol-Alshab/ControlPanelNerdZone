@@ -24,6 +24,17 @@ class EditVideo extends EditRecord
 
     public function mount($record): void
     {
+// phpinfo();
+
+//         public function mount()
+// {
+    // عرض الحجم الأقصى المسموح به
+    // dd([
+    //     'max_file_size' => ini_get('upload_max_filesize'),
+    //     'post_max_size' => ini_get('post_max_size'),
+    //     'memory_limit' => ini_get('memory_limit')
+    // ]);
+// }
         parent::mount($record);
            if ($this->record) {
             $this->form->fill([

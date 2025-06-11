@@ -21,13 +21,14 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\SummeryResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SummeryResource\RelationManagerseturnSelf;
+use App\Filament\Resources\SummeryResource\RelationManagers\InquiriesRelationManager;
 
 class SummeryResource extends Resource
 {
     protected static ?string $model = Summery::class;
     protected static ?string $navigationGroup = 'Lessons';
     protected static ?string $navigationParentItem = 'Lessons';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
 
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
@@ -42,12 +43,14 @@ class SummeryResource extends Resource
                     {
                         $user = auth()->user();
                         $roleNames = $user->getRoleNames();
-                        $access_material_id =$user->materials()->pluck('material_id');
 
                         if ($roleNames->contains('admin'))
                             return Material::pluck('name', 'id');
                         else
+                        {
+                            $access_material_id =$user->materials()->pluck('material_id');
                             return Material::whereIn('id',$access_material_id)->pluck('name','id');
+                        }
                     })
                     ->reactive(),
 
@@ -71,7 +74,7 @@ class SummeryResource extends Resource
         return $table
                 ->columns([
                 TextColumn::make('id')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
@@ -92,12 +95,12 @@ class SummeryResource extends Resource
                         {
                             $user= auth()->user();
                             $roleNames = $user->getRoleNames();
-                            $access_material_id =$user->materials()->pluck('material_id');
 
                             if ($roleNames->contains('admin'))
                                 return lesson::pluck('name', 'id');
                             else
                             {
+                                $access_material_id =$user->materials()->pluck('material_id');
                                 $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('name','id');
                                 return $lessons;
                             }
@@ -118,7 +121,7 @@ class SummeryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            InquiriesRelationManager::class,
         ];
     }
 
@@ -136,11 +139,12 @@ class SummeryResource extends Resource
         $query = parent::getEloquentQuery();
         $user =auth()->user();
         $roleNames = $user->getRoleNames();
-        $access_material_id =$user->materials()->pluck('material_id');
+
 
         if($roleNames->contains('admin'))
             return $query;
 
+        $access_material_id =$user->materials()->pluck('material_id');
         $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('id');
         return $query->whereIn('lesson_id',$lessons);
     }

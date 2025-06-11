@@ -19,9 +19,17 @@ class StudentStatsOverviewMaterial extends BaseWidget
             $materials = Material::where('section_id',$user->section_id)->get();
             //لازم اعمل ستيت بعدد المواد
             foreach($materials as $material)
-                $stats[] = stat::make('',$material->name)
-                ->url(LessonResource::getUrl())
-                ->color('success');
+                {
+                    $imageUrl = url($material->image);
+                    $htmlImage = "<img src='{$imageUrl}' alt='{$material->name}' style='width:40px; height:auto; margin-right:8px;' />";
+                    $stats[] = stat::make('',$material->name)
+                    ->icon($material->image)
+                    // ->url(LessonResource::getUrl())
+                    ->color('success')
+                    ->description($htmlImage)
+                ;
+                }
+
             return
                 $stats;
         }

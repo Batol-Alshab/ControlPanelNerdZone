@@ -36,14 +36,16 @@ class MaterialResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
+                TextInput::make('name')->required()
+                    // ->rules('max:25'),
+                    ->maxValue(25),
                 Select::make('section_id')->required()
                     ->label('section')
                     ->relationship('section','name'),
-                FileUpload::make('image')
+                FileUpload::make('image')->nullable()
                     ->image()
                     ->maxSize(1024)
-                    ->disk('public')->directory('Material')->nullable(),
+                    ->disk('public')->directory('Material'),
             ]);
     }
 
@@ -52,7 +54,7 @@ class MaterialResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
@@ -72,7 +74,7 @@ class MaterialResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -98,13 +100,11 @@ class MaterialResource extends Resource
         $query = parent::getEloquentQuery();
         $user = auth()->user();
         $roleNames = $user->getRoleNames();
-        $access_material_id =$user->materials()->pluck('material_id');
-        // dd($access_material_id);
 
-        // dd($access_material_id);
         if ($roleNames->contains('admin'))
             return $query;
-
+        
+        $access_material_id =$user->materials()->pluck('material_id');
         return $query->whereIn('id', $access_material_id);
     }
 }

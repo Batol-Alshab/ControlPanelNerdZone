@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 use phpDocumentor\Reflection\Types\Self_;
 use Filament\Forms\Components\MorphToSelect;
 use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Forms\Components\MarkdownEditor;
 use App\Filament\Resources\InquiryResource\Pages;
 use Filament\Forms\Components\MorphToSelect\Type;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -38,7 +39,7 @@ class InquiryResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('inquiry')->required(),
+                MarkdownEditor::make('inquiry')->required(),
                 Select::make('user_id')->required()
                     ->relationship('user','name'),
                 MorphToSelect::make('inquiryable')
@@ -63,14 +64,7 @@ class InquiryResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->toggleable(),
-                // TextColumn::make('inquiryable.name')
-                //     ->toggleable(),
-                // TextColumn::make('inquiryable')
-                //     ->formatStateUsing(fn() => Lesson::where('id','inquiryable.lesson_id')
-                //     )
-
-                    // ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('inquiry'),
                 TextColumn::make('status')
                     ->badge()
@@ -102,8 +96,8 @@ class InquiryResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('user_id')
-                    ->relationship('user','name'),
+                // SelectFilter::make('user_id')
+                //     ->relationship('user','name'),
                 SelectFilter::make('inquiryable_type')
                     ->options([
                         'App\Models\Summery'=> 'Summery',
@@ -149,12 +143,11 @@ class InquiryResource extends Resource
         $query = parent::getEloquentQuery();
         $user = auth()->user();
         $roleNames = $user->getRoleNames();
-        $access_material_id =$user->materials()->pluck('material_id');
-
 
         if($roleNames->contains('admin'))
             return $query;
 
+        $access_material_id =$user->materials()->pluck('material_id');
         $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('id');
 
         $summeries = Summery::whereIn('lesson_id',$lessons)->pluck('id');

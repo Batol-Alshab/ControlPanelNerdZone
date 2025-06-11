@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\UserResource\Pages;
 
 use Filament\Actions;
+use App\Models\Section;
 use App\Filament\Resources\UserResource;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ListRecords\Tab;
@@ -19,22 +20,19 @@ class ListUsers extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
-    // protected function getHeaderWidgets(): array
-    // {
-    //     return [
-    //         StatsUser::class,
-    //     ];
-    // }
     public function getTabs(): array{
-        return [
-            'All' => Tab::make(),
-            'scientific' => Tab::make()->modifyQueryUsing(function ( $query){
-                $query->where('section_id',1);
-            }),
-            'literary' => Tab::make()->modifyQueryUsing(function ( $query){
-                $query->where('section_id',2);
-            }),
-        ];
+        $sections = Section::all();
+        $tabs['all'] = Tab::make();
+        foreach($sections as $section)
+        {
+            $tabs[$section->name] =Tab::make()->modifyQueryUsing(
+                fn($query) => $query->where('section_id',$section->id)
+            );
+        }
+
+        return
+            $tabs;
+
     }
 
 }

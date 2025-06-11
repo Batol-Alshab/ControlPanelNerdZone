@@ -130,40 +130,26 @@ class UserTeacherResource extends Resource
 
             ->columns([
                 TextColumn::make('id')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('materials.name')->sortable(),
                 TextColumn::make('email')
                     ->toggleable(),
                 TextColumn::make('city')
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('sex')
-                        ->toggleable()
+                        ->toggleable(isToggledHiddenByDefault: true)
                         ->label('Gender')
                         ->getStateUsing(fn($record) => $record->sex == 0 ?  'Male': 'Female'),
-                TextColumn::make('roles.name'),
-                TextColumn::make('materials.name')->sortable(),
 
-                    // ->badge()
-                    // ->color(function ($state) {
-                    //     return match($state){
-                    //         'admin' => 'danger',
-                    //         'teacher' => 'warning',
-                    //         'student' =>'success',
-                    //     };
-                    // }),
-                // TextColumn::make('section.name')
-                //     ->sortable()
             ])
             ->filters([
-                // SelectFilter::make('section.name')
-                //     ->label('Section')
-                //     ->relationship('section','name'),
-                // SelectFilter::make('roles.name')
-                //     ->relationship('roles', 'name',fn ($query) => $query->where('name','!=','admin'))
-
+                SelectFilter::make('Material')
+                    // ->label('Material')
+                    ->relationship('materials','name'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

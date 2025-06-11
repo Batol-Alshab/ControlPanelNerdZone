@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\VideoResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\VideoResource\RelationManagers;
+use App\Filament\Resources\VideoResource\RelationManagers\InquiriesRelationManager;
 
 class VideoResource extends Resource
 {
@@ -41,13 +42,14 @@ class VideoResource extends Resource
                     {
                         $user = auth()->user();
                         $roleNames = $user->getRoleNames();
-                        $access_material_id =$user->materials()->pluck('material_id');
 
                         if ($roleNames->contains('admin'))
                             return Material::pluck('name', 'id');
                         else
+                        {
+                            $access_material_id =$user->materials()->pluck('material_id');
                             return Material::whereIn('id',$access_material_id)->pluck('name','id');
-
+                        }
                     })
                     ->reactive(),
                 Select::make('lesson_id')->required()
@@ -63,7 +65,7 @@ class VideoResource extends Resource
                 //     ->relationship('lesson','name'),
                 FileUpload::make('video')//->required()
                     ->disk('public')->directory('Video')
-                    ->maxSize(102400) // مثلاً 100MB
+                    ->maxSize(102400) //  100MB
                     // ->acceptedFileTypes(['video/mp4', 'video/avi', 'video/mov'])
                     // ->moveFiles()
                     // ->uploadingMessage('Uploading attachment...'),
@@ -75,7 +77,7 @@ class VideoResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
@@ -96,12 +98,12 @@ class VideoResource extends Resource
                         {
                             $user= auth()->user();
                             $roleNames = $user->getRoleNames();
-                            $access_material_id =$user->materials()->pluck('material_id');
 
                             if ($roleNames->contains('admin'))
                                 return lesson::pluck('name', 'id');
                             else
                             {
+                                $access_material_id =$user->materials()->pluck('material_id');
                                 $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('name','id');
                                 return $lessons;
                             }
@@ -122,7 +124,7 @@ class VideoResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            InquiriesRelationManager::class,
         ];
     }
 
@@ -140,11 +142,11 @@ class VideoResource extends Resource
         $query = parent::getEloquentQuery();
         $user = auth()->user();
         $roleNames = $user->getRoleNames();
-        $access_material_id =$user->materials()->pluck('material_id');
 
         if($roleNames->contains('admin'))
             return $query;
 
+        $access_material_id =$user->materials()->pluck('material_id');
         $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('id');
         return $query->whereIn('lesson_id',$lessons);
     }

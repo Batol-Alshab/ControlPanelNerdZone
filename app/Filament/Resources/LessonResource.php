@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
 use App\Models\Lesson;
 use App\Models\Section;
@@ -10,6 +11,7 @@ use App\Models\Material;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -48,12 +50,14 @@ class LessonResource extends Resource
                         {
                             $user= auth()->user();
                             $roleNames = $user->getRoleNames();
-                            $access_material_id =$user->materials()->pluck('material_id');
 
                              if ($roleNames->contains('admin'))
                                 return Material::pluck('name', 'id');
                             else
+                            {
+                                $access_material_id =$user->materials()->pluck('material_id');
                                 return Material::whereIn('id',$access_material_id)->pluck('name','id');
+                            }
                         }
                     )
                     ->preload()
@@ -67,7 +71,7 @@ class LessonResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
@@ -84,12 +88,14 @@ class LessonResource extends Resource
                         {
                             $user= auth()->user();
                             $roleNames = $user->getRoleNames();
-                            $access_material_id =$user->materials()->pluck('material_id');
 
                             if ($roleNames->contains('admin'))
                                 return Material::pluck('name', 'id');
                             else
+                            {
+                                $access_material_id =$user->materials()->pluck('material_id');
                                 return Material::whereIn('id',$access_material_id)->pluck('name','id');
+                            }
                         }
                     ),
             ])
@@ -127,11 +133,10 @@ class LessonResource extends Resource
         $query= parent::getEloquentQuery();
         $user = auth()->user();
         $roleNames = $user->getRoleNames();
-        $access_material_id =$user->materials()->pluck('material_id');
-
         if ($roleNames->contains('admin'))
             return $query;
 
+        $access_material_id =$user->materials()->pluck('material_id');
         return $query->whereIn('material_id',$access_material_id);
     }
 }

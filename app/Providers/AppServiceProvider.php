@@ -29,8 +29,21 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
+    // public function boot(): void
+    // {
+    //     //
+    // }
     public function boot(): void
     {
-        //
+        config()->set('app.url', 'http://' . request()->server('HTTP_HOST'));
+
+        // تكوين نظام الملفات
+        config()->set('filesystems.disks.public', [
+            'driver' => 'local',
+            'root' => storage_path('app/public'),
+            'url' => '/storage',
+            'visibility' => 'public',
+            'throw' => false,
+        ]);
     }
 }

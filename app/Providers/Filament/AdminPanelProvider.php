@@ -29,9 +29,9 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => '#BA68C8',
-                'success' => '#BA68C8',
-                'gray' => '#c785d2',
+                'primary' => '#2ccfa0',// '#BA68C8',
+                'success' => '#69c6df',// '#BA68C8',
+                'gray' => '#1b7d61',// '#c785d2',
             ])
             ->favicon(asset('images/NZLogo.svg'))
             ->brandLogo(asset('images/NZLogo.svg'))

@@ -31,6 +31,9 @@ class StudentPanelProvider extends PanelProvider
                 'success' => '#BA68C8',
                 'gray' => '#c785d2',
             ])
+            ->favicon(asset('images/NZLogo.svg'))
+            ->brandLogo(asset('images/NZLogo.svg'))
+            ->brandLogoHeight('4rem')
             ->discoverResources(in: app_path('Filament/Student/Resources'), for: 'App\\Filament\\Student\\Resources')
             ->discoverPages(in: app_path('Filament/Student/Pages'), for: 'App\\Filament\\Student\\Pages')
             ->pages([

@@ -77,18 +77,7 @@ class UserResource extends Resource
                                     CheckboxList::make('materials')
                                         ->relationship('materials','name')
                                         ->options(fn(callable $get) => Material::where('section_id',$get('section_id'))->pluck('name','id'))
-                                        // ->disableOptionWhen(function ($value,  $record)
-                                        // {
-                                        //     if($record)
-                                        //     {
-                                        //         $accessMaterial = UserMaterial::whereNot('user_id',$record->id)->pluck('material_id')->toArray();
-                                        //     }
-                                        //     else
-                                        //         $accessMaterial = UserMaterial::pluck('material_id')->toArray();
-                                        //     return in_array($value, $accessMaterial);
-                                        // })
-                                        // // ->disabled()
-                                        ->columns(2)
+                                        ->columns(3)
                                         ->disabled(fn (callable $get) => !$get('section_id'))
                                         ->reactive(),
                                     ])
@@ -106,29 +95,23 @@ class UserResource extends Resource
 
             ->columns([
                 TextColumn::make('id')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('section.name')
+                    ->sortable(),
+                TextColumn::make('materials.name'),
                 TextColumn::make('email')
                     ->toggleable(),
                 TextColumn::make('city')
                     ->sortable(),
                 TextColumn::make('sex')
                         ->label('Gender')
+                        ->toggleable(isToggledHiddenByDefault: true)
                         ->getStateUsing(fn($record) => $record->sex == 0 ?  'Male': 'Female'),
-                TextColumn::make('section.name')
-                    ->sortable(),
-                TextColumn::make('roles.name'),
-                TextColumn::make('materials.name'),
-                    // ->badge()
-                    // ->color(function ($state) {
-                    //     return match($state){
-                    //         'admin' => 'danger',
-                    //         'teacher' => 'warning',
-                    //         'student' =>'success',
-                    //     };
-                    // }),
+
+
 
             ])
             ->filters([

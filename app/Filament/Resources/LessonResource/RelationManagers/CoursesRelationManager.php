@@ -17,7 +17,7 @@ class CoursesRelationManager extends RelationManager
 {
     protected static string $relationship = 'courses';
     protected static ?string $icon = 'heroicon-o-book-open';
-
+    protected static ?string $title = 'Training';
 
     public function form(Form $form): Form
     {
