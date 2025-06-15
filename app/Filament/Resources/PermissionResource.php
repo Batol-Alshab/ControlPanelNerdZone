@@ -24,7 +24,8 @@ class PermissionResource extends Resource
     // Permission Policy
     public static function canViewAny(): bool
     {
-        return auth()->user()?->hasRole('admin');
+        // return auth()->user()?->hasRole('admin');
+        return false;
     }
 
     public static function canEdit($record): bool

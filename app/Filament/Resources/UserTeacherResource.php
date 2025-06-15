@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
+use App\Models\Section;
 use App\Models\Material;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -13,7 +14,6 @@ use Filament\Resources\Resource;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Split;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
@@ -28,10 +28,25 @@ use App\Filament\Resources\UserTeacherResource\RelationManagers;
 class UserTeacherResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $navigationGroup = 'User';
-    protected static ?string $label = 'Teacher';
-
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
+
+
+    public static function getNavigationGroup(): ?string
+    {
+        return  __('messages.User.navigation');
+    }
+    public static function getNavigationLabel(): string
+    {
+        return __('messages.teacher.navigation');
+    }
+    public static function getLabel(): ?string
+    {
+        return __('messages.teacher.singular');
+    }
+    public static function getPluralLabel(): ?string
+    {
+        return __('messages.teacher.plural');
+    }
 
     public static function form(Form $form): Form
     {
@@ -40,23 +55,35 @@ class UserTeacherResource extends Resource
             Tabs::make('Tabs')
                 ->tabs([
                     Tab::make('info')
+                        ->label(__('messages.info'))
                         ->schema([
-                            TextInput::make('name')->required(),
-                            TextInput::make('email')->required()->email()->unique(ignoreRecord: true),
-                            TextInput::make('password')->required()->password()->visibleOn('create'),
-                            TextInput::make('city')->required(),
-                            Select::make('sex')->required()
-                                ->label('Gender')
+                            TextInput::make('name')
+                                ->label(__('messages.name'))
+                                ->required(),
+                            TextInput::make('email')
+                                ->label(__('messages.email'))
+                                ->required()->email()->unique(ignoreRecord: true),
+                            TextInput::make('password')
+                                ->label(__('messages.password'))
+                                ->required()->password()->visibleOn('create'),
+                            TextInput::make('city')
+                                ->label(__('messages.city'))
+                                ->required(),
+                            Select::make('sex')
+                                ->label(__('messages.sex'))
+                                ->required()
                                 ->options([
-                                    0 => 'Male',
-                                    1 => 'Female',
+                                    0 => __('messages.male') ,
+                                    1 => __('messages.female'),
                                 ]),
                             ])->columns(2),
                     Tab::make('Role')
-
+                        ->label(__('messages.access'))
                         ->schema([
 
-                            Select::make('roles')->required()
+                            Select::make('roles')
+                                ->label(__('messages.roles'))
+                                ->required()
                                 ->relationship('roles' , 'name')
                                 ->options([
                                     '2' => 'Teacher'
@@ -66,9 +93,11 @@ class UserTeacherResource extends Resource
                                 ->dehydrated(true),
 
                             Fieldset::make('Access')
+                                    ->label(__('messages.access'))
                                 ->schema([
                                     CheckboxList::make('materials')
-                                        ->label('scientific')
+                                        ->label(Section::find(1)->pluck('name')->first())
+                                        // ->label('scientific')
                                         ->relationship('materials','name')
                                         ->options(fn() => Material::where('section_id',1)->pluck('name','id'))
                                         ->disableOptionWhen(function ($value,  $record)
@@ -92,7 +121,7 @@ class UserTeacherResource extends Resource
                                         ->columns(2),
 
                                     CheckboxList::make('materials')
-                                        ->label('literary')
+                                        ->label(Section::find(2)->pluck('name')->first())
                                         ->relationship('materials','name')
                                         ->options(fn() => Material::where('section_id',2)->pluck('name','id'))
                                         ->disableOptionWhen(function ($value,  $record)
@@ -130,25 +159,33 @@ class UserTeacherResource extends Resource
 
             ->columns([
                 TextColumn::make('id')
+                    ->label(__('messages.id'))
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
+                    ->label(__('messages.name'))
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('materials.name')->sortable(),
+                TextColumn::make('materials.name')
+                    ->label(__('messages.material.label'))
+                    ->sortable(),
                 TextColumn::make('email')
+                    ->label(__('messages.email'))
                     ->toggleable(),
                 TextColumn::make('city')
+                    ->label(__('messages.city'))
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 TextColumn::make('sex')
+                    ->label(__('messages.sex'))
                         ->toggleable(isToggledHiddenByDefault: true)
                         ->label('Gender')
-                        ->getStateUsing(fn($record) => $record->sex == 0 ?  'Male': 'Female'),
+                            ->label(__('messages.name'))
+                        ->getStateUsing(fn($record) => $record->sex == 0 ? __('messages.male') : __('messages.female'),),
 
             ])
             ->filters([
                 SelectFilter::make('Material')
-                    // ->label('Material')
+                    ->label(__('messages.material.label'))
                     ->relationship('materials','name'),
             ])
             ->actions([

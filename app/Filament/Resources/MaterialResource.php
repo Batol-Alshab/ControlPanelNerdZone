@@ -26,23 +26,42 @@ use App\Filament\Resources\MaterialResource\RelationManagers\LessonsRelationMana
 class MaterialResource extends Resource
 {
     protected static ?string $model = Material::class;
-    protected static ?string $navigationGroup = 'Materials';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 2;
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('messages.material.navigation');
+    }
+    public static function getNavigationLabel(): string
+    {
+        return __('messages.material.navigation');
+    }
+    public static function getLabel(): ?string
+    {
+        return __('messages.material.singular');
+    }
+    public static function getPluralLabel(): ?string
+    {
+        return __('messages.material.plural');
+    }
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')->required()
-                    // ->rules('max:25'),
+                TextInput::make('name')
+                    ->label(__('messages.name'))
+                    ->required()
                     ->maxValue(25),
-                Select::make('section_id')->required()
-                    ->label('section')
+                Select::make('section_id')
+                    ->label(__('messages.section.label'))
+                    ->required()
                     ->relationship('section','name'),
-                FileUpload::make('image')->nullable()
+                FileUpload::make('image')
+                    ->label(__('messages.image'))
+                    ->nullable()
                     ->image()
                     ->maxSize(1024)
                     ->disk('public')->directory('Material'),
@@ -54,18 +73,21 @@ class MaterialResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
+                    ->label(__('messages.id'))
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
+                    ->label(__('messages.name'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('section.name')
-                    ->label('section')
+                    ->label(__('messages.section.label'))
                     ->sortable(),
                 ImageColumn::make('image')
+                    ->label(__('messages.image'))
             ])
             ->filters([
                 SelectFilter::make('section_id')
-                    ->label('Section')
+                    ->label(__('messages.section.label'))
                     ->relationship('section','name')
 
             ])
@@ -103,7 +125,7 @@ class MaterialResource extends Resource
 
         if ($roleNames->contains('admin'))
             return $query;
-        
+
         $access_material_id =$user->materials()->pluck('material_id');
         return $query->whereIn('id', $access_material_id);
     }

@@ -22,15 +22,30 @@ class RoleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-finger-print';
 
+
+    public static function getNavigationLabel(): string
+    {
+        return __('messages.roles navigation');
+    }
+    public static function getLabel(): ?string
+    {
+        return __('messages.role_');
+    }
+    public static function getPluralLabel(): ?string
+    {
+        return __('messages.roles navigation');
+    }
+
     // Role Policy
     public static function canViewAny(): bool
     {
         return auth()->user()?->hasRole('admin');
     }
-    
+
     public static function canEdit($record): bool
     {
-        return auth()->user()?->hasRole('admin');
+        // return auth()->user()?->hasRole('admin');
+        return false;
     }
 
     public static function canDelete($record): bool
@@ -42,7 +57,8 @@ class RoleResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name'),
+                TextInput::make('name')
+                    ->label(__('messages.name')),
                 // TextInput::make('guard_name'),
             ]);
     }
@@ -51,7 +67,8 @@ class RoleResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
+                TextColumn::make('name')
+                    ->label(__('messages.name')),
             ])
             ->filters([
                 //

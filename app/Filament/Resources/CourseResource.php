@@ -24,10 +24,29 @@ use App\Filament\Resources\CourseResource\RelationManagers\InquiriesRelationMana
 class CourseResource extends Resource
 {
     protected static ?string $model = Course::class;
-    protected static ?string $navigationGroup = 'Lessons';
-    protected static ?string $navigationParentItem = 'Lessons';
-    protected static ?string $label = 'Training';
-     protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 6;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return  __('messages.lesson.navigation');
+    }
+    public static function getNavigationParentItem(): ?string
+    {
+        return  __('messages.lesson.navigation');
+    }
+    public static function getNavigationLabel(): string
+    {
+        return __('messages.training.navigation');
+    }
+    public static function getLabel(): ?string
+    {
+        return __('messages.training.singular');
+    }
+    public static function getPluralLabel(): ?string
+    {
+        return __('messages.training.plural');
+    }
+
 
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -36,8 +55,12 @@ class CourseResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                Select::make('material')->required()
+                TextInput::make('name')
+                    ->label(__('messages.name'))
+                    ->required(),
+                Select::make('material')
+                    ->label(__('messages.material.label'))
+                    ->required()
                     ->options(function()
                     {
                         $user = auth()->user();
@@ -53,14 +76,17 @@ class CourseResource extends Resource
 
                     })
                     ->reactive(),
-                Select::make('lesson_id')->required()
-                    ->label('Lesson')
+                Select::make('lesson_id')
+                    ->label(__('messages.lesson.label'))
+                    ->required()
                     ->relationship('lesson','name', fn ($query,callable $get)=>
                         $query->where('material_id',$get('material')))
                         ->preload()
                         ->reactive()
                         ->disabled(fn (callable $get) => !$get('material')),
-                FileUpload::make('file')->required()
+                FileUpload::make('file')
+                    ->label(__('messages.file'))
+                    ->required()
                     ->disk('public')->directory('SummeryFile')
                     ->maxSize(102400) // مثلاً 100MB
                     ->acceptedFileTypes(['application/pdf']),
@@ -72,20 +98,24 @@ class CourseResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
+                    ->label(__('messages.id'))
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
+                    ->label(__('messages.name'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('lesson.name')
+                    ->label(__('messages.lesson.label'))
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label(__('messages.created_at'))
                     ->date('Y M d')
                     ->sortable()
                     ->toggleable(),
             ])
             ->filters([
                 SelectFilter::make('lesson_id')
-                    ->label('Lesson')
+                    ->label(__('messages.lesson.label'))
                     // ->relationship('lesson','name')
                     ->options(
                         function()

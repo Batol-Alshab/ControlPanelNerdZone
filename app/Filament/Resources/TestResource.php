@@ -29,9 +29,28 @@ use App\Filament\Resources\TestResource\RelationManagers\QuestionsRelationManage
 class TestResource extends Resource
 {
     protected static ?string $model = Test::class;
-    protected static ?string $navigationGroup = 'Lessons';
-    protected static ?string $navigationParentItem = 'Lessons';
-     protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 5;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return  __('messages.lesson.navigation');
+    }
+    public static function getNavigationParentItem(): ?string
+    {
+        return  __('messages.lesson.navigation');
+    }
+    public static function getNavigationLabel(): string
+    {
+        return __('messages.test.navigation');
+    }
+    public static function getLabel(): ?string
+    {
+        return __('messages.test.singular');
+    }
+    public static function getPluralLabel(): ?string
+    {
+        return __('messages.test.plural');
+    }
 
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -40,8 +59,12 @@ class TestResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                Select::make('material')->required()
+                TextInput::make('name')
+                    ->label(__('messages.name'))
+                    ->required(),
+                Select::make('material')
+                    ->label(__('messages.material.label'))
+                    ->required()
                     ->options(function()
                     {
                         $user = auth()->user();
@@ -58,16 +81,19 @@ class TestResource extends Resource
                     })
                     ->reactive(),
 
-                Select::make('lesson_id')->required()
-                    ->label('Lesson')
+                Select::make('lesson_id')
+                    ->label(__('messages.lesson.label'))
+                    ->required()
                     ->relationship('lesson','name',fn ($query, callable $get)=>
                         $query->where('material_id',$get('material')))
                     ->preload()
                     ->reactive()
                     ->disabled(fn (callable $get) => !$get('material')),
 
-                TextInput::make('numQuestions')->required()
-                    ->placeholder('اختر عدد الأسئلة بين 1 و 50')
+                TextInput::make('numQuestions')
+                    ->label(__('messages.numQuestions'))
+                    ->required()
+                    ->placeholder('[ 1, 2, ....,50 ]')
                     ->numeric()
                     ->minValue(1)
                     ->maxValue(50),
@@ -80,6 +106,8 @@ class TestResource extends Resource
                 //         20=>20
                 //     ]),
                 Toggle::make('is_complete')
+                    ->label(__('messages.is_complete'))
+
                     ->disabled()
                 // TextInput::make('numQuestions')->required()
                 //     ->integer()
@@ -92,26 +120,30 @@ class TestResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
+                    ->label(__('messages.id'))
                     ->toggleable(isToggledHiddenByDefault: true),
                     TextColumn::make('name')
+                        ->label(__('messages.name'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('lesson.name')
-                    ->label('Lesson')
+                    ->label(__('messages.lesson.label'))
                     ->sortable(),
                 TextColumn::make('is_complete')
-                    ->formatStateUsing(fn ($state) => $state ? 'Completed' : 'Not Completed')
+                    ->label(__('messages.status'))
+                    ->formatStateUsing(fn ($state) => $state ? __('messages.is_complete') : __('messages.Not_complete') )
                     ->sortable()
                     ->badge()
                     ->color(fn($state) => $state ? 'success' : 'danger'),
                 TextColumn::make('created_at')
+                    ->label(__('messages.created_at'))
                     ->sortable()
                     ->date('Y M d')
                     ->toggleable(),
             ])
             ->filters([
                 SelectFilter::make('lesson_id')
-                    ->label('Lesson')
+                    ->label(__('messages.lesson.label'))
                     // ->relationship('lesson','name')
                     ->options(
                         function()
@@ -130,7 +162,9 @@ class TestResource extends Resource
 
                         }
                     ),
-                TernaryFilter::make('is_complete'),
+                    ////
+                TernaryFilter::make('is_complete')
+                    ->label(__('messages.is_complete')),
 
             ])
             ->actions([

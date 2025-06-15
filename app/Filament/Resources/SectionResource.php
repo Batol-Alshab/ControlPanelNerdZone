@@ -19,17 +19,33 @@ use App\Filament\Resources\SectionResource\RelationManagers\MaterialsRelationMan
 class SectionResource extends Resource
 {
     protected static ?string $model = Section::class;
-    protected static ?string $navigationGroup = 'Sections';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 1;
 
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    public static function getNavigationGroup(): ?string
+    {
+        return  __('messages.section.navigation');
+    }
+    public static function getNavigationLabel(): string
+    {
+        return __('messages.section.navigation');
+    }
+    public static function getLabel(): ?string
+    {
+        return __('messages.section.singular');
+    }
+    public static function getPluralLabel(): ?string
+    {
+        return __('messages.section.plural');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
+                TextInput::make('name')
+                    ->label(__('messages.name'))
+                    ->required(),
             ]);
     }
 
@@ -38,8 +54,10 @@ class SectionResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
+                    ->label(__('messages.id'))
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('name'),
+                TextColumn::make('name')
+                    ->label(__('messages.name')),
             ])
             ->filters([
                 //

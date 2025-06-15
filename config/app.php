@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'http://localhost:8000'),
 
     /*
     |--------------------------------------------------------------------------
@@ -79,10 +79,11 @@ return [
     */
 
     'locale' =>
-    // 'ar',
-      env('APP_LOCALE', 'en'),
+    'ar',
+    // env('APP_LOCALE', 'ar'),
+    //   env('APP_LOCALE', 'en'),
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+    'fallback_locale' => env('APP_FALLBACK_LOCALE','en'),
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
 
@@ -124,5 +125,13 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'allowed_methods' => ['*'],
+    'allowed_origins' => ['*'],
+    'allowed_origins_patterns' => [],
+    'allowed_headers' => ['*'],
+    'exposed_headers' => [],
+    'max_age' => 0,
+    'supports_credentials' => false,
 
 ];

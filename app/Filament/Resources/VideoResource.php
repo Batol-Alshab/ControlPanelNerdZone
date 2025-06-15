@@ -24,11 +24,30 @@ use App\Filament\Resources\VideoResource\RelationManagers\InquiriesRelationManag
 class VideoResource extends Resource
 {
     protected static ?string $model = Video::class;
-    protected static ?string $navigationGroup = 'Lessons';
-    protected static ?string $navigationParentItem = 'Lessons';
+    // protected static ?string $navigationGroup = 'Lessons';
+    // protected static ?string $navigationParentItem = 'Lessons';
     protected static ?int $navigationSort = 3;
 
-
+    public static function getNavigationGroup(): ?string
+    {
+        return  __('messages.lesson.navigation');
+    }
+    public static function getNavigationParentItem(): ?string
+    {
+        return  __('messages.lesson.navigation');
+    }
+    public static function getNavigationLabel(): string
+    {
+        return __('messages.video.navigation');
+    }
+    public static function getLabel(): ?string
+    {
+        return __('messages.video.singular');
+    }
+    public static function getPluralLabel(): ?string
+    {
+        return __('messages.video.plural');
+    }
 
     protected static ?string $navigationIcon = 'heroicon-o-video-camera';
 
@@ -36,8 +55,12 @@ class VideoResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                Select::make('material')->required()
+                TextInput::make('name')
+                    ->label(__('messages.name'))
+                    ->required(),
+                Select::make('material')
+                    ->label(__('messages.material.label'))
+                    ->required()
                     ->options(function()
                     {
                         $user = auth()->user();
@@ -52,8 +75,9 @@ class VideoResource extends Resource
                         }
                     })
                     ->reactive(),
-                Select::make('lesson_id')->required()
-                    ->label('Lesson')
+                Select::make('lesson_id')
+                    ->label(__('messages.lesson.label'))
+                    ->required()
                     ->relationship('lesson','name',fn ($query, callable $get)=>
                         $query->where('material_id',$get('material')))
                     ->preload()
@@ -63,7 +87,9 @@ class VideoResource extends Resource
                 // Select::make('lesson_id')->required()
                 //     ->label('Lesson')
                 //     ->relationship('lesson','name'),
-                FileUpload::make('video')//->required()
+                FileUpload::make('video')
+                    ->label(__('messages.video_file'))
+                    ->required()
                     ->disk('public')->directory('Video')
                     ->maxSize(102400) //  100MB
                     // ->acceptedFileTypes(['video/mp4', 'video/avi', 'video/mov'])
@@ -77,21 +103,24 @@ class VideoResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
+                    ->label(__('messages.id'))
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
+                    ->label(__('messages.name'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('lesson.name')
-                    ->label('Lesson')
+                    ->label(__('messages.lesson.label'))
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label(__('messages.created_at'))
                     ->sortable()
                     ->date('Y M d')
                     ->toggleable(),
             ])
             ->filters([
                 SelectFilter::make('lesson_id')
-                    ->label('lesson')
+                    ->label(__('messages.lesson.label'))
                     // ->relationship('lesson','name')
                     ->options(
                         function()

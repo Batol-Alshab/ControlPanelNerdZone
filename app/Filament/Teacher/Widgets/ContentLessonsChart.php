@@ -17,17 +17,21 @@ class ContentLessonsChart extends ChartWidget
 {
     protected static ?int $sort = 2;
     protected int | string | array $columnSpan = 1;
-    protected static ?string $heading = 'Chart Lesson';
+
+    public function getHeading(): string
+    {
+        return __('messages.Chart materials stat');
+    }
 
     protected function getData(): array
     {
-        // return Cache::remember('countTestCourceSummeryVideoForTeacher', now()->addMinutes(60), function () {
+        return Cache::remember('countTestCourceSummeryVideoForTeacher_'.app()->getLocale(), now()->addMinutes(60), function () {
             $user = auth()->user();
             $access_material_id =$user->materials()->pluck('material_id');
             $materials = Material::whereIn('id',$access_material_id)->get();
 
             $datasets = [];
-            $labels = ['Test', 'Course', 'Summery', 'Video'];
+            $labels = [__('messages.Summery.navigation'), __('messages.Video.navigation'), __('messages.Test.navigation'), __('messages.Course.navigation')];
 
             foreach($materials as $material)
             {
@@ -50,7 +54,7 @@ class ContentLessonsChart extends ChartWidget
                 'datasets' => $datasets,
                 'labels' => $labels,
             ];
-        // });
+        });
 }
 
 

@@ -11,14 +11,17 @@ use Illuminate\Support\Facades\Cache;
 
 class LessonContent extends ChartWidget
 {
-    protected static ?string $heading = 'Chart Lesson';
-
     protected static ?int $sort = 4;
     protected int | string | array $columnSpan = 1;
 
+    public function getHeading(): string
+    {
+        return __('messages.Chart Lessons Content');
+    }
+
     protected function getData(): array
     {
-        return Cache::remember('contentLesson',now()->addMinute(60), function(){
+        return Cache::remember('contentLesson_'.app()->getLocale() ,now()->addMinute(60), function(){
             $t= Test::count();
             $c= Course::count();
             $s= Summery::count();
@@ -34,7 +37,7 @@ class LessonContent extends ChartWidget
                         'borderColor' => '#e1bee7',
                     ],
                 ],
-                'labels' => [ 'Summery', 'Video', 'Test', 'Course'],
+                'labels' => [ __('messages.Summery.navigation'), __('messages.Video.navigation'), __('messages.Test.navigation'), __('messages.Course.navigation')],
             ];
 
         });

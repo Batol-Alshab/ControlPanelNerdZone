@@ -21,12 +21,12 @@ class StudentStatsOverviewMaterial extends BaseWidget
             foreach($materials as $material)
                 {
                     $imageUrl = url($material->image);
-                    $htmlImage = "<img src='{$imageUrl}' alt='{$material->name}' style='width:40px; height:auto; margin-right:8px;' />";
+                    // $htmlImage = "<img src='{$imageUrl}' alt='{$material->name}' style='width:40px; height:auto; margin-right:8px;' />";
                     $stats[] = stat::make('',$material->name)
                     ->icon($material->image)
                     // ->url(LessonResource::getUrl())
                     ->color('success')
-                    ->description($htmlImage)
+                    // ->description($htmlImage)
                 ;
                 }
 

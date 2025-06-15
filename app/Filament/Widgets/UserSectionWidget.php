@@ -10,14 +10,19 @@ use Illuminate\Support\Facades\Cache;
 
 class UserSectionWidget extends ChartWidget
 {
-    protected static ?string $heading = 'Chart User Section';
     protected static ?int $sort = 3;
     protected int | string | array $columnSpan = 1;
+
+    public function getHeading(): string
+    {
+        return __('messages.Chart User Section');
+    }
+
 
 
     protected function getData(): array
     {
-        return Cache::remember('userSection', now()->addMinutes(60), function () {
+        return Cache::remember('userSection_'.app()->getLocale(), now()->addMinutes(60), function () {
             $user = User::all();
             $sections = Section::all();
             foreach($sections as $section)

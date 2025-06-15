@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('status')->default('No Answer');
             $table->morphs('inquiryable');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -26,6 +27,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inquiries');
+        Schema::table('inquiries', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 };

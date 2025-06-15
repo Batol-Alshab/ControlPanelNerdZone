@@ -12,12 +12,17 @@ use Illuminate\Support\Facades\Cache;
 
 class CountOfStudentsAccessMaterials extends ChartWidget
 {
-    protected static ?string $heading = 'Numer Of Students That Access Materials';
     protected int | string | array $columnSpan = 2;
     protected static ?int $sort = 2;
+
+    public function getHeading(): string
+    {
+        return __('messages.Numer Of Students That Access Materials');
+    }
+
     protected function getData(): array
     {
-        // return Cache::remember('CountOfStudentsAccessMaterials', now()->addMinute(60), function () {
+        return Cache::remember('CountOfStudentsAccessMaterials_'.app()->getLocale(), now()->addMinute(60), function () {
             $sections = Section::get();
             $color = ['#BA68C8', '#973da7', '#d4a0dc'];
             $backgroundColor=[];
@@ -47,7 +52,7 @@ class CountOfStudentsAccessMaterials extends ChartWidget
             return [
                 'datasets'=>[
                             [
-                                'label' =>'Student',//array_keys($data['scientific']), //'scientific',
+                                'label' =>__('messages.student.navigation'),//array_keys($data['scientific']), //'scientific',
                                 'data' =>$data,// array_values($data['scientific']),
                                 'backgroundColor' => $backgroundColor,
                                 'borderColor' => '#e1bee7',
@@ -55,7 +60,7 @@ class CountOfStudentsAccessMaterials extends ChartWidget
                         ],
                 'labels' =>  $labels ,
             ];
-        // });
+        });
     }
 
     protected function getType(): string

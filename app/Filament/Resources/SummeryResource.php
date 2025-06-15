@@ -26,19 +26,41 @@ use App\Filament\Resources\SummeryResource\RelationManagers\InquiriesRelationMan
 class SummeryResource extends Resource
 {
     protected static ?string $model = Summery::class;
-    protected static ?string $navigationGroup = 'Lessons';
-    protected static ?string $navigationParentItem = 'Lessons';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
     protected static ?int $navigationSort = 4;
 
+    public static function getNavigationGroup(): ?string
+    {
+        return  __('messages.lesson.navigation');
+    }
+    public static function getNavigationParentItem(): ?string
+    {
+        return  __('messages.lesson.navigation');
+    }
+    public static function getNavigationLabel(): string
+    {
+        return __('messages.summery.navigation');
+    }
+    public static function getLabel(): ?string
+    {
+        return __('messages.summery.singular');
+    }
+    public static function getPluralLabel(): ?string
+    {
+        return __('messages.summery.plural');
+    }
 
-    protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
     public static function form(Form $form): Form
     {
          return $form
             ->schema([
-                TextInput::make('name')->required(),
-                Select::make('material')->required()
+                TextInput::make('name')
+                    ->label(__('messages.name'))
+                    ->required(),
+                Select::make('material')
+                    ->label(__('messages.material.label'))
+                    ->required()
                     ->options(function()
                     {
                         $user = auth()->user();
@@ -54,15 +76,18 @@ class SummeryResource extends Resource
                     })
                     ->reactive(),
 
-                Select::make('lesson_id')->required()
-                    ->label('Lesson')
+                Select::make('lesson_id')
+                    ->label(__('messages.lesson.label'))
+                    ->required()
                     ->relationship('lesson','name',fn ($query, callable $get)=>
                         $query->where('material_id',$get('material')))
                     ->preload()
                     ->reactive()
                     ->disabled(fn (callable $get) => !$get('material')),
 
-                FileUpload::make('file')->required()
+                FileUpload::make('file')
+                    ->label(__('messages.file'))
+                    ->required()
                     ->disk('public')->directory('SummeryFile')
                     ->maxSize(102400) // مثلاً 100MB
                     ->acceptedFileTypes(['application/pdf']),
@@ -74,21 +99,24 @@ class SummeryResource extends Resource
         return $table
                 ->columns([
                 TextColumn::make('id')
+                    ->label(__('messages.id'))
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
+                    ->label(__('messages.name'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('lesson.name')
-                    ->label('Lesson')
+                    ->label(__('messages.lesson.label'))
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label(__('messages.created_at'))
                     ->sortable()
                     ->date('Y M d')
                     ->toggleable(),
             ])
             ->filters([
                 SelectFilter::make('lesson_id')
-                    ->label('lesson')
+                    ->label(__('messages.lesson.label'))
                     // ->relationship('lesson','name')
                     ->options(
                         function()

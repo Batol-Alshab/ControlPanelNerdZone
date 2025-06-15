@@ -72,11 +72,25 @@ class User extends Authenticatable implements FilamentUser
 
     protected static function booted()
     {
-        $keys=['userJoin','userRole','userSection','stat',
-            //   'statmaterialForTeacher',
-
+        $baseKeys = [
+            'userJoin',
+            'userRole',
+            'userSection',
+            'stat',
+            // 'statmaterialForTeacher',
         ];
-        foreach ($keys as $key) {
+        $locales = ['en', 'ar']; // أو استخرجها ديناميكياً إذا كنت حافظها في config
+
+        foreach ($baseKeys as $key)
+        {
+            foreach ($locales as $locale)
+            {
+                $keys[] = "{$key}_{$locale}";
+            }
+        }
+
+        foreach ($keys as $key)
+        {
             static::created(fn () => Cache::forget($key));
             static::updated(fn () => Cache::forget($key));
             static::deleted(fn () => Cache::forget($key));

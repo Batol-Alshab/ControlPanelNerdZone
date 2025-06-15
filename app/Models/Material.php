@@ -39,8 +39,18 @@ class Material extends Model
 
     protected static function booted()
     {
-        $keys=['materialSection','stat','CountOfStudentsAccessMaterials'];
-        foreach ($keys as $key) {
+        $basekeys=['materialSection','stat','CountOfStudentsAccessMaterials',];
+        $locales = ['en', 'ar'];
+
+        foreach ($basekeys as $key)
+        {
+            foreach ($locales as $locale)
+            {
+                $keys[] = "{$key}_{$locale}";
+            }
+        }
+        foreach ($keys as $key)
+        {
             static::created(fn () => Cache::forget($key));
             static::updated(fn () => Cache::forget($key));
             static::deleted(fn () => Cache::forget($key));

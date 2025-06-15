@@ -44,8 +44,18 @@ class Lesson extends Model
     }
     protected static function booted()
     {
-        $keys = ['contentLesson','stat'];
-        foreach ($keys as $key) {
+        $basekeys = ['contentLesson','stat'];
+        $locales = ['en', 'ar'];
+
+        foreach ($basekeys as $key)
+        {
+            foreach ($locales as $locale)
+            {
+                $keys[] = "{$key}_{$locale}";
+            }
+        }
+        foreach ($keys as $key)
+        {
             static::created(fn () => Cache::forget($key));
             static::updated(fn () => Cache::forget($key));
             static::deleted(fn () => Cache::forget($key));

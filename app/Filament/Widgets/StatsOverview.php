@@ -29,7 +29,7 @@ class StatsOverview extends BaseWidget
 
     protected function getStats(): array
     {
-        return Cache::remember('stat', now()->addMinutes(60), function () {
+        return Cache::remember('stat_'.app()->getLocale(), now()->addMinutes(60), function () {
             $data = Trend::model(User::class)
                     ->between(
                         start: Carbon::now()->subDays(14),
@@ -57,7 +57,7 @@ class StatsOverview extends BaseWidget
                 ->perMonth()
                 ->count()
                 ->map(fn($value) => $value->aggregate);
-            $description = $joinUser24[0]? 'increase' : '';
+            $description = $joinUser24[0]? __('messages.increase') : '';
             $descriptionIcon = $joinUser24[0]? 'heroicon-m-arrow-trending-up' : '';
 
             $addInquiry24  = Trend::model(Inquiry::class)
@@ -79,24 +79,24 @@ class StatsOverview extends BaseWidget
             $numMaxMaxMaterilaAccess =max($materilaAccess);
             $nameMaxMaterilaAccess = array_search($numMaxMaxMaterilaAccess, $materilaAccess);
             return [
-                Stat::make('All User',$allUser)
-                    ->description("Student: {$student},  Teacher: {$teacher}")
+                Stat::make(__('messages.All User'),$allUser)
+                    ->description(__('messages.student.navigation').' :'. $student.', '. __('messages.teacher.navigation').' :'.$teacher)
                     ->chart($data)
                     ->icon('heroicon-o-users')
                     ->url(UserResource::getUrl()),
 
-                stat::make('Join Users Last 24H ',$joinUser24[0])
+                stat::make(__('messages.Join Users Last 24H'),$joinUser24[0])
                     ->icon('heroicon-o-user-plus')
                     ->description($description )
                     ->descriptionIcon($descriptionIcon)
                     ->url(UserResource::getUrl()),
 
-                stat::make('Max Material Access',$nameMaxMaterilaAccess)
+                stat::make(__('messages.Max Material Access'),$nameMaxMaterilaAccess)
                     ->description($numMaxMaxMaterilaAccess)
-                    ->icon('heroicon-o-question-mark-circle')
+                    ->icon('heroicon-o-arrow-trending-up')
                     ->url(UserResource::getUrl()),
 
-                stat::make('Add inquiry Last 24H ',$addInquiry24[0])
+                stat::make(__('messages.Add inquiry Last 24H'),$addInquiry24[0])
                     ->icon('heroicon-o-question-mark-circle')
                     ->url(InquiryResource::getUrl()),
 

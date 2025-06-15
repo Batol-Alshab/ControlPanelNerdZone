@@ -12,13 +12,17 @@ use Illuminate\Support\Facades\Cache;
 
 class UserJoinWidget extends ChartWidget
 {
-    protected static ?string $heading = 'Chart Join User';
     protected static ?int $sort = 5;
     protected int | string | array $columnSpan = 2;
 
+    public function getHeading(): string 
+    {
+        return __('messages.Chart Join User');
+    }
+
     protected function getData(): array
     {
-        // return Cache::remember('userJoin',  now()->addMinutes(60), function () {
+        return Cache::remember('userJoin_'.app()->getLocale(),  now()->addMinutes(60), function () {
             $data6Month = Trend::model(User::class)
                 ->between(
                     start: Carbon::now()->subMonths(6), // آخر 6 أشهر
@@ -43,7 +47,7 @@ class UserJoinWidget extends ChartWidget
             return [
                 'datasets' => [
                     [
-                        'label' => 'Last 6 Months',
+                        'label' => __('messages.Last 6 Months'),
                         'data' => $labels->map(function($value) use($data6Month)
                         {
                             $founddate = $data6Month->firstWhere('date',$value);
@@ -52,7 +56,7 @@ class UserJoinWidget extends ChartWidget
                         'borderColor' => '#BA68C8',
                     ],
                     [
-                        'label' => 'User Joined befor Six months ago',
+                        'label' => __('messages.User Joined befor Six months ago'),
                         'data' => $labels->map(function($value) use ($data_last6Month)
                         {
                             $founddate = $data_last6Month->firstWhere('date',$value);
@@ -64,7 +68,7 @@ class UserJoinWidget extends ChartWidget
                 'labels' => $labels,
 
             ];
-        // });
+        });
     }
 
     protected function getType(): string

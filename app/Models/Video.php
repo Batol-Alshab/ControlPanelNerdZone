@@ -26,10 +26,20 @@ class Video extends Model
     }
     protected static function booted()
     {
-        $keys = ['contentLesson','statLesson',
+        $basekeys = ['contentLesson','statLesson',
                 'countTestCourceSummeryVideoForTeacher'
             ];
-        foreach ($keys as $key) {
+        $locales = ['en', 'ar'];
+
+        foreach ($basekeys as $key)
+        {
+            foreach ($locales as $locale)
+            {
+                $keys[] = "{$key}_{$locale}";
+            }
+        }
+        foreach ($keys as $key)
+        {
             static::created(fn () => Cache::forget($key));
             static::updated(fn () => Cache::forget($key));
             static::deleted(fn () => Cache::forget($key));

@@ -31,10 +31,27 @@ use App\Filament\Resources\UserResource\RelationManagers;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $navigationGroup = 'User';
-    protected static ?string $label = 'student';
+    // protected static ?string $label = 'student';
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return  __('messages.User.navigation');
+    }
+    public static function getNavigationLabel(): string
+    {
+        return __('messages.student.navigation');
+    }
+    public static function getLabel(): ?string
+    {
+        return __('messages.student.singular');
+    }
+    public static function getPluralLabel(): ?string
+    {
+        return __('messages.student.plural');
+    }
+
 
     public static function form(Form $form): Form
     {
@@ -43,38 +60,57 @@ class UserResource extends Resource
             Tabs::make('Tabs')
                 ->tabs([
                     Tab::make('info')
+                        ->label(__('messages.info'))
                         ->schema([
-                            TextInput::make('name')->required(),
-                            TextInput::make('email')->required()->email()->unique(ignoreRecord: true),
-                            TextInput::make('password')->required()->password()->visibleOn('create'),
-                            TextInput::make('city')->required(),
-                            Select::make('sex')->required()
-                                ->label('Gender')
+                            TextInput::make('name')
+                                ->required()
+                                ->label(__('messages.name')),
+                            TextInput::make('email')->required()
+                                ->label(__('messages.email'))
+                                ->email()
+                                ->unique(ignoreRecord: true),
+                            TextInput::make('password')
+                                ->label(__('messages.password'))
+                                ->required()
+                                ->password()
+                                ->visibleOn('create'),
+                            TextInput::make('city')
+                                ->label(__('messages.city'))
+                                ->required(),
+                            Select::make('sex')
+                                ->label(__('messages.sex'))
+                                ->required()
                                 ->options([
-                                    0 => 'Male',
-                                    1 => 'Female',
+                                    0 => __('messages.male') ,
+                                    1 => __('messages.female'),
                                 ]),
                             ])->columns(2),
                     Tab::make('Role')
+                        ->label(__('messages.access'))
                         ->schema([
 
-                            Select::make('roles')->required()
+                            Select::make('roles')
+                                ->label(__('messages.roles'))
+                                ->required()
                                 ->relationship('roles' , 'name')
                                 ->options([
-                                    '3' => 'student'
+                                    '3' => Role::where('id',3)->pluck('name')->first()
                                 ])
                                 ->default(3)
                                 ->selectablePlaceholder(false)
                                 ->dehydrated(true),
 
-                            Select::make('section_id')->required()
-                                ->label('Section')
+                            Select::make('section_id')
+                                ->required()
+                                ->label(__('messages.section.label'))
                                 ->relationship('section','name')
                                 ->disabledOn('edit')
                                 ->reactive(),
                             Fieldset::make('Access')
+                                ->label(__('messages.access'))
                                 ->schema([
                                     CheckboxList::make('materials')
+                                        ->label(__('messages.material.label'))
                                         ->relationship('materials','name')
                                         ->options(fn(callable $get) => Material::where('section_id',$get('section_id'))->pluck('name','id'))
                                         ->columns(3)
@@ -95,30 +131,37 @@ class UserResource extends Resource
 
             ->columns([
                 TextColumn::make('id')
+                    ->label(__('messages.id'))
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
+                    ->label(__('messages.name'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('section.name')
+                    ->label(__('messages.section.label'))
                     ->sortable(),
-                TextColumn::make('materials.name'),
+                TextColumn::make('materials.name')
+                    ->label(__('messages.material.label')),
                 TextColumn::make('email')
+                    ->label(__('messages.email'))
                     ->toggleable(),
                 TextColumn::make('city')
+                    ->label(__('messages.city'))
                     ->sortable(),
                 TextColumn::make('sex')
-                        ->label('Gender')
+                        ->label(__('messages.sex'))
                         ->toggleable(isToggledHiddenByDefault: true)
-                        ->getStateUsing(fn($record) => $record->sex == 0 ?  'Male': 'Female'),
+                        ->getStateUsing(fn($record) => $record->sex == 0 ?  __('messages.male'): __('messages.female')),
 
 
 
             ])
             ->filters([
                 SelectFilter::make('section.name')
-                    ->label('Section')
+                    ->label(__('messages.section.label'))
                     ->relationship('section','name'),
                 SelectFilter::make('materials')
+                    ->label(__('messages.material.label'))
                     ->relationship('materials', 'name')//,fn ($query) => $query->where('name','!=','admin'))
 
             ])

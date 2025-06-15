@@ -20,9 +20,10 @@ class ListUsers extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
-    public function getTabs(): array{
+    public function getTabs(): array
+    {
         $sections = Section::all();
-        $tabs['all'] = Tab::make();
+        $tabs[__('messages.all')] = Tab::make();
         foreach($sections as $section)
         {
             $tabs[$section->name] =Tab::make()->modifyQueryUsing(

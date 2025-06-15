@@ -13,6 +13,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Fieldset;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
@@ -23,6 +24,15 @@ use Filament\Resources\RelationManagers\RelationManager;
 class InquiriesRelationManager extends RelationManager
 {
     protected static string $relationship = 'inquiries';
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('messages.inquiry.navigation');
+    }
+    protected static function getRecordLabel(): ?string
+    {
+        return __('messages.inquiry.plural');
+    }
 
     // public function form(Form $form): Form
     // {
@@ -49,14 +59,23 @@ class InquiriesRelationManager extends RelationManager
     //         ]);
     // }
 
-    public function table(Table $table): Table
+   public function table(Table $table): Table
     {
         return $table
             ->recordTitleAttribute('inquiry')
             ->columns([
                 // TextColumn::make('id'),
-                TextColumn::make('inquiry'),
+                TextColumn::make('inquiry')
+                    ->label(__('messages.inquiry.label')),
                 TextColumn::make('status')
+                    ->label(__('messages.status'))
+                    ->formatStateUsing(fn ($state) =>  match($state)
+                    {
+                            'No Answer' => __('messages.No Answer'),
+                            'complete Answer' => __('messages.complete Answer'),
+                            'ignorance' => __('messages.ignorance'),
+
+                    })
                     ->badge()
                     ->color(fn ($state) => match($state)
                     {
@@ -65,16 +84,19 @@ class InquiriesRelationManager extends RelationManager
                         'ignorance' => 'warning'
                     })
                     ->sortable(),
-                TextColumn::make('answer.answer_content'),
+                TextColumn::make('answer.answer_content')
+                    ->label(__('messages.answer.label')),
                 TextColumn::make('user.name')
+                    ->label(__('messages.name_student'))
                     ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('status')
+                    ->label(__('messages.status'))
                     ->options([
-                        'No Answer' => 'No Answer',
-                        'complete Answer' => 'complete Answer',
-                        'ignorance' => 'ignorance'
+                        'No Answer' => __('messages.No Answer'),
+                        'complete Answer' => __('messages.complete Answer'),
+                        'ignorance' => __('messages.ignorance')
                     ]),
             ])
             ->headerActions([
@@ -83,28 +105,32 @@ class InquiriesRelationManager extends RelationManager
             ->actions([
                 // EditAction::make(),
                 Action::make('createInquiryWithAnswer')
-                    ->label('Answer')
+                    ->label(__('messages.add_answer'))
                     ->icon('heroicon-o-plus')
                     ->form([
                         Fieldset::make('Answer')
+                            ->label(__('messages.answer.label'))
                             ->schema([
                                 MarkdownEditor::make('inquiry')
+                                    ->label(__('messages.inquiry.label'))
                                     ->disabled()
                                     ->maxLength(255)
                                     ->default(fn (Inquiry $record) => $record->inquiry?? ''),
                                 MarkdownEditor::make('answer_content')
-                                    ->label('Answer Content')
+                                    ->label(__('messages.answer.label'))
                                     ->maxLength(700)
                                     ->default(fn (Inquiry $record) => $record->answer?->answer_content ?? ''),
                                     ]),
 
                         Fieldset::make('status Answer')
+                                    ->label(__('messages.status'))
                             ->schema([
                                 Select::make('status')->required()
+                                    ->label(__('messages.status'))
                                     ->options([
-                                        'No Answer' => 'No Answer',
-                                        'complete Answer' => 'complete Answer',
-                                        'ignorance' => 'ignorance'
+                                        'No Answer' => __('messages.No Answer'),
+                                        'complete Answer' => __('messages.complete Answer'),
+                                        'ignorance' => __('messages.ignorance')
                                     ])
                                     ->default(fn (Inquiry $record) => $record->status?? ''),
                             ]),
@@ -112,7 +138,7 @@ class InquiriesRelationManager extends RelationManager
                     ->action(fn(array $data, Inquiry $record) => $this->addAnswer($data, $record)),
 
                 Action::make('delete')
-                    ->label('Delete')
+                    ->label(__('messages.deldete_answer'))
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->requiresConfirmation()

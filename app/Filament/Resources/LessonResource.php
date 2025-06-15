@@ -28,22 +28,41 @@ use App\Filament\Resources\LessonResource\RelationManagers\SummeriesRelationMana
 class LessonResource extends Resource
 {
     protected static ?string $model = Lesson::class;
-    protected static ?string $navigationGroup = 'Lessons';
+    protected static ?string $navigationIcon = 'heroicon-o-queue-list';
     protected static ?int $navigationSort = 3;
 
-    protected static ?string $navigationIcon = 'heroicon-o-queue-list';
+    public static function getNavigationGroup(): ?string
+    {
+        return  __('messages.lesson.navigation');
+    }
+    public static function getNavigationLabel(): string
+    {
+        return __('messages.lesson.navigation');
+    }
+    public static function getLabel(): ?string
+    {
+        return __('messages.lesson.singular');
+    }
+    public static function getPluralLabel(): ?string
+    {
+        return __('messages.lesson.plural');
+    }
+
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
+                TextInput::make('name')
+                    ->label(__('messages.name'))
+                    ->required(),
                 // Select::make('section')->required()
                 //     ->options(
                 //         Section::all()->pluck('name','id'))
                 //     ->reactive(),
-                Select::make('material_id')->required()
-                    ->label('Material')
+                Select::make('material_id')
+                    ->label(__('messages.material.label'))
+                    ->required()
                     ->relationship('material', 'name')
                     ->options(
                         function()
@@ -71,17 +90,19 @@ class LessonResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
+                    ->label(__('messages.id'))
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('name')
+                    ->label(__('messages.name'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('material.name')
-                    ->label('material')
+                    ->label(__('messages.material.label'))
                     ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('material_id')
-                    ->label('Material')
+                    ->label(__('messages.material.label'))
                     // ->relationship('material','name')
                     ->options(
                         function()

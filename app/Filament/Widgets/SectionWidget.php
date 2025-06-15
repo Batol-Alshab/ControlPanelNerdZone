@@ -9,20 +9,24 @@ use Illuminate\Support\Facades\Cache;
 
 class SectionWidget extends ChartWidget
 {
-    protected static ?string $heading = 'Chart material Section';
 
     protected static ?int $sort = 6;
     protected int | string | array $columnSpan = 1;
+
+    public function getHeading(): string
+    {
+        return __('messages.Chart material Section');
+    }
+
     protected function getData(): array
     {
-        return Cache::remember('materialSection', now()->addMinutes(60), function () {
+        return Cache::remember('materialSection_'.app()->getLocale(), now()->addMinutes(60), function () {
             $sections_name = Section::pluck('name');
             $materialCountInSections = Section::withCount('materials')->pluck('materials_count');
 
             return [
             'datasets' => [
                     [
-                        'label' =>'Section',
                         'data' => $materialCountInSections,
                         'backgroundColor' => ['#c785d2','#d4a2dd'],
                         'borderColor' => '#e1bee7',

@@ -34,7 +34,7 @@ class ListLessons extends ListRecords
             $materials = Material::whereIn('id', $accessMaterials_id)->get();
         }
 
-        $tabs['all'] = Tab::make();
+        $tabs[__('messages.all')] = Tab::make();
         foreach ($materials as $material)
             {
                 $tabs[$material->name] = Tab::make()

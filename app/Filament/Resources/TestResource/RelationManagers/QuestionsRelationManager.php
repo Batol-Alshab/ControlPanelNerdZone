@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\FileUpload;
@@ -21,6 +22,17 @@ use Filament\Resources\RelationManagers\RelationManager;
 class QuestionsRelationManager extends RelationManager
 {
     protected static string $relationship = 'questions';
+    //اضافة /////////////////////////////
+
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('messages.question.navigation');
+    }
+    protected static function getRecordLabel(): ?string
+    {
+        return __('messages.question.plural');
+    }
 
     public  function canCreate(): bool
     {
@@ -34,7 +46,7 @@ class QuestionsRelationManager extends RelationManager
                 {
                     $this->redirect('edit');
                     Notification::make()
-                    ->body('Test become complete')
+                    ->body(__('messages.Test become complete'))
                     ->send();
                 }
                 $beforRecord = 1;
@@ -62,29 +74,39 @@ class QuestionsRelationManager extends RelationManager
         // $questionCount = Question::where('test_id', $this->id)->count();
         return $form
             ->schema([
-                MarkdownEditor::make('content')->required(),
-                FileUpload::make('image')->nullable()
+                MarkdownEditor::make('content')
+                    ->label(__('messages.question.label'))
+                    ->required(),
+                FileUpload::make('image')
+                    ->label(__('messages.image'))
+                    ->nullable()
                     ->disk('public')->directory('Test-Image'),
 
-                TextInput::make('option_1')->required()
-                    ->label('The first option')
+                TextInput::make('option_1')
+                    ->label(__('messages.The first option'))
+                    ->required()
                     ->maxLength(255),
-                TextInput::make('option_2')->required()
-                    ->label('The second option')
+                TextInput::make('option_2')
+                    ->label(__('messages.The second option'))
+                    ->required()
                     ->maxLength(255),
-                TextInput::make('option_3')->required()
-                    ->label('The third  option')
+                TextInput::make('option_3')
+                    ->label(__('messages.The third option'))
+                    ->required()
                     ->maxLength(255),
-                TextInput::make('option_4')->required()
-                    ->label('The fourth  option')
+                TextInput::make('option_4')
+                    ->label(__('messages.The fourth option'))
+                    ->required()
                     ->maxLength(255),
 
-                Select::make('correct_option')->required()
+                Select::make('correct_option')
+                    ->label(__('messages.correct_option'))
+                    ->required()
                     ->options([
-                        1=>'The first option',
-                        2=>'The second option',
-                        3=>'The third option',
-                        4=>'The fourth option',
+                        1=>__('messages.The first option'),
+                        2=>__('messages.The second option'),
+                        3=>__('messages.The third option'),
+                        4=>__('messages.The fourth option'),
                     ]),
 
             ])
@@ -97,14 +119,21 @@ class QuestionsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('content')
             ->columns([
-                TextColumn::make('content'),
+                TextColumn::make('content')
+                    ->label(__('messages.question.label')),
                 TextColumn::make('image')
-                    ->toggleable(),
-                TextColumn::make('option_1'),
-                TextColumn::make('option_2'),
-                TextColumn::make('option_3'),
-                TextColumn::make('option_4'),
-                TextColumn::make('correct_option'),
+                    ->label(__('messages.image'))
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('option_1')
+                    ->label(__('messages.The first option')),
+                TextColumn::make('option_2')
+                    ->label(__('messages.The second option')),
+                TextColumn::make('option_3')
+                    ->label(__('messages.The third option')),
+                TextColumn::make('option_4')
+                    ->label(__('messages.The fourth option')),
+                TextColumn::make('correct_option')
+                    ->label(__('messages.correct_option')),
                 // TextColumn::make('test.is_complete')
 
             ])
