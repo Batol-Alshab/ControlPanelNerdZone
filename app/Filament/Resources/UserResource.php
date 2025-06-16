@@ -89,16 +89,16 @@ class UserResource extends Resource
                         ->label(__('messages.access'))
                         ->schema([
 
-                            Select::make('roles')
-                                ->label(__('messages.roles'))
-                                ->required()
-                                ->relationship('roles' , 'name')
-                                ->options([
-                                    '3' => Role::where('id',3)->pluck('name')->first()
-                                ])
-                                ->default(3)
-                                ->selectablePlaceholder(false)
-                                ->dehydrated(true),
+                            // Select::make('roles')
+                            //     ->label(__('messages.roles'))
+                            //     ->required()
+                            //     ->relationship('roles' , 'name')
+                            //     ->options([
+                            //         '3' => Role::where('id',3)->pluck('name')->first()
+                            //     ])
+                            //     ->default(3)
+                            //     ->selectablePlaceholder(false)
+                            //     ->dehydrated(true),
 
                             Select::make('section_id')
                                 ->required()

@@ -1,22 +1,17 @@
 <?php
 
-namespace App\Filament\Resources\UserResource\Pages;
+namespace App\Filament\Student\Resources\UserResource\Pages;
 
 use Filament\Actions;
-use App\Filament\Resources\UserResource;
 use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Student\Resources\UserResource;
 
 class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
-
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('index');
-    }
     protected function afterCreate(): void
     {
         $this->record->assignRole('student');
     }
-
 }
+

@@ -81,16 +81,16 @@ class UserTeacherResource extends Resource
                         ->label(__('messages.access'))
                         ->schema([
 
-                            Select::make('roles')
-                                ->label(__('messages.roles'))
-                                ->required()
-                                ->relationship('roles' , 'name')
-                                ->options([
-                                    '2' => 'Teacher'
-                                ])
-                                ->default(2)
-                                ->selectablePlaceholder(false)
-                                ->dehydrated(true),
+                            // Select::make('roles')
+                            //     ->label(__('messages.roles'))
+                            //     ->required()
+                            //     ->relationship('roles' , 'name')
+                            //     ->options([
+                            //         '2' => 'Teacher'
+                            //     ])
+                            //     ->default(2)
+                            //     ->selectablePlaceholder(false)
+                            //     ->dehydrated(true),
 
                             Fieldset::make('Access')
                                     ->label(__('messages.access'))

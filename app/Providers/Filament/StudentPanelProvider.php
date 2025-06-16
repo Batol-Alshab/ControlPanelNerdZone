@@ -7,7 +7,9 @@ use Filament\Panel;
 use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Rupadana\ApiService\ApiServicePlugin;
 use Filament\Http\Middleware\Authenticate;
+use App\Filament\Student\Pages\Auth\Register;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -26,6 +28,7 @@ class StudentPanelProvider extends PanelProvider
             ->id('student')
             ->path('student')
             ->login()
+            ->registration(Register::class)
             ->colors([
                 'primary' => '#BA68C8',
                 'success' => '#BA68C8',
@@ -57,6 +60,9 @@ class StudentPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->plugins([
+                ApiServicePlugin::make()
             ]);
     }
 }

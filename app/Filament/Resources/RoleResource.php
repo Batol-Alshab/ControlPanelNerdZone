@@ -39,7 +39,7 @@ class RoleResource extends Resource
     // Role Policy
     public static function canViewAny(): bool
     {
-        return auth()->user()?->hasRole('admin');
+        return auth()->user()?->hasRole(['admin','student']);
     }
 
     public static function canEdit($record): bool
