@@ -1,16 +1,15 @@
 <?php
-namespace App\Filament\Student\Resources\UserResource\Api\Handlers;
+namespace App\Filament\Student\Resources\LessonResource\Api\Handlers;
 
 use Illuminate\Http\Request;
 use Rupadana\ApiService\Http\Handlers;
-use App\Filament\Student\Resources\UserResource;
-use App\Filament\Student\Resources\UserResource\Api\Requests\CreateUserRequest;
+use App\Filament\Student\Resources\LessonResource;
+use App\Filament\Student\Resources\LessonResource\Api\Requests\CreateLessonRequest;
 
 class CreateHandler extends Handlers {
     public static string | null $uri = '/';
-    public static string | null $resource = UserResource::class;
+    public static string | null $resource = LessonResource::class;
 
-    public static bool $public = true;
     public static function getMethod()
     {
         return Handlers::POST;
@@ -21,12 +20,12 @@ class CreateHandler extends Handlers {
     }
 
     /**
-     * Create User
+     * Create Lesson
      *
-     * @param CreateUserRequest $request
+     * @param CreateLessonRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function handler(CreateUserRequest $request)
+    public function handler(CreateLessonRequest $request)
     {
         $model = new (static::getModel());
 

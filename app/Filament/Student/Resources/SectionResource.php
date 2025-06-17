@@ -1,48 +1,30 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Student\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
+use App\Models\Section;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Forms\Components\TextInput;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\PermissionResource\Pages;
-use App\Filament\Resources\PermissionResource\RelationManagers;
+use App\Filament\Student\Resources\SectionResource\Pages;
+use App\Filament\Student\Resources\SectionResource\RelationManagers;
 
-class PermissionResource extends Resource
+class SectionResource extends Resource
 {
-    protected static ?string $model = Permission::class;
+    protected static ?string $model = Section::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-key';
-
-    // Permission Policy
-    public static function canViewAny(): bool
-    {
-        // return auth()->user()?->hasRole('admin');
-        return false;
-    }
-
-    public static function canEdit($record): bool
-    {
-        return auth()->user()?->hasRole('admin');
-    }
-
-    public static function canDelete($record): bool
-    {
-        return auth()->user()?->hasRole('admin');
-    }
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('name'),
+                //
             ]);
     }
 
@@ -75,9 +57,9 @@ class PermissionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPermissions::route('/'),
-            'create' => Pages\CreatePermission::route('/create'),
-            'edit' => Pages\EditPermission::route('/{record}/edit'),
+            'index' => Pages\ListSections::route('/'),
+            'create' => Pages\CreateSection::route('/create'),
+            'edit' => Pages\EditSection::route('/{record}/edit'),
         ];
     }
 }

@@ -13,7 +13,7 @@ class SectionPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(['admin','student']);
     }
 
     /**
