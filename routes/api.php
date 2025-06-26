@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\CoursesController;
 use App\Http\Controllers\Api\LessonController;
 use App\Http\Controllers\Api\SectionController;
 use App\Http\Controllers\Api\MaterialController;
+use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\SummeryController;
 use App\Http\Controllers\Api\TestController;
 use App\Http\Controllers\Api\VideoController;
@@ -27,3 +28,5 @@ Route::get('section/material/lesson/videos/{id}',[VideoController::class, 'getVi
 Route::get('section/material/lesson/summeries/{id}',[SummeryController::class, 'getSummeries']);
 Route::get('section/material/lesson/tests/{id}',[TestController::class, 'getTests']);
 Route::get('section/material/lesson/courses/{id}',[CoursesController::class, 'getCourses']);
+Route::get('section/material/lesson/test/{id}/questions',[QuestionController::class,'getQuestions']);
+Route::post('section/material/lesson/test/{id}/questions/asnwer',[QuestionController::class,'correctAsnwer']);
