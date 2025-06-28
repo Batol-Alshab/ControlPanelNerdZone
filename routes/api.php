@@ -30,3 +30,6 @@ Route::get('section/material/lesson/tests/{id}',[TestController::class, 'getTest
 Route::get('section/material/lesson/courses/{id}',[CoursesController::class, 'getCourses']);
 Route::get('section/material/lesson/test/{id}/questions',[QuestionController::class,'getQuestions']);
 Route::post('section/material/lesson/test/{id}/questions/asnwer',[QuestionController::class,'correctAsnwer']);
+Route::post('video/store',[VideoController::class,'store']);
+Route::get('video/{id}/download',[VideoController::class,'download']);
+

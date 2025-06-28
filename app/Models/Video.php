@@ -45,4 +45,9 @@ class Video extends Model
             static::deleted(fn () => Cache::forget($key));
         }
     }
+    public function favorites()
+{
+    return $this->morphMany(Favorite::class, 'favoritable');
+}
+
 }

@@ -2,52 +2,44 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Video;
 use App\Models\Lesson;
+use App\Traits\OctetStream;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Traits\ApiResponseTrait;
+use App\Http\Controllers\Controller;
 
 class VideoController extends Controller
 { use ApiResponseTrait;
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+    use OctetStream;
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string',
+            'video' => 'required|file|mimetypes:video/mp4,video/x-matroska',
+            'lesson_id' => 'required|exists:lessons,id',
+        ]);
+
+        $fileInfo = $this->storeToStorage($request, 'video', 'courses');
+
+        $video = Video::create([
+            'name' => $request->name,
+            'video' => $fileInfo['path'], // saved relative path
+            'lesson_id' => $request->lesson_id,
+        ]);
+    //    return $video;
+        return response()->json(['message' => 'Video uploaded successfully', 'data' => $video]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function download($id)
     {
-        //
+        $video = Video::findOrFail($id);
+
+        return $this->returnFromStorageAsOctet($video->video);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
     public function getVideos($id){
         $videos=Lesson::find($id)->videos()->get()
         ->map(fn($video) => [

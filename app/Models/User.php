@@ -21,9 +21,10 @@ class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
-    use HasRoles,HasApiTokens ;
+    use HasRoles, HasApiTokens;
 
-    public function canAccessPanel(Panel $panel): bool{
+    public function canAccessPanel(Panel $panel): bool
+    {
         //1 => admin , 2 => teacher
         if ($panel->getId() === 'admin') {
             return $this->hasRole(1); // فقط الإداريين
@@ -33,7 +34,7 @@ class User extends Authenticatable implements FilamentUser
             return $this->hasRole(2); // فقط المعلمين
         }
 
-        if($panel->getId() === 'student'){
+        if ($panel->getId() === 'student') {
             return $this->hasRole('student');
         }
         return false;
@@ -68,7 +69,7 @@ class User extends Authenticatable implements FilamentUser
     public function materials()
     {
         return $this->belongsToMany(Material::class, 'user_material')
-                    ->using(UserMaterial::class);;
+            ->using(UserMaterial::class);;
     }
 
     protected static function booted()
@@ -82,23 +83,20 @@ class User extends Authenticatable implements FilamentUser
         ];
         $locales = ['en', 'ar']; // أو استخرجها ديناميكياً إذا كنت حافظها في config
 
-        foreach ($baseKeys as $key)
-        {
-            foreach ($locales as $locale)
-            {
+        foreach ($baseKeys as $key) {
+            foreach ($locales as $locale) {
                 $keys[] = "{$key}_{$locale}";
             }
         }
 
-        foreach ($keys as $key)
-        {
-            static::created(fn () => Cache::forget($key));
-            static::updated(fn () => Cache::forget($key));
-            static::deleted(fn () => Cache::forget($key));
+        foreach ($keys as $key) {
+            static::created(fn() => Cache::forget($key));
+            static::updated(fn() => Cache::forget($key));
+            static::deleted(fn() => Cache::forget($key));
         }
     }
 
-        /**
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
@@ -120,5 +118,8 @@ class User extends Authenticatable implements FilamentUser
             'password' => 'hashed',
         ];
     }
-
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }

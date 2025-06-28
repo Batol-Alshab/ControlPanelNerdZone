@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Summery extends Model
 {
     use HasFactory, Notifiable;
-    protected $fillable=[
+    protected $fillable = [
         'name',
         'file',
         'lesson_id'
@@ -21,28 +21,32 @@ class Summery extends Model
     {
         return $this->belongsTo(Lesson::class);
     }
-    public function inquiries(){
-        return $this->morphMany(Inquiry::class,'inquiryable');
+    public function inquiries()
+    {
+        return $this->morphMany(Inquiry::class, 'inquiryable');
     }
     protected static function booted()
     {
-        $basekeys = ['contentLesson','statLesson',
-                'countTestCourceSummeryVideoForTeacher'
-            ];
+        $basekeys = [
+            'contentLesson',
+            'statLesson',
+            'countTestCourceSummeryVideoForTeacher'
+        ];
         $locales = ['en', 'ar'];
 
-        foreach ($basekeys as $key)
-        {
-            foreach ($locales as $locale)
-            {
+        foreach ($basekeys as $key) {
+            foreach ($locales as $locale) {
                 $keys[] = "{$key}_{$locale}";
             }
         }
-        foreach ($keys as $key)
-        {
-            static::created(fn () => Cache::forget($key));
-            static::updated(fn () => Cache::forget($key));
-            static::deleted(fn () => Cache::forget($key));
+        foreach ($keys as $key) {
+            static::created(fn() => Cache::forget($key));
+            static::updated(fn() => Cache::forget($key));
+            static::deleted(fn() => Cache::forget($key));
         }
+    }
+    public function favorites()
+    {
+        return $this->morphMany(Favorite::class, 'favoritable');
     }
 }

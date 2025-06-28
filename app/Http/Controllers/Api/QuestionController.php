@@ -30,24 +30,37 @@ class QuestionController extends Controller
 
     public function correctAsnwer(Request $request)
     {
-        $countQuestion = count($request->data) / 2;
-        $solution = [];
-        $cnt = 0;
-        foreach ($request->data as $d) {
-            $question = Question::findorfail($d['qustion_id']);
-            if ($question->correct_option == $d['answer']) {
-                $solution[$question->id] = 0;
-                $d['answer'] =0;
-                $cnt += 1;
-            } else
-                $solution[$question->id] = $question->correct_option;
-                $d['answer']= $question->correct_option;
+        $answers =  $request->json()->all();
+        $score = 0;
+        $results = [];
+
+        foreach ($answers as $answer) {
+            $question = Question::find($answer['question_id']);
+
+            if (!$question) {
+                $results[] = [
+                    'question_id' => $answer['question_id'],
+                    'correct' => false,
+                    'error' => 'Question not found'
+                ];
+                continue;
+            }
+
+            $isCorrect = ($question->correct_option == $answer['selected_option']);
+            if ($isCorrect) {
+                $score++;
+            }
+
+            $results[] = [
+                'question_id' => $question->id,
+                'correct' => $isCorrect,
+                'correct_option' => $question->correct_option
+            ];
         }
-        if ($cnt < $countQuestion) {
-            return $this->successResponse(" الرجاء اعادة الاختبار لانك لم تتجاوز الحد الادنى من الاجابات الصحيحية");
-        } else {
-            return $this->successResponse($solution);
-        }
-        return $solution;
+
+        return response()->json([
+            'score' => $score,
+            'results' => $results
+        ]);
     }
 }

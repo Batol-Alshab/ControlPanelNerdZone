@@ -13,6 +13,7 @@ use Database\Seeders\LessonSeeder;
 use Database\Seeders\SectionSeeder;
 use Database\Seeders\SummerySeeder;
 use Database\Seeders\MaterialSeeder;
+use Database\Seeders\QuestionsTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,15 +25,16 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
 
-            SectionSeeder::class,
-            MaterialSeeder::class,
-            RoleSeeder::class,
-            UserSeeder::class,
-            LessonSeeder::class,
-            SummerySeeder::class,
-            CourseSeeder::class,
-            VideoSeeder::class,
-            TestSeeder::class,
+            // SectionSeeder::class,
+            // MaterialSeeder::class,
+            // RoleSeeder::class,
+            // UserSeeder::class,
+            // LessonSeeder::class,
+            // SummerySeeder::class,
+            // CourseSeeder::class,
+            // VideoSeeder::class,
+            // TestSeeder::class,
+            QuestionsTableSeeder::class
 
         ]);
 
