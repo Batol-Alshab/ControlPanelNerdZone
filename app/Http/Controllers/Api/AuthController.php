@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
+use App\Models\Material;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponseTrait;
 use App\Http\Controllers\Controller;
@@ -34,40 +35,47 @@ class AuthController extends Controller
                 'city' => $request->city,
                 'section_id' => $request->section_id,
             ]);
+            if (! $user) {
+                return $this->errorResponse('تعذر انشاء الحساب');
+            }
             $token = $user->createToken('auth_token')->plainTextToken;
-            return $this->successResponse(null, "تم تسجيل الدخول بنجاح", 200)->header('Authorization',  $token);
             $user->assignRole('student');
+            $materials = Material::where('section_id', $request->section_id)->pluck('id');
+            foreach ($materials as $m) {
+                $user->materials()->attach($m);
+            }
+            return $this->successResponse(null, "تم تسجيل الدخول بنجاح", 200)->header('Authorization',  $token);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage());
         }
     }
     function login(Request $request)
     {
-         $credentials = $request->only('email', 'password');
+        $credentials = $request->only('email', 'password');
 
         try {
-             if (!Auth::attempt($credentials)) {
-        return $this->errorResponse ( "unothorized",401);
-    }
+            if (!Auth::attempt($credentials)) {
+                return $this->errorResponse("unothorized", 401);
+            }
 
-    $user = Auth::user();
+            $user = Auth::user();
 
-    $token = $user->createToken('auth_token')->plainTextToken;
+            $token = $user->createToken('auth_token')->plainTextToken;
 
-    return $this->successResponse(null,"تم تسجيل الدخول بنجاح" ,200)->header('Authorization', $token);
+            return $this->successResponse(null, "تم تسجيل الدخول بنجاح", 200)->header('Authorization', $token);
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage());
         }
     }
 
-    function logout(Request $request){
-                try{
+    function logout(Request $request)
+    {
+        try {
             $request->user()->currentAccessToken();
 
             return $this->successResponse();
-            }
-
-        catch(\Exception $e){
-                return $this->errorResponse($e->getMessage());
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage());
+        }
+    }
 }
-}}

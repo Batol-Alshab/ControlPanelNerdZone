@@ -15,25 +15,23 @@ class UserMaterial extends Pivot
     protected $fillable = [
         'user_id',
         'material_id',
+        'rate'
     ];
 
     protected static function booted()
     {
-        $basekeys=[ 'stat','statmaterialForTeacher','CountOfStudentsAccessMaterials'];
+        $basekeys = ['stat', 'statmaterialForTeacher', 'CountOfStudentsAccessMaterials'];
         $locales = ['en', 'ar'];
 
-        foreach ($basekeys as $key)
-        {
-            foreach ($locales as $locale)
-            {
+        foreach ($basekeys as $key) {
+            foreach ($locales as $locale) {
                 $keys[] = "{$key}_{$locale}";
             }
         }
-        foreach ($keys as $key)
-        {
-            static::created(fn () => Cache::forget($key));
-            static::updated(fn () => Cache::forget($key));
-            static::deleted(fn () => Cache::forget($key));
+        foreach ($keys as $key) {
+            static::created(fn() => Cache::forget($key));
+            static::updated(fn() => Cache::forget($key));
+            static::deleted(fn() => Cache::forget($key));
         }
     }
 }

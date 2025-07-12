@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->foreignID('section_id')->nullable()->constrained('sections')->cascadeOnDelete();
-            $table->integer('rate')->default(10);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('material_id')->constrained('materials')->cascadeOnDelete();
-
+            $table->integer('rate')->default(10);
             $table->timestamps();
         });
     }

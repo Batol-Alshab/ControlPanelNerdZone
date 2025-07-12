@@ -31,7 +31,7 @@ class UserFactory extends Factory
             'sex' => rand(0,1),
             'section_id' => rand(1,2),
             // 'roles' => rand(2,3),
-            'rate' => $this->faker->numberBetween(0, 100),
+            // 'rate' => $this->faker->numberBetween(0, 100),
             'created_at' =>$this->faker->date(),
         ];
     }
