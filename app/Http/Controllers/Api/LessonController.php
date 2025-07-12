@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Material;
 use App\Traits\ApiResponseTrait;
+use Exception;
 use Illuminate\Http\Request;
 
 class LessonController extends Controller
@@ -49,11 +50,22 @@ class LessonController extends Controller
         //
     }
     public function getLessons($id){
-        $lessons=Material::find($id)->lessons()->get()
-        ->map(fn($lesson) => [
-                'id' => $lesson->id,
-                'name' => $lesson->name,
-            ]);
-        return $this->successResponse($lessons);
+        try{
+            $materail=Material::find($id);
+            if(! $materail)
+            {
+                return $this->errorResponse('غير متوفر دروس لهذه المادة', 404);
+            }
+            $lessons = $materail->lessons()->get()
+                ->map(fn($lesson) => [
+                    'id' => $lesson->id,
+                    'name' => $lesson->name,
+                ]);
+
+            return $this->successResponse($lessons);
+
+        }catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 400);
+        }
     }
 }
