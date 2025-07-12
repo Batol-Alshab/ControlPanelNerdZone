@@ -39,7 +39,13 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    // 'debug' => (bool) env('APP_DEBUG', false),
+    'enabled' => env('DEBUGBAR_ENABLED', null),
+    'hide_empty_tabs' => false, // Hide tabs until they have content
+    'except' => [
+        'telescope*',
+        'horizon*',
+    ],
 
     /*
     |--------------------------------------------------------------------------

@@ -16,7 +16,11 @@ class SectionController extends Controller
     public function index()
     {
 
-        $sections = Section::pluck('name');
+        $sections = Section::all()
+            ->map(fn($section) => [
+                'id' => $section->id,
+                'name' => $section->name,
+            ]);;
         return $this->successResponse($sections);
     }
 
