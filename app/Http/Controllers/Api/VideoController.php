@@ -8,44 +8,46 @@ use App\Traits\OctetStream;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponseTrait;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class VideoController extends Controller
-{ use ApiResponseTrait;
+{
+    use ApiResponseTrait;
     use OctetStream;
 
-    public function store(Request $request)
+    public function getVideos($id)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'video' => 'required|file|mimetypes:video/mp4,video/x-matroska',
-            'lesson_id' => 'required|exists:lessons,id',
-        ]);
-
-        $fileInfo = $this->storeToStorage($request, 'video', 'courses');
-
-        $video = Video::create([
-            'name' => $request->name,
-            'video' => $fileInfo['path'], // saved relative path
-            'lesson_id' => $request->lesson_id,
-        ]);
-    //    return $video;
-        return response()->json(['message' => 'Video uploaded successfully', 'data' => $video]);
-    }
-
-    public function download($id)
-    {
-        $video = Video::findOrFail($id);
-
-        return $this->returnFromStorageAsOctet($video->video);
-    }
-
-
-    public function getVideos($id){
-        $videos=Lesson::find($id)->videos()->get()
-        ->map(fn($video) => [
-            'name' => $video->name,
-            'video' => $video->video,
+        $videos = Lesson::find($id)->videos()->get()
+            ->map(fn($video) => [
+                'id'=>$video->id,
+                'name' => $video->name,
             ]);
         return $this->successResponse($videos);
+    }
+
+
+    public function show($lesson_id, $video_id)
+    {
+        try {
+
+            $lesson = Lesson::find($lesson_id);
+            if (!$lesson) {
+                return $this->errorResponse('غير متوفر ملخص لهذا الدرس', 404);
+            }
+            $user = Auth::guard(name: 'sanctum')->user();
+            //زائر عادي والدرس مفتوح للكل
+            if ($lesson->cost == 0 || ($lesson->cost > 0 && $user && $lesson->users()->where('user_id', $user->id)->exists())) {
+                $video_file = Video::find($video_id);
+                $video_url = $video_file->video;
+                // return $video_url;
+                $video_url = asset('storage/' . $video_url);
+
+                return $this->successResponse(['video_url' => $video_url]);
+            }
+
+            return $this->successResponse('مقفول');
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 400);
+        }
     }
 }

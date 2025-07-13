@@ -26,10 +26,17 @@ Route::get('section/{id}/materials',[MaterialController::class, 'getMaterials'])
 Route::get('section/material/lessons/{id}',[LessonController::class, 'getLessons']);
 Route::get('section/material/lesson/videos/{id}',[VideoController::class, 'getVideos']);
 Route::get('section/material/lesson/summeries/{id}',[SummeryController::class, 'getSummeries']);
+
+
+
+Route::get('section/material/lesson/{lesson_id}/summery/{summery_id}',[SummeryController::class, 'show']);
+Route::get('section/material/lesson/{lesson_id}/video/{video_id}',[VideoController::class, 'show']);
+
+
 Route::get('section/material/lesson/tests/{id}',[TestController::class, 'getTests']);
 Route::get('section/material/lesson/courses/{id}',[CoursesController::class, 'getCourses']);
 Route::get('section/material/lesson/test/{id}/questions',[QuestionController::class,'getQuestions']);
 Route::post('section/material/lesson/test/{id}/questions/asnwer',[QuestionController::class,'correctAsnwer']);
 Route::post('video/store',[VideoController::class,'store']);
-Route::get('video/{id}/download',[VideoController::class,'download']);
+Route::get('summery/{id}/download',[SummeryController::class,'download']);
 
