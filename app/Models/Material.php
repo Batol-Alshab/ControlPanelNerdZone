@@ -34,7 +34,7 @@ class Material extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'user_material')
-                    ->using(UserMaterial::class);;
+                    ->using(UserMaterial::class);
     }
 
     protected static function booted()

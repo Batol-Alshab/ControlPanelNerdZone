@@ -42,7 +42,7 @@ class AuthController extends Controller
             $user->assignRole('student');
             $materials = Material::where('section_id', $request->section_id)->pluck('id');
             foreach ($materials as $m) {
-                $user->materials()->attach($m);
+                $user->materials()->attach($m,['rate' => 10]);
             }
             return $this->successResponse(null, "تم تسجيل الدخول بنجاح", 200)->header('Authorization',  $token);
         } catch (\Exception $e) {
@@ -73,7 +73,7 @@ class AuthController extends Controller
         try {
             $request->user()->currentAccessToken();
 
-            return $this->successResponse();
+            return $this->successResponse('تم تسجيل الخروج بنجاح');
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage());
         }

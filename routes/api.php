@@ -22,7 +22,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::get('/sections',[SectionController::class, 'index']);
-Route::get('section/{id}/materials',[MaterialController::class, 'getMaterials']);
+Route::get('section/{id}/materials',[MaterialController::class, 'getMaterials']);//->middleware('auth:sanctum');
 Route::get('section/material/lessons/{id}',[LessonController::class, 'getLessons']);
 Route::get('section/material/lesson/videos/{id}',[VideoController::class, 'getVideos']);
 Route::get('section/material/lesson/summeries/{id}',[SummeryController::class, 'getSummeries']);

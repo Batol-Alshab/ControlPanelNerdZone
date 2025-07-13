@@ -5,17 +5,18 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Filament\Panel;
+use App\Models\Lesson;
 use App\Models\Inquiry;
 use App\Models\Section;
 use App\Models\UserMaterial;
 use PhpParser\Node\Stmt\Catch_;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -69,7 +70,12 @@ class User extends Authenticatable implements FilamentUser
     public function materials()
     {
         return $this->belongsToMany(Material::class, 'user_material')
-            ->using(UserMaterial::class);;
+            ->withPivot('rate')
+            ->using(UserMaterial::class);
+    }
+     public function lessons()
+    {
+        return $this->belongsToMany( Lesson::class, 'user_lesson');
     }
 
     protected static function booted()

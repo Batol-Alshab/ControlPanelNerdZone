@@ -16,11 +16,16 @@ class Lesson extends Model
 {
     use HasFactory, Notifiable;
 
-    protected $fillable =[
+    protected $fillable = [
         'name',
         'material_id',
+        'cost'
 
     ];
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_lesson');
+    }
     public function material()
     {
         return $this->belongsTo(Material::class);
@@ -44,21 +49,18 @@ class Lesson extends Model
     }
     protected static function booted()
     {
-        $basekeys = ['contentLesson','stat'];
+        $basekeys = ['contentLesson', 'stat'];
         $locales = ['en', 'ar'];
 
-        foreach ($basekeys as $key)
-        {
-            foreach ($locales as $locale)
-            {
+        foreach ($basekeys as $key) {
+            foreach ($locales as $locale) {
                 $keys[] = "{$key}_{$locale}";
             }
         }
-        foreach ($keys as $key)
-        {
-            static::created(fn () => Cache::forget($key));
-            static::updated(fn () => Cache::forget($key));
-            static::deleted(fn () => Cache::forget($key));
+        foreach ($keys as $key) {
+            static::created(fn() => Cache::forget($key));
+            static::updated(fn() => Cache::forget($key));
+            static::deleted(fn() => Cache::forget($key));
         }
     }
 }

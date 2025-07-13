@@ -4,17 +4,17 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Section;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Traits\ApiResponseTrait;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class MaterialController extends Controller
-{   use ApiResponseTrait;
+{
+    use ApiResponseTrait;
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-    }
+    public function index() {}
 
     /**
      * Store a newly created resource in storage.
@@ -47,13 +47,27 @@ class MaterialController extends Controller
     {
         //
     }
-    public function getMaterials($id){
-        $materials=Section::find($id)->materials()->get()
-            ->map(fn($material) => [
+    public function getMaterials($id)
+    {
+
+        $user = Auth::guard(name: 'sanctum')->user();
+
+        if (! $user) {
+            $materials = Section::find($id)->materials
+                ->map(fn($material) => [
+                    'id' => $material->id,
+                    'name' => $material->name,
+                    'image' => $material->image,
+                ]);
+            return $this->successResponse($materials);
+        } else {
+            $materials = $user->materials->map(fn($material) => [
                 'id' => $material->id,
                 'name' => $material->name,
+                'rate' => $material->pivot->rate,
                 'image' => $material->image,
             ]);
-        return $this->successResponse($materials);
+            return $this->successResponse($materials);
+        }
     }
 }
