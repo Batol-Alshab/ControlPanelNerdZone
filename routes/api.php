@@ -22,30 +22,7 @@ Route::get('/user', function (Request $request) {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-<<<<<<< HEAD
-Route::get('/sections', [SectionController::class, 'index']);
-Route::get('section/{id}/materials', [MaterialController::class, 'getMaterials']); //->middleware('auth:sanctum');
-Route::get('section/material/lessons/{id}', [LessonController::class, 'getLessons']);
-Route::get('section/material/lesson/videos/{id}', [VideoController::class, 'getVideos']);
-Route::get('section/material/lesson/summeries/{id}', [SummeryController::class, 'getSummeries']);
 
-
-
-Route::get('section/material/lesson/{lesson_id}/summery/{summery_id}', [SummeryController::class, 'show']);
-Route::get('section/material/lesson/{lesson_id}/video/{video_id}', [VideoController::class, 'show']);
-
-
-Route::get('section/material/lesson/tests/{id}', [TestController::class, 'getTests']);
-Route::get('section/material/lesson/courses/{id}', [CoursesController::class, 'getCourses']);
-Route::get('section/material/lesson/test/{id}/questions', [QuestionController::class, 'getQuestions']);
-Route::post('section/material/lesson/test/{id}/questions/asnwer', [QuestionController::class, 'correctAsnwer']);
-Route::post('video/store', [VideoController::class, 'store']);
-Route::get('summery/{id}/download', [SummeryController::class, 'download']);
-Route::post('favourites/{type}/{id}', [FavouriteController::class, 'addToFavourite']);
-Route::delete('favourites/{id}/{type}', [FavouriteController::class, 'deleteFromFavourite']);
-Route::get('summery/favourites', [FavouriteController::class, 'getSummeryFavourite'])->middleware('auth:sanctum');
-Route::get('video/favourites', [FavouriteController::class, 'getVideoFavourite'])->middleware('auth:sanctum');
-=======
 Route::get('/sections',[SectionController::class, 'index']);
 Route::get('section/{id}/materials',[MaterialController::class, 'getMaterials']);//->middleware('auth:sanctum');
 Route::get('section/material/lessons/{id}',[LessonController::class, 'getLessons']);
@@ -62,4 +39,9 @@ Route::post('section/material/lesson/test/{id}/questions/asnwer',[QuestionContro
 Route::post('video/store',[VideoController::class,'store']);
 Route::get('summery/{id}/download',[SummeryController::class,'download']);
 
->>>>>>> d43adafc22be94f636f731e39953a48b3143ffc1
+Route::post('favourites/{type}/{id}', [FavouriteController::class, 'addToFavourite']);
+Route::delete('favourites/{id}/{type}', [FavouriteController::class, 'deleteFromFavourite']);
+Route::get('summery/favourites', [FavouriteController::class, 'getSummeryFavourite'])->middleware('auth:sanctum');
+Route::get('video/favourites', [FavouriteController::class, 'getVideoFavourite'])->middleware('auth:sanctum');
+
+
