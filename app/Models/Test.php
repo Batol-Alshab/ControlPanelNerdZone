@@ -50,4 +50,8 @@ class Test extends Model
             static::deleted(fn () => Cache::forget($key));
         }
     }
+       public function users()
+    {
+        return $this->belongsToMany( User::class, 'user_test');
+    }
 }

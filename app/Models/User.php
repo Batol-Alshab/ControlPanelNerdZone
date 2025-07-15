@@ -128,4 +128,8 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(Favorite::class);
     }
+       public function tests()
+    {
+        return $this->belongsToMany( Test::class, 'user_test');
+    }
 }
