@@ -15,17 +15,6 @@ class VideoController extends Controller
     use ApiResponseTrait;
     use OctetStream;
 
-    public function getVideos($id)
-    {
-        $videos = Lesson::find($id)->videos()->get()
-            ->map(fn($video) => [
-                'id'=>$video->id,
-                'name' => $video->name,
-            ]);
-        return $this->successResponse($videos);
-    }
-
-
     public function show($lesson_id, $video_id)
     {
         try {
@@ -49,5 +38,14 @@ class VideoController extends Controller
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 400);
         }
+    }
+    public function getVideos($id)
+    {
+        $videos = Lesson::find($id)->videos()->get()
+            ->map(fn($video) => [
+                'id' => $video->id,
+                'name' => $video->name,
+            ]);
+        return $this->successResponse($videos);
     }
 }
