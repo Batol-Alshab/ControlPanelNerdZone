@@ -91,30 +91,37 @@ class FavouriteController extends Controller
     public function getSummeryFavourite()
     {
         $user = Auth::guard('sanctum')->user();
-        $summery = Favorite::where([
+        $summeries = Favorite::where([
             'user_id' => $user->id,
             'favoritable_type' => \App\Models\Summery::class,
         ])->with('favoritable')->get();
-        $summeries = $user->favorites()->get();
-        $data = [];
-        foreach ($summeries as $s) {
-            $data = $s->favoritable;
-        }
+         $data = $summeries->map(function ($v) {
+        return [
+            'id' => $v->favoritable->id ?? null,
+            'name' => $v->favoritable->name ?? null,
+            'file' => $v->favoritable->file ?? null,
+        ];
+    });
+
         return $this->successResponse($data);
     }
 
     public function getVideoFavourite()
     {
         $user = Auth::guard('sanctum')->user();
-        $summery = Favorite::where([
+        // Only fetch favorites where type is Video
+        $videos = Favorite::where([
             'user_id' => $user->id,
             'favoritable_type' => \App\Models\Video::class,
         ])->with('favoritable')->get();
-        $videos = $user->favorites()->get();
-        $data = [];
-        foreach ($videos as $v) {
-            $data = $v->favoritable;
-        }
+
+      $data = $videos->map(function ($v) {
+        return [
+            'id' => $v->favoritable->id ?? null,
+            'name' => $v->favoritable->name ?? null,
+            'video' => $v->favoritable->video ?? null,
+        ];
+    });
         return $this->successResponse($data);
     }
 }

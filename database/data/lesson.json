@@ -1,0 +1,84 @@
+ {"lessons":[
+  {
+    "name": "الجهاز العصبي",
+    "cost": 0,
+    "material_id": 5
+  },
+  {
+    "name": "النسيج العصبي",
+    "cost": 0,
+    "material_id": 5
+  },
+  {
+    "name": " خواص الأعصاب",
+    "cost": 0,
+    "material_id": 5
+  },
+  {
+    "name": "النقل في الأعصاب",
+    "cost": 0,
+    "material_id": 5
+  },
+  {
+    "name": " وظائف الجهاز العصبي (1+2)",
+    "cost": 0,
+    "material_id": 5
+  },
+  {
+    "name": "وظائف الجهاز العصبي (3) ",
+    "cost": 0,
+    "material_id": 5
+  },
+  {
+    "name": " مفهوم المستقبلات الحسية",
+    "cost": 0,
+    "material_id": 5
+  },
+  {
+    "name": "المستقبلات الكيميائيةوالصوتية",
+    "cost": 0,
+    "material_id": 5
+  },
+  {
+    "name": "مستقبلات التوازن والمستقبلات الضوئية",
+    "cost": 0,
+    "material_id": 5
+  },
+  {
+    "name": "التنسيق الهرموني",
+    "cost": 0,
+    "material_id": 5
+  },
+  {
+    "name": "التنسيق الكيميائي في النبات",
+    "cost": 0,
+    "material_id": 5
+  },
+  {
+    "name": " تكملة التنسيق الكيميائي في النبات ",
+    "cost": 0,
+    "material_id": 5
+  },
+  {
+    "name": "مراجعة الفصل الدراسي الأول",
+    "cost": 0,
+    "material_id": 5
+  },
+  { "name": " التكاثر عند الأحياء", "cost": 0, "material_id": 5 },
+  { "name": " تكاثر الجراثيم والفطريات", "cost": 0, "material_id": 5 },
+  { "name": "التكاثر الجنسي لدى عاريات البذور", "cost": 0, "material_id": 5 },
+  { "name": "التكاثر الجنسي لدى مغلفات البذور", "cost": 0, "material_id": 5 },
+  { "name": "جهاز التكاثر الذكري", "cost": 0, "material_id": 5 },
+  { "name": "الهرمونات الجنسية الذكرية", "cost": 0, "material_id": 5 },
+  { "name": "جهاز التكاثر الأنثوي", "cost": 0, "material_id": 5 },
+  { "name": "التنامي الجنيني ", "cost": 0, "material_id": 5 },
+  { "name": " الولادة والإرضاع", "cost": 0, "material_id": 5 },
+  { "name": "الصحة الانجابية", "cost": 0, "material_id": 5 },
+  { "name": "تجارب مندل في الوراثة", "cost": 0, "material_id": 5 },
+  { "name": "التهجين الاختباري", "cost": 0, "material_id": 5 },
+  { "name": "االرتباط والعبور", "cost": 0, "material_id": 5 },
+  { "name": "تحديد الجنس لدى الاحياء", "cost": 0, "material_id": 5 },
+  { "name": " الوراثة عند الانسان", "cost": 0, "material_id": 5 },
+  { "name": "الهندسة الوراثية", "cost": 0, "material_id": 5 }
+]
+ }
