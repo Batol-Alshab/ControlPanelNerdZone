@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('test_id')->constrained('tests')->cascadeOnDelete();
-            $table->integer('result');
+            $table->integer('passing_rate');
             $table->timestamps();
         });
     }

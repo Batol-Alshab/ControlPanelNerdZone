@@ -39,15 +39,20 @@ class TestsRelationManager extends RelationManager
                     ->label(__('messages.name'))
                     ->required(),
 
-                Select::make('numQuestions')
+                TextInput::make('numQuestions')
                     ->label(__('messages.numQuestions'))
                     ->required()
-                    ->options([
-                        5=>5,
-                        10=>10,
-                        15=>15,
-                        20=>20
-                    ]),
+                    ->placeholder('[ 1, 2, ....,50 ]')
+                    ->numeric()
+                    ->minValue(1)
+                    ->maxValue(50),
+                TextInput::make('returned_cost')
+                    ->label(__('messages.returned_cost'))
+                    ->numeric()
+                    ->default(0)
+                    ->minValue(0)
+                    ->maxValue(100000),
+
             ]);
     }
 
@@ -63,12 +68,15 @@ class TestsRelationManager extends RelationManager
                     ->label(__('messages.name'))
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('returned_cost')
+                    ->label(__('messages.returned_cost'))
+                    ->sortable(),
                 // TextColumn::make('lesson.name')
                 //     ->label('Lesson')
                 //     ->sortable(),
                 TextColumn::make('is_complete')
                     ->label(__('messages.status'))
-                    ->formatStateUsing( fn ($state) => $state ? __('messages.is_complete') : __('messages.Not_complete'))
+                    ->formatStateUsing(fn($state) => $state ? __('messages.is_complete') : __('messages.Not_complete'))
                     ->sortable()
                     ->badge()
                     ->color(fn($state) => $state ? 'success' : 'danger'),
@@ -76,7 +84,7 @@ class TestsRelationManager extends RelationManager
                     ->label(__('messages.created_at'))
                     ->sortable()
                     ->date('Y M d')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 TernaryFilter::make('is_complete')

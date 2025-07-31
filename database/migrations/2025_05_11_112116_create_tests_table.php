@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('numQuestions');
+            $table->integer('returned_cost')->default(0);
             $table->boolean('is_complete')->default(0);
             $table->foreignId('lesson_id')->constrained('lessons')->cascadeOnDelete();
             $table->timestamps();

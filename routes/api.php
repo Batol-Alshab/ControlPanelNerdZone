@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\SummeryController;
 use App\Http\Controllers\Api\MaterialController;
 use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\FavouriteController;
+use App\Http\Controllers\Api\TaskController;
 use NunoMaduro\Collision\Adapters\Laravel\Commands\TestCommand;
 
 Route::get('/user', function (Request $request) {
@@ -35,7 +36,7 @@ Route::get('section/material/lesson/tests/{id}',action: [TestController::class, 
 Route::get('section/material/lesson/courses/{id}',action: [CoursesController::class, 'getCourses']);
 Route::get('section/material/lesson/{lesson_id}/course/{course_id}',[CoursesController::class, 'show']);
 Route::get('section/material/lesson/{lesson_id}/test/{test_id}/questions',[QuestionController::class,'getQuestions']);
-Route::post('section/material/lesson/test/{id}/questions/asnwer',[QuestionController::class,'correctAsnwer']);
+Route::post('section/material/lesson/{lesson_id}/test/{test_id}/questions/asnwer',[QuestionController::class,'correctAsnwer']);
 Route::post('video/store',[VideoController::class,'store']);
 Route::get('summery/{id}/download',[SummeryController::class,'download']);
 
@@ -44,4 +45,9 @@ Route::delete('favourites/{id}/{type}', [FavouriteController::class, 'deleteFrom
 Route::get('summery/favourites', [FavouriteController::class, 'getSummeryFavourite'])->middleware('auth:sanctum');
 Route::get('video/favourites', [FavouriteController::class, 'getVideoFavourite'])->middleware('auth:sanctum');
 
-
+Route::get('getTask',[TaskController::class,'getTask'])->middleware('auth:sanctum');
+Route::get('getEndOrDoneTask',[TaskController::class,'getEndOrDoneTask'])->middleware('auth:sanctum');
+Route::post('storeTask',[TaskController::class,'store'])->middleware('auth:sanctum');
+Route::post('updateTask/{id}',[TaskController::class,'update'])->middleware('auth:sanctum');
+Route::get('deleteTask/{id}',[TaskController::class,'destroy'])->middleware('auth:sanctum');
+Route::get('testsend',[TaskController::class,'sendMessage']);

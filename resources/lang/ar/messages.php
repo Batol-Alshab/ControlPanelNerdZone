@@ -184,4 +184,6 @@ return [
     'increase' => 'زيادة',
     'number of student can acsess' => 'عدد الطلاب المسموح لهم بالوصول',
     'Chart materials stat' => 'احصائيات المواد',
+    'cost' => 'التكلفة',
+    'repeated_cost' => 'النقاط المكتسبة من حل الاختبار',
 ];

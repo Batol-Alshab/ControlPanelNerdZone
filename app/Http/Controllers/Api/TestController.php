@@ -18,6 +18,7 @@ class TestController extends Controller
             ->map(fn($test) => [
                 'id' => $test->id,
                 'name' => $test->name,
+                'returned_cost' =>$test->returned_cost,
             ]);
         return $this->successResponse($tests);
     }

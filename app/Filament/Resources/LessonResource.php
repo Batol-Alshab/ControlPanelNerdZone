@@ -65,23 +65,27 @@ class LessonResource extends Resource
                     ->required()
                     ->relationship('material', 'name')
                     ->options(
-                        function()
-                        {
-                            $user= auth()->user();
+                        function () {
+                            $user = auth()->user();
                             $roleNames = $user->getRoleNames();
 
-                             if ($roleNames->contains('admin'))
+                            if ($roleNames->contains('admin'))
                                 return Material::pluck('name', 'id');
-                            else
-                            {
-                                $access_material_id =$user->materials()->pluck('material_id');
-                                return Material::whereIn('id',$access_material_id)->pluck('name','id');
+                            else {
+                                $access_material_id = $user->materials()->pluck('material_id');
+                                return Material::whereIn('id', $access_material_id)->pluck('name', 'id');
                             }
                         }
                     )
                     ->preload()
-                    ->reactive()
-                    // ->disabled(fn (callable $get) => !$get('section')),
+                    ->reactive(),
+                TextInput::make('cost')
+                    ->label(__('messages.cost'))
+                    ->default(0)
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(100000),
+                // ->disabled(fn (callable $get) => !$get('section')),
             ]);
     }
 
@@ -99,23 +103,24 @@ class LessonResource extends Resource
                 TextColumn::make('material.name')
                     ->label(__('messages.material.label'))
                     ->sortable(),
+                TextColumn::make('cost')
+                    ->label(__('messages.cost'))
+                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('material_id')
                     ->label(__('messages.material.label'))
                     // ->relationship('material','name')
                     ->options(
-                        function()
-                        {
-                            $user= auth()->user();
+                        function () {
+                            $user = auth()->user();
                             $roleNames = $user->getRoleNames();
 
                             if ($roleNames->contains('admin'))
                                 return Material::pluck('name', 'id');
-                            else
-                            {
-                                $access_material_id =$user->materials()->pluck('material_id');
-                                return Material::whereIn('id',$access_material_id)->pluck('name','id');
+                            else {
+                                $access_material_id = $user->materials()->pluck('material_id');
+                                return Material::whereIn('id', $access_material_id)->pluck('name', 'id');
                             }
                         }
                     ),
@@ -151,13 +156,13 @@ class LessonResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query= parent::getEloquentQuery();
+        $query = parent::getEloquentQuery();
         $user = auth()->user();
         $roleNames = $user->getRoleNames();
         if ($roleNames->contains('admin'))
             return $query;
 
-        $access_material_id =$user->materials()->pluck('material_id');
-        return $query->whereIn('material_id',$access_material_id);
+        $access_material_id = $user->materials()->pluck('material_id');
+        return $query->whereIn('material_id', $access_material_id);
     }
 }

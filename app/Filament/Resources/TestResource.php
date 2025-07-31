@@ -65,18 +65,16 @@ class TestResource extends Resource
                 Select::make('material')
                     ->label(__('messages.material.label'))
                     ->required()
-                    ->options(function()
-                    {
+                    ->options(function () {
                         $user = auth()->user();
                         $roleNames = $user->getRoleNames();
 
 
                         if ($roleNames->contains('admin'))
                             return Material::pluck('name', 'id');
-                        else
-                        {
-                            $access_material_id =$user->materials()->pluck('material_id');
-                            return Material::whereIn('id',$access_material_id)->pluck('name','id');
+                        else {
+                            $access_material_id = $user->materials()->pluck('material_id');
+                            return Material::whereIn('id', $access_material_id)->pluck('name', 'id');
                         }
                     })
                     ->reactive(),
@@ -84,11 +82,11 @@ class TestResource extends Resource
                 Select::make('lesson_id')
                     ->label(__('messages.lesson.label'))
                     ->required()
-                    ->relationship('lesson','name',fn ($query, callable $get)=>
-                        $query->where('material_id',$get('material')))
+                    ->relationship('lesson', 'name', fn($query, callable $get) =>
+                    $query->where('material_id', $get('material')))
                     ->preload()
                     ->reactive()
-                    ->disabled(fn (callable $get) => !$get('material')),
+                    ->disabled(fn(callable $get) => !$get('material')),
 
                 TextInput::make('numQuestions')
                     ->label(__('messages.numQuestions'))
@@ -97,6 +95,13 @@ class TestResource extends Resource
                     ->numeric()
                     ->minValue(1)
                     ->maxValue(50),
+                TextInput::make('returned_cost')
+                    ->label(__('messages.returned_cost'))
+                    ->numeric()
+                    ->default(0)
+                    ->minValue(0)
+                    ->maxValue(100000),
+
                 // Select::make('numQuestions')->required()
                 //     ->options([
                 //         2=>2,
@@ -122,16 +127,19 @@ class TestResource extends Resource
                 TextColumn::make('id')
                     ->label(__('messages.id'))
                     ->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('name')
-                        ->label(__('messages.name'))
+                TextColumn::make('name')
+                    ->label(__('messages.name'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('lesson.name')
                     ->label(__('messages.lesson.label'))
                     ->sortable(),
+                TextColumn::make('returned_cost')
+                    ->label(__('messages.returned_cost'))
+                    ->sortable(),
                 TextColumn::make('is_complete')
                     ->label(__('messages.status'))
-                    ->formatStateUsing(fn ($state) => $state ? __('messages.is_complete') : __('messages.Not_complete') )
+                    ->formatStateUsing(fn($state) => $state ? __('messages.is_complete') : __('messages.Not_complete'))
                     ->sortable()
                     ->badge()
                     ->color(fn($state) => $state ? 'success' : 'danger'),
@@ -139,30 +147,27 @@ class TestResource extends Resource
                     ->label(__('messages.created_at'))
                     ->sortable()
                     ->date('Y M d')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('lesson_id')
                     ->label(__('messages.lesson.label'))
                     // ->relationship('lesson','name')
                     ->options(
-                        function()
-                        {
-                            $user= auth()->user();
+                        function () {
+                            $user = auth()->user();
                             $roleNames = $user->getRoleNames();
 
                             if ($roleNames->contains('admin'))
                                 return lesson::pluck('name', 'id');
-                            else
-                            {
-                                $access_material_id =$user->materials()->pluck('material_id');
-                                $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('name','id');
+                            else {
+                                $access_material_id = $user->materials()->pluck('material_id');
+                                $lessons = Lesson::whereIn('material_id', $access_material_id)->pluck('name', 'id');
                                 return $lessons;
                             }
-
                         }
                     ),
-                    ////
+                ////
                 TernaryFilter::make('is_complete')
                     ->label(__('messages.is_complete')),
 
@@ -201,11 +206,11 @@ class TestResource extends Resource
         $roleNames = $user->getRoleNames();
 
 
-        if($roleNames->contains('admin'))
+        if ($roleNames->contains('admin'))
             return $query;
 
-        $access_material_id =$user->materials()->pluck('material_id');
-        $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('id');
-        return $query->whereIn('lesson_id',$lessons);
+        $access_material_id = $user->materials()->pluck('material_id');
+        $lessons = Lesson::whereIn('material_id', $access_material_id)->pluck('id');
+        return $query->whereIn('lesson_id', $lessons);
     }
 }

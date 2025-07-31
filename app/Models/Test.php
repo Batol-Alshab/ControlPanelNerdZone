@@ -17,6 +17,7 @@ class Test extends Model
         'numQuestions',
         'is_complete',
         'lesson_id',
+        'returned_cost',
     ];
     public function lesson()
     {

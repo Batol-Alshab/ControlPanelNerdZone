@@ -32,6 +32,7 @@ class EditTest extends EditRecord
                 'material' => $this->record->lesson?->material_id,
                 'numQuestions' => $this->record->numQuestions,
                 'is_complete' => $this->record->is_complete,
+                'returned_cost' => $this->record->returned_cost,
             ]);
         }
     }

@@ -45,6 +45,7 @@ class EditLesson extends EditRecord
         if ($this->record->material) {
             $this->form->fill([
                 'name' => $this->record->name, // كل الحقول مثل name, material_id, ...
+                'cost' => $this->record->cost, // كل الحقول مثل name, material_id, ...
                 'section' => $this->record->material?->section_id, // نُضيف حقل section المشتق
             ]);
 

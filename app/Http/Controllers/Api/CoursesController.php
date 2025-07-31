@@ -21,11 +21,9 @@ class CoursesController extends Controller
                 return $this->errorResponse('غير متوفر دورة لهذا الدرس', 404);
             }
             $user = Auth::guard(name: 'sanctum')->user();
-            if (!$user) {
-                return $this->errorResponse('قم بتسجيل الدخول اولا', 401);
-            }
+            
             //زائر عادي والدرس مفتوح للكل
-            if ($lesson->cost == 0 || ($lesson->cost > 0 && $user && $lesson->users()->where('user_id', operator: $user->id)->exists())) {
+            if ($lesson->cost == 0 || ($lesson->cost > 0 && $user && $lesson->users()->where('user_id',  $user->id)->exists())) {
                 $course_file = Course::find($course_id);
                 $course_url = $course_file->file;
                 // return $video_url;

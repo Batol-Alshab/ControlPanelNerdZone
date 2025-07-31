@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Filament\Panel;
+use App\Models\Task;
 use App\Models\Lesson;
 use App\Models\Inquiry;
 use App\Models\Section;
@@ -56,6 +57,29 @@ class User extends Authenticatable implements FilamentUser
         'section_id',
         'rate'
     ];
+    
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 
     public function section()
     {
@@ -73,9 +97,9 @@ class User extends Authenticatable implements FilamentUser
             ->withPivot('rate')
             ->using(UserMaterial::class);
     }
-     public function lessons()
+    public function lessons()
     {
-        return $this->belongsToMany( Lesson::class, 'user_lesson');
+        return $this->belongsToMany(Lesson::class, 'user_lesson');
     }
 
     protected static function booted()
@@ -102,34 +126,16 @@ class User extends Authenticatable implements FilamentUser
         }
     }
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
     }
-       public function tests()
+    public function tests()
     {
-        return $this->belongsToMany( Test::class, 'user_test');
+        return $this->belongsToMany(Test::class, 'user_test');
+    }
+    public function tasks()
+    {
+        return $this->hasMany( Task::class);
     }
 }
