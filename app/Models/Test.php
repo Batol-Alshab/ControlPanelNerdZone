@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Lesson;
 use App\Models\Question;
+use App\Models\UserTest;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Test extends Model
 {
     use HasFactory, Notifiable;
-    protected $fillable=[
+    protected $fillable = [
         'name',
         'numQuestions',
         'is_complete',
@@ -27,32 +28,33 @@ class Test extends Model
     {
         return $this->hasMany(Question::class);
     }
-    public function inquiries(){
-        return $this->morphMany(Inquiry::class,'inquiryable');
+    public function inquiries()
+    {
+        return $this->morphMany(Inquiry::class, 'inquiryable');
+    }
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_test')
+            ->using(UserTest::class);
     }
     protected static function booted()
     {
-        $basekeys = ['contentLesson','statLesson',
-                'countTestCourceSummeryVideoForTeacher'
-            ];
+        $basekeys = [
+            'contentLesson',
+            'statLesson',
+            'countTestCourceSummeryVideoForTeacher'
+        ];
         $locales = ['en', 'ar'];
 
-        foreach ($basekeys as $key)
-        {
-            foreach ($locales as $locale)
-            {
+        foreach ($basekeys as $key) {
+            foreach ($locales as $locale) {
                 $keys[] = "{$key}_{$locale}";
             }
         }
-        foreach ($keys as $key)
-        {
-            static::created(fn () => Cache::forget($key));
-            static::updated(fn () => Cache::forget($key));
-            static::deleted(fn () => Cache::forget($key));
+        foreach ($keys as $key) {
+            static::created(fn() => Cache::forget($key));
+            static::updated(fn() => Cache::forget($key));
+            static::deleted(fn() => Cache::forget($key));
         }
-    }
-       public function users()
-    {
-        return $this->belongsToMany( User::class, 'user_test');
     }
 }

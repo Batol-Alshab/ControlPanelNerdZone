@@ -9,6 +9,7 @@ use App\Models\Task;
 use App\Models\Lesson;
 use App\Models\Inquiry;
 use App\Models\Section;
+use App\Models\UserTest;
 use App\Models\UserMaterial;
 use PhpParser\Node\Stmt\Catch_;
 use Laravel\Sanctum\HasApiTokens;
@@ -57,7 +58,7 @@ class User extends Authenticatable implements FilamentUser
         'section_id',
         'rate'
     ];
-    
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -132,10 +133,11 @@ class User extends Authenticatable implements FilamentUser
     }
     public function tests()
     {
-        return $this->belongsToMany(Test::class, 'user_test');
+        return $this->belongsToMany(Test::class, 'user_test')
+            ->using(UserTest::class);
     }
     public function tasks()
     {
-        return $this->hasMany( Task::class);
+        return $this->hasMany(Task::class);
     }
 }

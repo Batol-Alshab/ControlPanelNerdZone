@@ -22,12 +22,14 @@ class TestSeeder extends Seeder
                 'numQuestions' => 10,
                 'is_complete' => true,
                 'lesson_id' => $lessonId,
+                'returned_cost' => 15,
             ];
             $tests[] = [
                 'name' => "الاختبار الثاني",
                 'numQuestions' => 10,
                 'is_complete' => true,
                 'lesson_id' => $lessonId,
+                'returned_cost' => 15,
             ];
         }
 
