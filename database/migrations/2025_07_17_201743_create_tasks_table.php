@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->text('content')->nullable();
-            $table->boolean('is_done')->default(0);
-            $table->time('reminder_time')->nullable();
+            $table->integer('percent')->default(0);
+            // $table->boolean('is_done')->default(0);
+            $table->timestamp('reminder_time')->nullable();
             $table->timestamps();
         });
     }

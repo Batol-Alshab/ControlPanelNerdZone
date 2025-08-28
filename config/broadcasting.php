@@ -36,6 +36,22 @@ return [
         ],
 
         // يمكنك إضافة جهات اتصال أخرى هنا إذا أردت، مثل 'redis' أو 'log'.
+
+
+        'redis' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+        ],
+
+        'log' => [
+            'driver' => 'log',
+        ],
+
+        'null' => [
+            'driver' => 'null',
+        ],
+
+
     ],
 
 ];

@@ -33,17 +33,16 @@ class TaskController extends Controller
         try {
             $validateData = $request->validate([
                 'content' => 'required|max:700|string',
-                'reminder_time' => 'required|date_format:H:i:s',
             ]);
             $task = Task::create([
                 'user_id' => $user->id,
                 'content' => $request->content,
-                'reminder_time' => $request->reminder_time,
+                'reminder_time' => $request->reminder_time ?? null,
             ]);
             if (!$task) {
                 return $this->errorResponse('حصل خطأ ما');
             }
-            $task = $task->only(['id', 'content', 'is_done', 'reminder_time', 'created_at']);
+            $task = $task->only(['id', 'content', 'percent', 'reminder_time', 'created_at']);
             return $this->successResponse($task, 'تم اضافة المهمة');
         } catch (\Exception $e) {
             return $this->errorResponse(message: $e->getMessage());
@@ -63,18 +62,17 @@ class TaskController extends Controller
         try {
             $validateData = $request->validate([
                 'content' => 'nullable|max:700|string',
-                'reminder_time' => 'nullable|date_format:H:i:s',
-                'is_done' => 'nullable|boolean'
+                'percent' => 'nullable|integer'
             ]);
             $task = $user->tasks()->where('id', $id)->first();
-            if ($task->is_done) {
-                return $this->errorResponse('تم انجاز المهمة لا يمكن التعديل عليها');
+            if ($task->created_at->diffInHours(now()) > 24.00 || $task->percent == 100) {
+                return $this->errorResponse('تم انتهاء وقت المهمة لا يمكن التعديل عليها');
             }
             if (!$task) {
                 return $this->errorResponse(' حصل خطأ ما.. المهمة غير موجودة');
             }
             $task->update($validateData);
-            $task = $task->only(['id', 'content', 'is_done', 'reminder_time', 'created_at']);
+            $task = $task->only(['id', 'content', 'percent', 'reminder_time', 'created_at']);
             return $this->successResponse($task, 'تم تعديل المهمة');
         } catch (\Exception $e) {
             return $this->errorResponse(message: $e->getMessage());
@@ -108,15 +106,16 @@ class TaskController extends Controller
         }
         $tasks =  $user->tasks()->get();
         foreach ($tasks as $task) {
-            if ($task->created_at > now()->subHours(24) && $task->is_done == 0)
+            if ($task->created_at->diffInHours(now()) <= 24.00 && $task->percent != 100)
                 $result[] = [
-                    $task->only(['id', 'content', 'is_done', 'reminder_time', 'created_at'])
+                    $task->only(['id', 'content', 'percent', 'reminder_time', 'created_at'])
                 ];
+            // return $task->created_at->diffInHours(now()) ;
         }
         return $result;
     }
 
-    public function getEndOris_doneTask()
+    public function getEndOrDoneTask()
     {
         $result = [];
         $user = Auth::guard('sanctum')->user();
@@ -125,18 +124,24 @@ class TaskController extends Controller
         }
         $tasks =  $user->tasks()->get();
         foreach ($tasks as $task) {
-            if ($task->created_at < now()->subHours(24) || $task->is_done == 1)
+            if ($task->created_at->diffInHours(now()) > 24.00 || $task->percent == 100)
                 $result[] = [
-                    $task->only(['id', 'content', 'is_done', 'reminder_time', 'created_at'])
+                    $task->only(['id', 'content', 'percent', 'reminder_time', 'created_at'])
                 ];
         }
         return $result;
     }
     public function sendMessage()
     {
-        $message = 'hello nerd zone';
-        event(new reminderToTask($message));
-        
+        $now = now();
+        $message = ['hello nerd zone'];
+        $message = now();
+        $message = Task::
+            // all();
+            where('reminder_time', '>', $now)->get('content');
+
+        event(new reminderToTask([$message, $now]));
+
         return 'ok';
     }
 }
