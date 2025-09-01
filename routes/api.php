@@ -1,11 +1,12 @@
 <?php
 
-use App\Models\Material;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Filament\Widgets\LessonContent;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\TestController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\ChartController;
 use App\Http\Controllers\Api\VideoController;
 use App\Http\Controllers\Api\LessonController;
 use App\Http\Controllers\Api\CoursesController;
@@ -14,8 +15,6 @@ use App\Http\Controllers\Api\SummeryController;
 use App\Http\Controllers\Api\MaterialController;
 use App\Http\Controllers\Api\QuestionController;
 use App\Http\Controllers\Api\FavouriteController;
-use App\Http\Controllers\Api\TaskController;
-use NunoMaduro\Collision\Adapters\Laravel\Commands\TestCommand;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -51,3 +50,11 @@ Route::post('storeTask',[TaskController::class,'store'])->middleware('auth:sanct
 Route::post('updateTask/{id}',[TaskController::class,'update'])->middleware('auth:sanctum');
 Route::get('deleteTask/{id}',[TaskController::class,'destroy'])->middleware('auth:sanctum');
 Route::get('testsend',[TaskController::class,'sendMessage']);
+
+Route::get('user/profil',[UserController::class,'getProfile'])->middleware('auth:sanctum');
+Route::post('user/password/change',[UserController::class,'changePassword'])->middleware('auth:sanctum');
+Route::get('user/lesson/progress/{lessonId} ',[ChartController::class,'getLessonProgress'])->middleware('auth:sanctum');
+Route::get('user/material/progress/{materialId} ',[ChartController::class,'getMaterialProgress'])->middleware('auth:sanctum');
+Route::get('user/progress',[ChartController::class,'getAllMaterialsProgress'])->middleware('auth:sanctum');
+Route::get('user/{materialId}/lesson',[ChartController::class,'getMterialDetails'])->middleware('auth:sanctum');
+Route::get('user/material/rate',[ChartController::class,'getMterialRate'])->middleware('auth:sanctum');

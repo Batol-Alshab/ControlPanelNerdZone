@@ -55,7 +55,7 @@ class AuthController extends Controller
 
         try {
             if (!Auth::attempt($credentials)) {
-                return $this->errorResponse("unothorized", 401);
+                return $this->errorResponse("الايميل او كلمة المرور غير صحيحة", 401);
             }
 
             $user = Auth::user();
