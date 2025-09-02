@@ -25,7 +25,7 @@ class CheckTaskReminders  implements ShouldQueue
         // ابحث عن المهام التي لم تكتمل وذكرها اقترب
         $tasks = Task::where('created_at', '>=', now()->subHours(24))
             ->where('percent', '!=', 100) // تأكد أن المهمة لم تكتمل
-            ->where('reminder_time', '<=', Carbon::now()->addMinutes(2)) // اقترب وقت التذكير (خلال الدقيقتين القادمتين)
+            ->where('reminder_time', '<=', Carbon::now()->addMinutes(1)) // اقترب وقت التذكير (خلال الدقيقة القادمة)
             ->where('reminder_time', '>', Carbon::now()) // لم يمر الوقت بعد
             ->get();
 

@@ -77,9 +77,9 @@
     <script>
         // Replace with your actual Pusher credentials
         
-    const PUSHER_APP_ID='2028478';
-    const PUSHER_APP_KEY='24651b0d1dc9e0498311';
-    const PUSHER_APP_CLUSTER='ap2';
+        const PUSHER_APP_ID='2028478';
+        const PUSHER_APP_KEY='24651b0d1dc9e0498311';
+        const PUSHER_APP_CLUSTER='ap2';
         const USER_ID = '5'; // Replace with the authenticated user's ID you used in Laravel
 
         // Enable pusher logging - don't include this in production
@@ -90,25 +90,22 @@
         });
 
         // The channel name must match the one in your Laravel event
-        var channel = pusher.subscribe(`user.${USER_ID}`);
+        var channel = pusher.subscribe('user.'+USER_ID
+            // 'my-channel'
+        );
         
         // The event name must match the broadcast event name
-        channel.bind('App\\Events\\TaskReminder', function(data) {
-            console.log(data); // Optional: log the data to the console
-
-            // Get the notification area element
-            const notificationArea = document.getElementById('notification-area');
-            
-            // Display the received data in the box
-            notificationArea.innerHTML = `
-                <h3 style="margin: 0;">تم استقبال إشعار!</h3>
-                <p><strong>محتوى المهمة:</strong> ${data.task.content}</p>
-                <p><strong>وقت التذكير:</strong> ${data.task.reminder_time}</p>
-            `;
-            
-            // Show the notification box
-            notificationArea.classList.add('show');
-        });
+            channel.bind('reminderToTask'
+                , function(data) {
+                    const notificationArea = document.getElementById('notification-area');
+                    notificationArea.innerHTML = `
+                        <h3 style="margin: 0;">تم استقبال إشعار!</h3>
+                        <p><strong>محتوى المهمة:</strong> ${data.task.content}</p>
+                        <p><strong>وقت التذكير:</strong> ${data.task.reminder_time}</p>
+                    `;
+                    notificationArea.classList.add('show');
+                }
+            );
     </script>
 </body>
 </html>
