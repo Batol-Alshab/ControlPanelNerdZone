@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Inquiry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
@@ -8,8 +9,10 @@ use App\Http\Controllers\Api\TestController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ChartController;
 use App\Http\Controllers\Api\VideoController;
+use App\Http\Controllers\Api\AnswerController;
 use App\Http\Controllers\Api\LessonController;
 use App\Http\Controllers\Api\CoursesController;
+use App\Http\Controllers\Api\InquiryController;
 use App\Http\Controllers\Api\SectionController;
 use App\Http\Controllers\Api\SummeryController;
 use App\Http\Controllers\Api\MaterialController;
@@ -58,3 +61,9 @@ Route::get('user/material/progress/{materialId} ',[ChartController::class,'getMa
 Route::get('user/progress',[ChartController::class,'getAllMaterialsProgress'])->middleware('auth:sanctum');
 Route::get('user/{materialId}/lesson',[ChartController::class,'getMterialDetails'])->middleware('auth:sanctum');
 Route::get('user/material/rate',[ChartController::class,'getMterialRate'])->middleware('auth:sanctum');
+Route::post('user/inquiry',[InquiryController::class,'makeInquiry'])->middleware('auth:sanctum');
+Route::delete('user/inquiry/delete/{id}',[InquiryController::class,'deleteInquiry'])->middleware('auth:sanctum');
+Route::post('user/answer',[AnswerController::class,'storeAnswer'])->middleware('auth:sanctum');
+Route::delete('user/answer/delete/{id}',[AnswerController::class,'deleteAnswer'])->middleware('auth:sanctum');
+Route::get('user/video/{id}/inquiries',[InquiryController::class,'getVideoInquiries'])->middleware('auth:sanctum');
+Route::get('user/summery/{id}/inquiries',[InquiryController::class,'getSummeryInquiries'])->middleware('auth:sanctum');

@@ -27,14 +27,7 @@ class UserSeeder extends Seeder
                 {
                     $user->assignRole('student');
                 });
-        // User::create([
-        //     'name'=>'batol',
-        //     'password'=>'batol',
-        //     'email'=>'batol1@sh.com',
-        //     'city' => 'Hama',
-        //     'sex'=>0,
-        //     'section_id'=>'1'
-        // ]);
+        
         // User::create([
         //     'name'=>'batol',
         //     'password'=>'batol',
