@@ -34,6 +34,12 @@ class LessonsRelationManager extends RelationManager
                     ->label(__('messages.name'))
                     ->required()
                     ->maxLength(255),
+                TextInput::make('cost')
+                    ->label(__('messages.cost'))
+                    ->default(0)
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(100000),
             ]);
     }
 
@@ -44,6 +50,10 @@ class LessonsRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('name')
                     ->label(__('messages.name')),
+                TextColumn::make('cost')
+                    ->label(__('messages.cost'))
+                    ->sortable()
+                    ->searchable(),
             ])
             ->filters([
                 //

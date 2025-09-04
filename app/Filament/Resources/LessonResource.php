@@ -21,6 +21,7 @@ use App\Filament\Resources\LessonResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\LessonResource\RelationManagers;
 use App\Filament\Resources\LessonResource\RelationManagers\TestsRelationManager;
+use App\Filament\Resources\LessonResource\RelationManagers\UsersRelationManager;
 use App\Filament\Resources\LessonResource\RelationManagers\VideosRelationManager;
 use App\Filament\Resources\LessonResource\RelationManagers\CoursesRelationManager;
 use App\Filament\Resources\LessonResource\RelationManagers\SummeriesRelationManager;
@@ -66,7 +67,7 @@ class LessonResource extends Resource
                     ->relationship('material', 'name')
                     ->options(
                         function () {
-                            $user = auth()->user();
+                            $user = Auth::user();
                             $roleNames = $user->getRoleNames();
 
                             if ($roleNames->contains('admin'))
@@ -102,9 +103,15 @@ class LessonResource extends Resource
                     ->searchable(),
                 TextColumn::make('material.name')
                     ->label(__('messages.material.label'))
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('cost')
                     ->label(__('messages.cost'))
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('users_count')
+                    ->label(__('messages.user_count_buy'))
+                    ->counts('users')
                     ->sortable(),
             ])
             ->filters([
@@ -113,7 +120,7 @@ class LessonResource extends Resource
                     // ->relationship('material','name')
                     ->options(
                         function () {
-                            $user = auth()->user();
+                            $user = Auth::user();
                             $roleNames = $user->getRoleNames();
 
                             if ($roleNames->contains('admin'))
@@ -142,6 +149,7 @@ class LessonResource extends Resource
             SummeriesRelationManager::class,
             TestsRelationManager::class,
             CoursesRelationManager::class,
+            UsersRelationManager::class,
         ];
     }
 
@@ -157,7 +165,8 @@ class LessonResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-        $user = auth()->user();
+        // $user = Auth::user();
+        $user = Auth::user();
         $roleNames = $user->getRoleNames();
         if ($roleNames->contains('admin'))
             return $query;

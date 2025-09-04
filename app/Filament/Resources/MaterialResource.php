@@ -7,19 +7,22 @@ use Filament\Tables;
 use App\Models\Material;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\UserMaterial;
 use Filament\Resources\Resource;
 use PHPUnit\Framework\returnSelf;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Filters\SelectFilter;
+
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\MaterialResource\Pages;
-
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\MaterialResource\RelationManagers;
+use App\Filament\Resources\MaterialResource\RelationManagers\UsersRelationManager;
 use App\Filament\Resources\MaterialResource\RelationManagers\LessonsRelationManager;
 use App\Filament\Resources\MaterialResource\RelationManagers\LessonsRelationManagereturnSelf;
 
@@ -58,7 +61,7 @@ class MaterialResource extends Resource
                 Select::make('section_id')
                     ->label(__('messages.section.label'))
                     ->required()
-                    ->relationship('section','name'),
+                    ->relationship('section', 'name'),
                 FileUpload::make('image')
                     ->label(__('messages.image'))
                     ->nullable()
@@ -83,12 +86,30 @@ class MaterialResource extends Resource
                     ->label(__('messages.section.label'))
                     ->sortable(),
                 ImageColumn::make('image')
-                    ->label(__('messages.image'))
+                    ->label(__('messages.image')),
+                TextColumn::make('userMaterials.rate')
+                    ->label(__('messages.rate_student'))
+                    ->getStateUsing(function ($record) {
+                        $materials = $record->userMaterials()->get();
+                        $totalRate = $materials->sum(fn($material) => $material->rate);
+                        return $totalRate;
+                    })
+                    ->sortable(query: function ($query, $direction) {
+                        return $query->orderBy(
+                           UserMaterial::selectRaw('COALESCE(SUM(rate), 0)')
+                                ->whereColumn('material_id', 'materials.id'),
+                            $direction
+                        );
+                    }),
+                TextColumn::make('lessons_count')
+                    ->label(__('messages.lessons_count'))
+                    ->counts('lessons') // يستخدم withCount('lessons')
+                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('section_id')
                     ->label(__('messages.section.label'))
-                    ->relationship('section','name')
+                    ->relationship('section', 'name')
 
             ])
             ->actions([
@@ -105,6 +126,7 @@ class MaterialResource extends Resource
     {
         return [
             LessonsRelationManager::class,
+            UsersRelationManager::class,
         ];
     }
 
@@ -120,13 +142,14 @@ class MaterialResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-        $user = auth()->user();
+        // $user = auth()->user();
+        $user = Auth::user();
         $roleNames = $user->getRoleNames();
 
         if ($roleNames->contains('admin'))
             return $query;
 
-        $access_material_id =$user->materials()->pluck('material_id');
+        $access_material_id = $user->materials()->pluck('material_id');
         return $query->whereIn('id', $access_material_id);
     }
 }

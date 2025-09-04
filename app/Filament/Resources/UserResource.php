@@ -11,12 +11,14 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Resources\Resource;
+use PHPUnit\Framework\MockObject\ReturnValueNotConfiguredException;
 use Spatie\Permission\Models\Role;
 use Filament\Forms\Components\Tabs;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
@@ -56,78 +58,114 @@ class UserResource extends Resource
     public static function form(Form $form): Form
     {
         return
-        $form ->schema([
-            Tabs::make('Tabs')
-                ->tabs([
-                    Tab::make('info')
-                        ->label(__('messages.info'))
-                        ->schema([
-                            TextInput::make('name')
-                                ->required()
-                                ->label(__('messages.name')),
-                            TextInput::make('email')->required()
-                                ->label(__('messages.email'))
-                                ->email()
-                                ->unique(ignoreRecord: true),
-                            TextInput::make('password')
-                                ->label(__('messages.password'))
-                                ->required()
-                                ->password()
-                                ->visibleOn('create'),
-                            TextInput::make('city')
-                                ->label(__('messages.city'))
-                                ->required(),
-                            Select::make('sex')
-                                ->label(__('messages.sex'))
-                                ->required()
-                                ->options([
-                                    0 => __('messages.male') ,
-                                    1 => __('messages.female'),
-                                ]),
+            $form->schema([
+                Tabs::make('Tabs')
+                    ->tabs([
+                        Tab::make('info')
+                            ->label(__('messages.info'))
+                            ->schema([
+                                TextInput::make('name')
+                                    ->required()
+                                    ->label(__('messages.name')),
+                                TextInput::make('email')->required()
+                                    ->label(__('messages.email'))
+                                    ->email()
+                                    ->unique(ignoreRecord: true),
+                                TextInput::make('password')
+                                    ->label(__('messages.password'))
+                                    ->required()
+                                    ->password()
+                                    ->visibleOn('create'),
+                                TextInput::make('city')
+                                    ->label(__('messages.city'))
+                                    ->required(),
+                                Select::make('sex')
+                                    ->label(__('messages.sex'))
+                                    ->required()
+                                    ->options([
+                                        0 => __('messages.male'),
+                                        1 => __('messages.female'),
+                                    ]),
+                                Select::make('section_id')
+                                    ->required()
+                                    ->label(__('messages.section.label'))
+                                    ->relationship('section', 'name')
+                                    ->disabledOn('edit')
+                                    ->reactive(),
                             ])->columns(2),
-                    Tab::make('Role')
-                        ->label(__('messages.access'))
-                        ->schema([
+                        Tab::make('Role')
+                            ->label(__('messages.material_info'))
+                            ->schema([
+                                // ->schema([
 
-                            // Select::make('roles')
-                            //     ->label(__('messages.roles'))
-                            //     ->required()
-                            //     ->relationship('roles' , 'name')
-                            //     ->options([
-                            //         '3' => Role::where('id',3)->pluck('name')->first()
-                            //     ])
-                            //     ->default(3)
-                            //     ->selectablePlaceholder(false)
-                            //     ->dehydrated(true),
+                                // Select::make('roles')
+                                //     ->label(__('messages.roles'))
+                                //     ->required()
+                                //     ->relationship('roles' , 'name')
+                                //     ->options([
+                                //         '3' => Role::where('id',3)->pluck('name')->first()
+                                //     ])
+                                //     ->default(3)
+                                //     ->selectablePlaceholder(false)
+                                //     ->dehydrated(true),
 
-                            Select::make('section_id')
-                                ->required()
-                                ->label(__('messages.section.label'))
-                                ->relationship('section','name')
-                                ->disabledOn('edit')
-                                ->reactive(),
-                            Fieldset::make('Access')
-                                ->label(__('messages.access'))
-                                ->schema([
-                                    CheckboxList::make('materials')
-                                        ->label(__('messages.material.label'))
-                                        ->relationship('materials','name')
-                                        ->options(fn(callable $get) => Material::where('section_id',$get('section_id'))->pluck('name','id'))
-                                        ->columns(3)
-                                        ->disabled(fn (callable $get) => !$get('section_id'))
-                                        ->reactive(),
+                                // ])
+
+                                Repeater::make('userMaterials')
+                                    ->label(__('messages.material.label'))
+                                    ->relationship('userMaterials')
+                                    ->schema([
+                                        Select::make('material_id')
+                                            ->label(__('messages.material.label'))
+                                            ->relationship('material', 'name')
+                                            ->disabled(), // الاسم فقط للعرض
+                                        TextInput::make('rate')
+                                            ->label(__('messages.rate'))
+                                            ->numeric()
+                                            ->minValue(0)
+                                            ->required(),
                                     ])
+                                    ->addable(false)
+                                    ->deletable(false)
+                                    ->columns(2)
+                                // ->orderColumn('name')
+                                //                                 ->default(fn ($record) => $record->materials->map(fn($material) => [
+                                //     'material_id' => $material->id,
+                                //     'name' => $material->name,
+                                //     'rate' => $material->pivot->rate,
+                                // ])->toArray())
 
-                        ])->columns(2),
+                                // ->default(fn($record) => $record->materials->map(function ($material) {
+                                //     return [
+                                //         'material_id' => $material->id,
+                                //         'name' => $material->name,
+                                //         'rate' => $material->pivot->rate,
+                                //     ];
+                                // })->toArray()),
+
+                                // schema([
+                                //     CheckboxList::make('materials')
+                                //         ->label(__('messages.material.label'))
+                                //         ->relationship('materials', 'name')
+                                //         ->options(fn(callable $get) => Material::where('section_id', $get('section_id'))->pluck('name', 'id'))
+                                //         ->columns(3)
+                                //         ->disabled(fn(callable $get) => !$get('section_id'))
+                                //         ->reactive(),
+                                // ])
+
+                            ])->columnSpanFull()
+                            // ->disabledOn('create')
+                            ->hiddenOn('create'),
                     ])->columnSpanFull()
-        ]);
-
+            ]);
     }
     public static function table(Table $table): Table
     {
         return $table
-            ->query(User::whereHas('roles',
-                fn($query) => $query->where('name','student')))
+            ->query(User::whereHas(
+                'roles',
+                fn($query) => $query->where('name', 'student')
+            ))
 
             ->columns([
                 TextColumn::make('id')
@@ -140,8 +178,13 @@ class UserResource extends Resource
                 TextColumn::make('section.name')
                     ->label(__('messages.section.label'))
                     ->sortable(),
-                TextColumn::make('materials.name')
-                    ->label(__('messages.material.label')),
+                TextColumn::make('userMaterials.rate')
+                    ->label(__('messages.rate'))
+                    ->getStateUsing(function ($record) {
+                        $materials = $record->userMaterials()->get();
+                        $totalRate = $materials->sum(fn($material) => $material->rate);
+                        return $totalRate;
+                    }),
                 TextColumn::make('email')
                     ->label(__('messages.email'))
                     ->toggleable(),
@@ -149,9 +192,9 @@ class UserResource extends Resource
                     ->label(__('messages.city'))
                     ->sortable(),
                 TextColumn::make('sex')
-                        ->label(__('messages.sex'))
-                        ->toggleable(isToggledHiddenByDefault: true)
-                        ->getStateUsing(fn($record) => $record->sex == 0 ?  __('messages.male'): __('messages.female')),
+                    ->label(__('messages.sex'))
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->getStateUsing(fn($record) => $record->sex == 0 ?  __('messages.male') : __('messages.female')),
 
 
 
@@ -159,10 +202,10 @@ class UserResource extends Resource
             ->filters([
                 SelectFilter::make('section.name')
                     ->label(__('messages.section.label'))
-                    ->relationship('section','name'),
+                    ->relationship('section', 'name'),
                 SelectFilter::make('materials')
                     ->label(__('messages.material.label'))
-                    ->relationship('materials', 'name')//,fn ($query) => $query->where('name','!=','admin'))
+                    ->relationship('materials', 'name') //,fn ($query) => $query->where('name','!=','admin'))
 
             ])
             ->actions([
@@ -173,7 +216,6 @@ class UserResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-
     }
 
     public static function getRelations(): array

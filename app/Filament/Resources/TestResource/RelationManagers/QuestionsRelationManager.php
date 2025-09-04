@@ -23,7 +23,7 @@ class QuestionsRelationManager extends RelationManager
 {
     protected static string $relationship = 'questions';
     //اضافة /////////////////////////////
-
+protected static ?string $icon = 'heroicon-o-question-mark-circle';
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {

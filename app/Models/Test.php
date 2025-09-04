@@ -35,7 +35,8 @@ class Test extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'user_test')
-            ->using(UserTest::class);
+            ->using(UserTest::class)
+             ->withPivot('passing_rate');
     }
     protected static function booted()
     {
