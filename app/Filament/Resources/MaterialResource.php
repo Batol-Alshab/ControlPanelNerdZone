@@ -52,22 +52,27 @@ class MaterialResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $isAdmin = Auth::user()->hasRole('admin');
+
         return $form
             ->schema([
                 TextInput::make('name')
                     ->label(__('messages.name'))
                     ->required()
-                    ->maxValue(25),
+                    ->maxLength(25)
+                    ->disabled(!$isAdmin), // فقط Admin يمكنه التعديل
                 Select::make('section_id')
                     ->label(__('messages.section.label'))
                     ->required()
-                    ->relationship('section', 'name'),
+                    ->relationship('section', 'name')
+                    ->disabled(!$isAdmin),
                 FileUpload::make('image')
                     ->label(__('messages.image'))
                     ->nullable()
                     ->image()
                     ->maxSize(1024)
-                    ->disk('public')->directory('Material'),
+                    ->disk('public')->directory('Material')
+                    ->disabled(!$isAdmin),
             ]);
     }
 
@@ -96,7 +101,7 @@ class MaterialResource extends Resource
                     })
                     ->sortable(query: function ($query, $direction) {
                         return $query->orderBy(
-                           UserMaterial::selectRaw('COALESCE(SUM(rate), 0)')
+                            UserMaterial::selectRaw('COALESCE(SUM(rate), 0)')
                                 ->whereColumn('material_id', 'materials.id'),
                             $direction
                         );

@@ -29,22 +29,26 @@ class StatsOverview extends BaseWidget
 
     protected function getStats(): array
     {
-        return Cache::remember('stat_'.app()->getLocale(), now()->addMinutes(60), function () {
+        return Cache::remember('stat_' . app()->getLocale(), now()->addMinutes(60), function () {
             $data = Trend::model(User::class)
-                    ->between(
-                        start: Carbon::now()->subDays(14),
-                        end: Carbon::now()
-                    )
-                    ->perMonth()
-                    ->count()
-                    ->map(fn($value) => $value->aggregate)
-                    ->toArray();
+                ->between(
+                    start: Carbon::now()->subDays(14),
+                    end: Carbon::now()
+                )
+                ->perMonth()
+                ->count()
+                ->map(fn($value) => $value->aggregate)
+                ->toArray();
 
-            $student = User::whereHas('roles',
-                fn($query) => $query->where('name','student'))
+            $student = User::whereHas(
+                'roles',
+                fn($query) => $query->where('name', 'student')
+            )
                 ->count();
-            $teacher = User::whereHas('roles',
-                fn($query) => $query->where('name','teacher'))
+            $teacher = User::whereHas(
+                'roles',
+                fn($query) => $query->where('name', 'teacher')
+            )
                 ->count();
             $allUser = $student + $teacher;
 
@@ -57,8 +61,8 @@ class StatsOverview extends BaseWidget
                 ->perMonth()
                 ->count()
                 ->map(fn($value) => $value->aggregate);
-            $description = $joinUser24[0]? __('messages.increase') : '';
-            $descriptionIcon = $joinUser24[0]? 'heroicon-m-arrow-trending-up' : '';
+            $description = $joinUser24[0] ? __('messages.increase') : '';
+            $descriptionIcon = $joinUser24[0] ? 'heroicon-m-arrow-trending-up' : '';
 
             $addInquiry24  = Trend::model(Inquiry::class)
                 ->between(
@@ -69,38 +73,41 @@ class StatsOverview extends BaseWidget
                 ->count()
                 ->map(fn($value) => $value->aggregate);
 
-            $materials = Material::get();
-            foreach($materials as $material)
-            {
-                $materilaAccess[$material->name] = $material->users()
-                            ->whereHas('roles', fn($query) => $query->where('id', 3))
-                            ->count();
+            $materials = Material::all();
+            $materialPoints = [];
+            foreach ($materials as $material) {
+                $materialPoints[$material->name] = $material->users()
+                    ->whereHas('roles', fn($query) => $query->where('id', 3)) // الطلاب فقط
+                    ->withSum(['userMaterials' => fn($q) => $q->where('material_id', $material->id)], 'rate')
+                    ->get()
+                    ->sum('user_materials_sum_rate'); // مجموع النقاط لكل مادة
             }
-            $numMaxMaxMaterilaAccess =max($materilaAccess);
-            $nameMaxMaterilaAccess = array_search($numMaxMaxMaterilaAccess, $materilaAccess);
+
+            $maxPoints = max($materialPoints);
+            $topMaterialName = array_search($maxPoints, $materialPoints);
+            
             return [
-                Stat::make(__('messages.All User'),$allUser)
-                    ->description(__('messages.student.navigation').' :'. $student.', '. __('messages.teacher.navigation').' :'.$teacher)
+                Stat::make(__('messages.All User'), $allUser)
+                    ->description(__('messages.student.navigation') . ' :' . $student . ', ' . __('messages.teacher.navigation') . ' :' . $teacher)
                     ->chart($data)
                     ->icon('heroicon-o-users')
                     ->url(UserResource::getUrl()),
 
-                stat::make(__('messages.Join Users Last 24H'),$joinUser24[0])
+                stat::make(__('messages.Join Users Last 24H'), $joinUser24[0])
                     ->icon('heroicon-o-user-plus')
-                    ->description($description )
+                    ->description($description)
                     ->descriptionIcon($descriptionIcon)
                     ->url(UserResource::getUrl()),
 
-                stat::make(__('messages.Max Material Access'),$nameMaxMaterilaAccess)
-                    ->description($numMaxMaxMaterilaAccess)
+                Stat::make(__('messages.Material With Max Points'), $topMaterialName)
+                    ->description($maxPoints)
                     ->icon('heroicon-o-arrow-trending-up')
                     ->url(UserResource::getUrl()),
-
-                stat::make(__('messages.Add inquiry Last 24H'),$addInquiry24[0])
+                stat::make(__('messages.Add inquiry Last 24H'), $addInquiry24[0])
                     ->icon('heroicon-o-question-mark-circle')
                     ->url(InquiryResource::getUrl()),
 
             ];
-    });
+        });
     }
 }

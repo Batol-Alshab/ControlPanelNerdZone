@@ -11,9 +11,9 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Resources\Resource;
-use PHPUnit\Framework\MockObject\ReturnValueNotConfiguredException;
 use Spatie\Permission\Models\Role;
 use Filament\Forms\Components\Tabs;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -29,6 +29,7 @@ use Filament\Forms\Components\CheckboxList;
 use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
+use PHPUnit\Framework\MockObject\ReturnValueNotConfiguredException;
 
 class UserResource extends Resource
 {
@@ -54,7 +55,14 @@ class UserResource extends Resource
         return __('messages.student.plural');
     }
 
-
+    public static function shouldRegisterNavigation(): bool
+    {
+        $user = Auth::user();
+        $roleNames = $user->getRoleNames();
+        if ($roleNames->contains('admin'))
+            return true;
+        else return false;
+    }
     public static function form(Form $form): Form
     {
         return
@@ -203,10 +211,7 @@ class UserResource extends Resource
                 SelectFilter::make('section.name')
                     ->label(__('messages.section.label'))
                     ->relationship('section', 'name'),
-                SelectFilter::make('materials')
-                    ->label(__('messages.material.label'))
-                    ->relationship('materials', 'name') //,fn ($query) => $query->where('name','!=','admin'))
-
+                
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

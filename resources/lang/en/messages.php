@@ -164,9 +164,10 @@ return [
     'correct_option' => 'correct_option',
     'New answer' => 'New answer',
     'is_complete' => 'is complete',
+    'is_publish' => 'is_publish',
     'Not_complete' => 'Not complete',
     'deldete_answer' => 'deldete answer',
-
+'no_questions'=>'no_questions',
     'All User' => 'All User',
     'Join Users Last 24H' => 'Join Users Last 24H',
     'Max Material Access' => 'Max Material Access',
@@ -194,4 +195,11 @@ return [
     'test_rate' => 'test_rate',
     'avg_rate_from_solutions' => 'avg_rate_from_solutions',
     'remove_purchase' => 'remove_purchase',
+    'not_found' => 'not_found',
+    'file_not_found' => 'file_not_found',
+    'best students' => 'The_best_students_in ',
+    'Material With Max Points' => 'Material With Max Points' ,
+    'Sum Of Students Rates Per Material' => 'Sum Of Students Rates Per Material',
+    // 'The_best_students_in_الفرع_العلمي' => 'The_best_students_in_الفرع _العلمي',
+    // 'The_best_students_in_الفرع_الأدبي' => 'The_best_students_in_الفرع الأدبي',
 ];

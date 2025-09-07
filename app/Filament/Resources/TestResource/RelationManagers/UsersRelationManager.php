@@ -44,7 +44,10 @@ class UsersRelationManager extends RelationManager
                         if (!empty($userAlreadyAdded)) {
                             $query->whereNotIn('users.id', $userAlreadyAdded);
                         }
-
+                        $query->whereHas(
+                            'roles',
+                            fn($query) => $query->where('id', 3) //('name', 'student')
+                        );
                         return $query->pluck('email', 'users.id');
                     })
                     ->hiddenOn('edit')
@@ -74,7 +77,7 @@ class UsersRelationManager extends RelationManager
                     ->searchable(),
                 TextColumn::make('userTests.passing_rate')
                     ->label(__('messages.return_cost')),
-                
+
                 // TextColumn::make('userTests.rate')
                 //     ->label(__('messages.rate'))
                 //     ->getStateUsing(function ($record) {

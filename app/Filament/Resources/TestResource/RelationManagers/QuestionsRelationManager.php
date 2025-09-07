@@ -34,40 +34,7 @@ protected static ?string $icon = 'heroicon-o-question-mark-circle';
         return __('messages.question.plural');
     }
 
-    public  function canCreate(): bool
-    {
-        $record = static::getOwnerRecord();
-        $beforRecord = $record->is_complete;
-        $numQuestions = $record->numQuestions;
-        $countQuestions = $record->questions()->count();
-        if($countQuestions == $numQuestions )
-            {
-                if($record->is_complete ==0 )
-                {
-                    $this->redirect('edit');
-                    Notification::make()
-                    ->body(__('messages.Test become complete'))
-                    ->send();
-                }
-                $beforRecord = 1;
-                $record->is_complete =1;
-
-
-            }
-        else
-            {
-                $record->is_complete =0;
-                if($beforRecord == 1)
-                {
-                    $this->redirect('edit');
-                    $beforRecord = 0;
-                }
-
-            }
-        $record->save();
-        return $countQuestions < $numQuestions ;
-    }
-
+    
     public function form(Form $form): Form
     {
         // $questionCount = $this->record ? $this->record->questions()->count() : 0;
@@ -76,11 +43,11 @@ protected static ?string $icon = 'heroicon-o-question-mark-circle';
             ->schema([
                 MarkdownEditor::make('content')
                     ->label(__('messages.question.label'))
-                    ->required(),
-                FileUpload::make('image')
-                    ->label(__('messages.image'))
-                    ->nullable()
-                    ->disk('public')->directory('Test-Image'),
+                    ->required()->columnSpanFull(),
+                // FileUpload::make('image')
+                //     ->label(__('messages.image'))
+                //     ->nullable()
+                //     ->disk('public')->directory('Test-Image'),
 
                 TextInput::make('option_1')
                     ->label(__('messages.The first option'))
@@ -121,9 +88,9 @@ protected static ?string $icon = 'heroicon-o-question-mark-circle';
             ->columns([
                 TextColumn::make('content')
                     ->label(__('messages.question.label')),
-                TextColumn::make('image')
-                    ->label(__('messages.image'))
-                    ->toggleable(isToggledHiddenByDefault: true),
+                // TextColumn::make('image')
+                //     ->label(__('messages.image'))
+                //     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('option_1')
                     ->label(__('messages.The first option')),
                 TextColumn::make('option_2')
@@ -137,6 +104,7 @@ protected static ?string $icon = 'heroicon-o-question-mark-circle';
                 // TextColumn::make('test.is_complete')
 
             ])
+            ->emptyStateHeading(__('messages.no_questions'))
             ->filters([
                 //
             ])

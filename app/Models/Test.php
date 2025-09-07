@@ -15,7 +15,6 @@ class Test extends Model
     use HasFactory, Notifiable;
     protected $fillable = [
         'name',
-        'numQuestions',
         'is_complete',
         'lesson_id',
         'returned_cost',

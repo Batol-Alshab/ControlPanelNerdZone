@@ -79,7 +79,8 @@ class TestResource extends Resource
                             return Material::whereIn('id', $access_material_id)->pluck('name', 'id');
                         }
                     })
-                    ->reactive(),
+                    ->reactive()
+                    ->searchable(),
 
                 Select::make('lesson_id')
                     ->label(__('messages.lesson.label'))
@@ -88,15 +89,10 @@ class TestResource extends Resource
                     $query->where('material_id', $get('material')))
                     ->preload()
                     ->reactive()
-                    ->disabled(fn(callable $get) => !$get('material')),
+                    ->disabled(fn(callable $get) => !$get('material'))
+                    ->searchable(),
 
-                TextInput::make('numQuestions')
-                    ->label(__('messages.numQuestions'))
-                    ->required()
-                    ->placeholder('[ 1, 2, ....,50 ]')
-                    ->numeric()
-                    ->minValue(1)
-                    ->maxValue(50),
+               
                 TextInput::make('returned_cost')
                     ->label(__('messages.test_rate'))
                     ->numeric()
@@ -104,21 +100,10 @@ class TestResource extends Resource
                     ->minValue(0)
                     ->maxValue(100000),
 
-                // Select::make('numQuestions')->required()
-                //     ->options([
-                //         2=>2,
-                //         5=>5,
-                //         10=>10,
-                //         15=>15,
-                //         20=>20
-                //     ]),
+               
                 Toggle::make('is_complete')
-                    ->label(__('messages.is_complete'))
-
-                    ->disabled()
-                // TextInput::make('numQuestions')->required()
-                //     ->integer()
-                //     ->minValue(1),
+                    ->label(__('messages.is_publish'))
+                    // ->disabled()
             ]);
     }
 

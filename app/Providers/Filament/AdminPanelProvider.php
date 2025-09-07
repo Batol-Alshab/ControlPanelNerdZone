@@ -29,9 +29,13 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => '#BA68C8',//   '#2ccfa0',// '#BA68C8',
-                'success' =>  '#BA68C8',//  '#69c6df',// '#BA68C8',
-                'gray' => '#c785d2',//  '#1b7d61',// '#c785d2',
+                'my_green' => '#09f23fff',
+                'my_yellow' => '#eab844ff',
+                'my_color_1' => '#ac91e9ff',
+                'my_color_2' =>  '#84e4d9ff',
+                'primary' => '#BA68C8', //   '#2ccfa0',// '#BA68C8',
+                'success' =>  '#BA68C8', //  '#69c6df',// '#BA68C8',
+                // 'gray' => '#c785d2', //  '#1b7d61',// '#c785d2',
             ])
             ->favicon(asset('images/NZLogo.svg'))
             ->brandLogo(asset('images/NZLogo.svg'))
@@ -42,8 +46,7 @@ class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            ->widgets([
-            ])
+            ->widgets([])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

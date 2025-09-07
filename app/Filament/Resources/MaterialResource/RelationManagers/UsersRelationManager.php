@@ -50,14 +50,14 @@ class UsersRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->query(User::whereHas(
-                'roles',
-                fn($query) => $query->where('name', 'student')
-            ))
-            ->query(User::whereHas(
                 'userMaterials',
                 fn($query) =>
                 $query->where('material_id',  static::getOwnerRecord()->id)
-            ))
+            )
+                ->whereHas(
+                    'roles',
+                    fn($query) => $query->where('id', 3) //('name', 'student')
+                ))
             // ->query(UserMaterial::where('material_id',$this->record->id))
 
             ->columns([
@@ -86,14 +86,14 @@ class UsersRelationManager extends RelationManager
             ])
             ->emptyStateHeading(__('messages.no_students'))
 
-            ->filters([
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->action(function (array $data, $record) {
                         // تحديث قيمة الـ rate في pivot
                         $record->materials()->updateExistingPivot(
-                            static::getOwnerRecord()->id,['rate' => $data['rate']]
+                            static::getOwnerRecord()->id,
+                            ['rate' => $data['rate']]
                         );
                     })
 

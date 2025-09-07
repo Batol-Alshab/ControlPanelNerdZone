@@ -31,7 +31,7 @@ class UserMaterial extends Pivot
 
     protected static function booted()
     {
-        $basekeys = ['stat', 'statmaterialForTeacher', 'CountOfStudentsAccessMaterials'];
+        $basekeys = ['stat', 'statmaterialForTeacher', 'CountOfStudentsAccessMaterials','countTestCourceSummeryVideoForTeacher_'];
         $locales = ['en', 'ar'];
 
         foreach ($basekeys as $key) {

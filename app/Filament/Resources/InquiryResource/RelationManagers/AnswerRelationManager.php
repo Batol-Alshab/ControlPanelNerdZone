@@ -48,7 +48,14 @@ class AnswerRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->after(function ($record) {
+                        $inquiry = $record->inquiry;
+                        if ($inquiry) {
+                            $inquiry->status = 'complete Answer';
+                            $inquiry->save();
+                        }
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

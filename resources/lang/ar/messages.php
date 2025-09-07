@@ -167,10 +167,11 @@ return [
     'New answer' => 'إضافة إجابة',
     'add_answer' => 'اضافة اجابة',
     'is_complete' => 'مكتمل',
+    'is_publish' => 'نشر',
     'Not_complete' => 'غير مكتمل',
     'deldete_answer' => 'حذف الإجابة',
     'inquiries' => 'استفسارات',
-
+'no_questions' =>'لا يوجد اسئلة',
     'All User' => 'عدد المستخدمين',
     'Join Users Last 24H' => 'عدد عمليات إنشاء حساب اخر 24H',
     'Max Material Access' => 'المادة الأكثر وصولاً',
@@ -197,6 +198,12 @@ return [
     'user_count_solution' => 'مرات الحل',
     'test_rate' => 'نقاط الاختبار',
     'avg_rate_from_solutions' => 'متوسط النقاط المكتسبة من الحلول',
-    'remove_purchase' =>'ازالة شراء الطالب',
+    'remove_purchase' => 'ازالة شراء الطالب',
+    'not_found' => 'غير موجود',
+    'file_not_found' => 'الملف غير موجود',
+    'best students' => '  الطلاب الافضل في ',
+    'Material With Max Points' => 'أكبر عدد النقاط في',
+    'Sum Of Students Rates Per Material' => 'مجموع نقاط الطلاب في كل مادة',
+    // 'The_best_students_in_الفرع_الأدبي' => 'الطلاب الافضل في الفرع الأدبي',
 
 ];

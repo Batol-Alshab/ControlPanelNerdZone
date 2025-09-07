@@ -16,7 +16,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 class LessonsRelationManager extends RelationManager
 {
     protected static string $relationship = 'lessons';
-
+protected static ?string $icon ='heroicon-o-queue-list';
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
         return __('messages.lesson.navigation');

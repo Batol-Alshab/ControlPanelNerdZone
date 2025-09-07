@@ -74,6 +74,10 @@ class UsersRelationManager extends RelationManager
                                 if (!empty($userAlreadyAdded)) {
                                     $query->whereNotIn('users.id', $userAlreadyAdded);
                                 }
+                                $query->whereHas(
+                                    'roles',
+                                    fn($query) => $query->where('id', 3) //('name', 'student')
+                                );
 
                                 return $query->pluck('email', 'users.id');
                             })
@@ -94,7 +98,7 @@ class UsersRelationManager extends RelationManager
                 //             $owner->users()->detach($record->id);
                 //         }
                 //     })->button()->icon('heroicon-s-trash')              // أيقونة الحذف
-                    // ->requiresConfirmation()  ,
+                // ->requiresConfirmation()  ,
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

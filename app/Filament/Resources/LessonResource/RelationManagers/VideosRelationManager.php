@@ -40,7 +40,7 @@ class VideosRelationManager extends RelationManager
                     ->required(),
                 FileUpload::make('video')
                     ->label(__('messages.video.label'))
-                    // ->required()
+                    ->required()
                     ->disk('public')->directory('Video')
                     ->maxSize(102400)
             ]);
