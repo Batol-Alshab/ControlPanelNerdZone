@@ -23,7 +23,7 @@ class VideoSeeder extends Seeder
                     'name'      => 'فيديو ' . $i . ' - ' . $lesson->name,
 
                     // Use Faker to generate a dummy URL for the video.
-                    'video'     => 'storage/app/public/videos/video_' . $i . '_' . $lesson->id . '.mp4',
+                    'video'     => 'Video/video_' . $i . '_' . $lesson->id . '.mp4',
 
                     // Associate the video with the current lesson.
                     'lesson_id' => $lesson->id,

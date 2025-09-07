@@ -23,7 +23,7 @@ class SummerySeeder extends Seeder
                     'name'      => 'ملخص ' . $i . ' - ' . $lesson->name,
 
                     // Set a custom file path for the summary.
-                    'file'      => 'storage/app/public/SummeryFile/summary_' . $i . '_' . $lesson->id . '.pdf',
+                    'file'      => 'SummeryFile/summary_' . $i . '_' . $lesson->id . '.pdf',
 
                     // Associate the summary with the current lesson.
                     'lesson_id' => $lesson->id,
