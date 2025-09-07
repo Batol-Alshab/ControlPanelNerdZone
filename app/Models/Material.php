@@ -36,6 +36,10 @@ class Material extends Model
         return $this->belongsToMany(User::class, 'user_material')
                     ->using(UserMaterial::class);
     }
+    public function userMaterials()
+    {
+        return $this->hasMany(UserMaterial::class);
+    }
 
     protected static function booted()
     {

@@ -2,87 +2,25 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Section;
-use Filament\Support\RawJs;
-use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Facades\Cache;
+use Flowframe\Trend\Trend;
+use App\Models\UserMaterial;
+use Filament\Widgets\LineChartWidget;
 
-class SectionWidget extends ChartWidget
-{
+// class SectionWidget extends LineChartWidget
+// {
+    // protected static ?string $heading = 'تطور أداء الطلاب الشهري';
+    // protected static ?int $sort = 20;
 
-    protected static ?int $sort = 6;
-    protected int | string | array $columnSpan = 1;
-
-    public function getHeading(): string
-    {
-        return __('messages.Chart material Section');
-    }
-
-    protected function getData(): array
-    {
-        return Cache::remember('materialSection_'.app()->getLocale(), now()->addMinutes(60), function () {
-            $sections_name = Section::pluck('name');
-            $materialCountInSections = Section::withCount('materials')->pluck('materials_count');
-
-            return [
-            'datasets' => [
-                    [
-                        'data' => $materialCountInSections,
-                        'backgroundColor' => ['#c785d2','#d4a2dd'],
-                        'borderColor' => '#e1bee7',
-                    ],
-                ],
-                'labels' => $sections_name,
-            ];
-        });
-    }
-
-    protected function getType(): string
-    {
-        return 'pie' ;
-    }
-
-    protected function getOptions():   RawJs
-    {
-        return RawJs::make(<<<'JS'
-        {
-            animation: {
-                duration: 2000
-            },
-            interaction: {
-                intersect: false
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-            //     datalabels : {
-            //     anchor : 'end',
-            //     align : 'start',
-            //     color : '#000',
-            //     font : {
-            //         'size' : 14,
-            //         'weight' : 'bold',
-            //     },
-            // },
-            },
-            scales: {
-                x: {
-                    type: 'category',
-                },
-                y: {
-                    grid:{
-                        display:false,
-                    },
-                    ticks:{
-                        display:false,
-                    },
-                },
-
-            }
-        }
-    JS);
-    }
-
-
-}
+    // protected function getData(): array
+    // {
+    //     return Trend::model(UserMaterial::class)
+    //         ->between(
+    //             start: now()->subMonths(6),
+    //             end: now()
+    //         )
+    //         ->perMonth()
+    //         ->sum('rate') // مجموع نقاط الطلاب
+    //         ->map(fn($value) => $value->aggregate)
+    //         ->toArray();
+    // }
+// }

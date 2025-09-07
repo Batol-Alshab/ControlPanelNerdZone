@@ -9,16 +9,16 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 class StatsMaterial extends BaseWidget
 {
-    public ? Material  $record = null;
-    protected function getStats(): array
-    {
-        if (!$this->record) {
-            return [
-                Stat::make('Number of Materials', Material::count()),
-            ];
-        }
-        return [
-            Stat::make('Lessons for this Material', $this->record->lessons()->count()),
-        ];
-    }
+    // public ? Material  $record = null;
+    // protected function getStats(): array
+    // {
+    //     if (!$this->record) {
+    //         return [
+    //             Stat::make('Number of Materials', Material::count()),
+    //         ];
+    //     }
+    //     return [
+    //         Stat::make('Lessons for this Material', $this->record->lessons()->count()),
+    //     ];
+    // }
 }

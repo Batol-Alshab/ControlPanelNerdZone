@@ -10,6 +10,7 @@ use App\Models\Material;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -63,7 +64,7 @@ class VideoResource extends Resource
                     ->required()
                     ->options(function()
                     {
-                        $user = auth()->user();
+                        $user = Auth::user();
                         $roleNames = $user->getRoleNames();
 
                         if ($roleNames->contains('admin'))
@@ -92,7 +93,7 @@ class VideoResource extends Resource
                     ->required()
                     ->disk('public')->directory('Video')
                     ->maxSize(102400) //  100MB
-                    // ->acceptedFileTypes(['video/mp4', 'video/avi', 'video/mov'])
+                    ->acceptedFileTypes(['video/mp4', 'video/avi', 'video/mov'])
                     // ->moveFiles()
                     // ->uploadingMessage('Uploading attachment...'),
             ]);
@@ -125,7 +126,7 @@ class VideoResource extends Resource
                     ->options(
                         function()
                         {
-                            $user= auth()->user();
+                            $user= Auth::user();
                             $roleNames = $user->getRoleNames();
 
                             if ($roleNames->contains('admin'))
@@ -169,7 +170,7 @@ class VideoResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-        $user = auth()->user();
+        $user = Auth::user();
         $roleNames = $user->getRoleNames();
 
         if($roleNames->contains('admin'))

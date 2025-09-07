@@ -15,6 +15,7 @@ use Filament\Forms\Form;
 use Pest\Laravel\options;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -67,8 +68,8 @@ class InquiryResource extends Resource
                     ->types([
                         Type::make(Summery::class)->titleAttribute('name')->label(__('messages.summery.singular')),
                         Type::make(Video::class)->titleAttribute('name')->label(__('messages.video.singular')),
-                        Type::make(Test::class)->titleAttribute('name')->label(__('messages.test.singular')),
-                        Type::make(Course::class)->titleAttribute('name')->label(__('messages.course.singular'))
+                        // Type::make(Test::class)->titleAttribute('name')->label(__('messages.test.singular')),
+                        // Type::make(Course::class)->titleAttribute('name')->label(__('messages.course.singular'))
                     ]),
                 Select::make('status')
                     ->label(__('messages.status'))
@@ -119,8 +120,8 @@ class InquiryResource extends Resource
                     return match($extracted){
                             'Summery' => 'success',
                             'Video' => 'info',
-                            'Course' => 'gray',
-                            'Test' =>'primary',
+                            // 'Course' => 'gray',
+                            // 'Test' =>'primary',
                     };
                     }),
                     TextColumn::make('inquiryable.name')
@@ -137,8 +138,8 @@ class InquiryResource extends Resource
                     ->options([
                         'App\Models\Summery'=> __('messages.summery.singular'),
                         'App\Models\Video'=> __('messages.video.singular'),
-                        'App\Models\Test'=> __('messages.test.singular'),
-                        'App\Models\Course'=> __('messages.course.singular'),
+                        // 'App\Models\Test'=> __('messages.test.singular'),
+                        // 'App\Models\Course'=> __('messages.course.singular'),
                     ]),
                 SelectFilter::make('status')
                     ->label(__('messages.status'))
@@ -177,7 +178,7 @@ class InquiryResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-        $user = auth()->user();
+        $user = Auth::user();;
         $roleNames = $user->getRoleNames();
 
         if($roleNames->contains('admin'))
@@ -187,24 +188,26 @@ class InquiryResource extends Resource
         $lessons = Lesson::whereIn('material_id',$access_material_id)->pluck('id');
 
         $summeries = Summery::whereIn('lesson_id', $lessons)->pluck('id');
-        $tests = Test::whereIn('lesson_id', $lessons)->pluck('id');
         $videos = Video::whereIn('lesson_id', $lessons)->pluck('id');
+        $tests = Test::whereIn('lesson_id', $lessons)->pluck('id');
         $courses = Course::whereIn('lesson_id', $lessons)->pluck('id');
 
         return $query->where(function ($q) use ($summeries, $tests, $videos, $courses) {
             $q->where(function ($q) use ($summeries) {
                 $q->where('inquiryable_type', Summery::class)
                 ->whereIn('inquiryable_id', $summeries);
-            })->orWhere(function ($q) use ($tests) {
-                $q->where('inquiryable_type', Test::class)
-                ->whereIn('inquiryable_id', $tests);
             })->orWhere(function ($q) use ($videos) {
                 $q->where('inquiryable_type', Video::class)
                 ->whereIn('inquiryable_id', $videos);
-            })->orWhere(function ($q) use ($courses) {
-                $q->where('inquiryable_type', Course::class)
-                ->whereIn('inquiryable_id', $courses);
-            });
+            })
+            // ->orWhere(function ($q) use ($tests) {
+            //     $q->where('inquiryable_type', Test::class)
+            //     ->whereIn('inquiryable_id', $tests);
+            // })->orWhere(function ($q) use ($courses) {
+            //     $q->where('inquiryable_type', Course::class)
+            //     ->whereIn('inquiryable_id', $courses);
+            // })
+            ;
         });
     }
 }

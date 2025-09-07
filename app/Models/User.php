@@ -42,11 +42,6 @@ class User extends Authenticatable implements FilamentUser
         return false;
         // return $this->hasRole(1) || $this->hasRole(2);
     }
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         // 'lname',
@@ -57,22 +52,11 @@ class User extends Authenticatable implements FilamentUser
         'section_id',
         'rate'
     ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -85,21 +69,40 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsTo(Section::class);
     }
-
     public function inquiries()
     {
         return $this->belongsToMany(Inquiry::class);
     }
-
     public function materials()
     {
         return $this->belongsToMany(Material::class, 'user_material')
             ->withPivot('rate')
             ->using(UserMaterial::class);
     }
+    public function userMaterials()
+    {
+        return $this->hasMany(UserMaterial::class);
+    }
     public function lessons()
     {
         return $this->belongsToMany(Lesson::class, 'user_lesson');
+    }
+    public function tests()
+    {
+        return $this->belongsToMany(Test::class, 'user_test')
+            ->using(UserTest::class);
+    }
+    public function userTests()
+    {
+        return $this->hasMany(UserTest::class);
+    }
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
     }
 
     protected static function booted()
@@ -124,19 +127,5 @@ class User extends Authenticatable implements FilamentUser
             static::updated(fn() => Cache::forget($key));
             static::deleted(fn() => Cache::forget($key));
         }
-    }
-
-    public function favorites()
-    {
-        return $this->hasMany(Favorite::class);
-    }
-    public function tests()
-    {
-        return $this->belongsToMany(Test::class, 'user_test')
-            ->using(UserTest::class);
-    }
-    public function tasks()
-    {
-        return $this->hasMany(Task::class);
     }
 }

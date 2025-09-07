@@ -38,14 +38,6 @@ class TestsRelationManager extends RelationManager
                 TextInput::make('name')
                     ->label(__('messages.name'))
                     ->required(),
-
-                TextInput::make('numQuestions')
-                    ->label(__('messages.numQuestions'))
-                    ->required()
-                    ->placeholder('[ 1, 2, ....,50 ]')
-                    ->numeric()
-                    ->minValue(1)
-                    ->maxValue(50),
                 TextInput::make('returned_cost')
                     ->label(__('messages.returned_cost'))
                     ->numeric()

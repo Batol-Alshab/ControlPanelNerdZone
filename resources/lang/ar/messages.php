@@ -7,109 +7,110 @@ return [
         'plural' => 'طلاب',
         'navigation' => 'الطلاب',
     ],
+    'no_students' => 'لا يوجد طلاب',
     'teacher' => [
         'singular' => 'استاذ',
         'label' => 'الطالب',
         'plural' => 'اساتذة',
         'navigation' => 'الاساتذة',
     ],
-    'inquiry' =>[
+    'inquiry' => [
         'singular' => 'استفسار',
         'label' => 'الاستفسار',
         'plural' => 'استفسارات',
         'navigation' => 'الاستفسارات',
     ],
-    'Inquiry' =>[
+    'Inquiry' => [
         'singular' => 'استفسار',
         'label' => 'الاستفسار',
         'plural' => 'استفسارات',
         'navigation' => 'الاستفسارات',
     ],
-    'section' =>[
+    'section' => [
         'singular' => 'فرع',
         'label' => 'الفرع',
         'plural' => 'الافرع',
         'navigation' => 'الأفرع',
     ],
-    'material' =>[
+    'material' => [
         'singular' => 'مادة',
         'label' => 'المادة',
         'plural' => 'مواد',
         'navigation' => 'المواد',
     ],
-    'lesson' =>[
+    'lesson' => [
         'singular' => 'درس',
         'label' => 'الدرس',
         'plural' => 'دروس',
         'navigation' => 'الدروس',
     ],
-    'summery'=>[
+    'summery' => [
         'singular' => 'ملخص',
         'label' => 'المخلص',
         'plural' => 'ملخصات',
         'navigation' => 'الملخصات',
     ],
-    'Summery'=>[
+    'Summery' => [
         'singular' => 'ملخص',
         'label' => 'الملخص',
         'plural' => 'ملخصات',
         'navigation' => 'الملخصات',
     ],
-    'video'=>[
+    'video' => [
         'singular' => 'فيديو',
         'label' => 'الفيديو',
         'plural' => 'فيديوهات',
         'navigation' => 'الفيديوهات',
     ],
-    'Video'=>[
+    'Video' => [
         'singular' => 'فيديو',
         'label' => 'الفيديو',
         'plural' => 'فيديوهات',
         'navigation' => 'الفيديوهات',
     ],
-    'test'=>[
+    'test' => [
         'singular' => 'اختبار',
         'label' => 'الاختبار',
         'plural' => 'اختبارات',
         'navigation' => 'الاختبارات',
     ],
-    'Test'=>[
+    'Test' => [
         'singular' => 'اختبار',
         'label' => 'الاختبار',
         'plural' => 'اختبارات',
         'navigation' => 'الاختبارات',
     ],
-    'training'=>[
+    'training' => [
         'singular' => 'دورة',
         'label' => 'الدورة',
         'plural' => 'دورات',
         'navigation' => 'الدورات',
     ],
-    'Training'=>[
+    'Training' => [
         'singular' => 'دورة',
         'label' => 'الدورة',
         'plural' => 'دورات',
         'navigation' => 'الدورات',
     ],
-    'course'=>[
+    'course' => [
         'singular' => 'دورة',
         'label' => 'الدورة',
         'plural' => 'دورات',
         'navigation' => 'الدورات',
     ],
-    'Course'=>[
+    'Course' => [
         'singular' => 'دورة',
         'label' => 'الدورة',
         'plural' => 'دورات',
         'navigation' => 'الدورات',
     ],
-    'question'=>[
+    'question' => [
         'singular' => 'سؤال',
         'label' => 'السؤال',
         'plural' => 'أسئلة',
         'navigation' => 'أسئلة الاختبار',
     ],
-    'answer'=>[
+    'answer' => [
         'singular' => 'إجابة',
         'label' => 'الإجابة',
         'plural' => 'إجابات',
@@ -122,7 +123,7 @@ return [
         'plural' => 'مستخدمين',
         'navigation' => 'المستخدمين',
     ],
-    'id' =>'المعرف',
+    'id' => 'المعرف',
     'name' => 'الاسم',
     'name_student' => 'اسم الطالب',
     'email' => 'البريد الإلكتروني',
@@ -135,7 +136,7 @@ return [
     'role_' => 'دور',
     'roles navigation' => 'الأدوار',
     'roles' => 'الدور',
-    'access' => 'امكانية الوصول',
+    'access' => 'معلومات المواد',
     'tabs' => 'الأقسام',
     'info' => 'المعلومات الأساسية',
     // 'role' => 'الصلاحيات',
@@ -151,7 +152,7 @@ return [
     'No Answer' => 'دون اجابة',
     'complete Answer' => 'تمت الاجابة',
     'ignorance' => 'تجاهل السؤال',
-    'image' => 'صورة',
+    'image' => 'الصورة',
     'file' => 'ملف',
     'video_file' => 'فيديو',
     'created_at' => 'تاريخ الانشاء',
@@ -166,10 +167,11 @@ return [
     'New answer' => 'إضافة إجابة',
     'add_answer' => 'اضافة اجابة',
     'is_complete' => 'مكتمل',
+    'is_publish' => 'نشر',
     'Not_complete' => 'غير مكتمل',
     'deldete_answer' => 'حذف الإجابة',
     'inquiries' => 'استفسارات',
-
+'no_questions' =>'لا يوجد اسئلة',
     'All User' => 'عدد المستخدمين',
     'Join Users Last 24H' => 'عدد عمليات إنشاء حساب اخر 24H',
     'Max Material Access' => 'المادة الأكثر وصولاً',
@@ -179,11 +181,29 @@ return [
     'Chart Join User' => 'انشاء حسابات',
     'Chart User Section' => 'عدد الطلاب عند كل فرع',
     'Chart material Section' => 'عدد المواد بكل فرع',
-    'Chart Lessons Content' => 'محتويات الدورس' ,
+    'Chart Lessons Content' => 'محتويات الدورس',
     'Numer Of Students That Access Materials' => 'احصائية وصول الطلاب للمواد',
     'increase' => 'زيادة',
     'number of student can acsess' => 'عدد الطلاب المسموح لهم بالوصول',
     'Chart materials stat' => 'احصائيات المواد',
     'cost' => 'التكلفة',
+    'user_count_buy' => 'مرات الشراء',
     'repeated_cost' => 'النقاط المكتسبة من حل الاختبار',
+    'rate' => 'عدد النقاط',
+    'rate_student' => 'عدد نقاط الطلاب',
+    'material_info' => 'معلومات المواد',
+    'lessons_count' => 'عدد الدروس',
+    'return_cost' => 'النقاط المكتسبة',
+    'returned_cost' => 'نقاط الاختبار',
+    'user_count_solution' => 'مرات الحل',
+    'test_rate' => 'نقاط الاختبار',
+    'avg_rate_from_solutions' => 'متوسط النقاط المكتسبة من الحلول',
+    'remove_purchase' => 'ازالة شراء الطالب',
+    'not_found' => 'غير موجود',
+    'file_not_found' => 'الملف غير موجود',
+    'best students' => '  الطلاب الافضل في ',
+    'Material With Max Points' => 'أكبر عدد النقاط في',
+    'Sum Of Students Rates Per Material' => 'مجموع نقاط الطلاب في كل مادة',
+    // 'The_best_students_in_الفرع_الأدبي' => 'الطلاب الافضل في الفرع الأدبي',
+
 ];

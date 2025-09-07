@@ -12,6 +12,7 @@ use Filament\Tables\Table;
 use Ramsey\Uuid\Type\Integer;
 use Filament\Resources\Resource;
 use PhpParser\Node\Expr\Ternary;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Checkbox;
@@ -23,6 +24,7 @@ use Filament\Tables\Filters\TernaryFilter;
 use App\Filament\Resources\TestResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\TestResource\RelationManagers;
+use App\Filament\Resources\TestResource\RelationManagers\UsersRelationManager;
 use App\Filament\Resources\TestResource\RelationManagers\InquiriesRelationManager;
 use App\Filament\Resources\TestResource\RelationManagers\QuestionsRelationManager;
 
@@ -66,7 +68,7 @@ class TestResource extends Resource
                     ->label(__('messages.material.label'))
                     ->required()
                     ->options(function () {
-                        $user = auth()->user();
+                        $user = Auth::user();
                         $roleNames = $user->getRoleNames();
 
 
@@ -77,7 +79,8 @@ class TestResource extends Resource
                             return Material::whereIn('id', $access_material_id)->pluck('name', 'id');
                         }
                     })
-                    ->reactive(),
+                    ->reactive()
+                    ->searchable(),
 
                 Select::make('lesson_id')
                     ->label(__('messages.lesson.label'))
@@ -86,37 +89,21 @@ class TestResource extends Resource
                     $query->where('material_id', $get('material')))
                     ->preload()
                     ->reactive()
-                    ->disabled(fn(callable $get) => !$get('material')),
+                    ->disabled(fn(callable $get) => !$get('material'))
+                    ->searchable(),
 
-                TextInput::make('numQuestions')
-                    ->label(__('messages.numQuestions'))
-                    ->required()
-                    ->placeholder('[ 1, 2, ....,50 ]')
-                    ->numeric()
-                    ->minValue(1)
-                    ->maxValue(50),
+               
                 TextInput::make('returned_cost')
-                    ->label(__('messages.returned_cost'))
+                    ->label(__('messages.test_rate'))
                     ->numeric()
                     ->default(0)
                     ->minValue(0)
                     ->maxValue(100000),
 
-                // Select::make('numQuestions')->required()
-                //     ->options([
-                //         2=>2,
-                //         5=>5,
-                //         10=>10,
-                //         15=>15,
-                //         20=>20
-                //     ]),
+               
                 Toggle::make('is_complete')
-                    ->label(__('messages.is_complete'))
-
-                    ->disabled()
-                // TextInput::make('numQuestions')->required()
-                //     ->integer()
-                //     ->minValue(1),
+                    ->label(__('messages.is_publish'))
+                    // ->disabled()
             ]);
     }
 
@@ -134,15 +121,49 @@ class TestResource extends Resource
                 TextColumn::make('lesson.name')
                     ->label(__('messages.lesson.label'))
                     ->sortable(),
-                TextColumn::make('returned_cost')
-                    ->label(__('messages.returned_cost'))
-                    ->sortable(),
                 TextColumn::make('is_complete')
                     ->label(__('messages.status'))
                     ->formatStateUsing(fn($state) => $state ? __('messages.is_complete') : __('messages.Not_complete'))
                     ->sortable()
                     ->badge()
                     ->color(fn($state) => $state ? 'success' : 'danger'),
+                TextColumn::make('returned_cost')
+                    ->label(__('messages.test_rate'))
+                    ->sortable(),
+                TextColumn::make('users_count')
+                    ->label(__('messages.user_count_solution'))
+                    ->counts('users')
+                    ->sortable(),
+
+                TextColumn::make('userTests.passing_rate')
+                    ->label(__('messages.avg_rate_from_solutions'))
+                    ->getStateUsing(function ($record) {
+                        $avg = $record->users()
+                            ->avg('user_test.passing_rate'); // نحسب المتوسط مباشرة من العمود
+
+                        return number_format($avg ?? 0, 2, '.', '');
+                    })
+                // ->getStateUsing(function ($record) {
+                //     $users = $record->users()->get();
+                //     if ($users->isEmpty()) {
+                //         return 0;
+                //     }
+                //     // جمع القيم من pivot
+                //     $avg = $users->sum(fn($user) =>dd ($user->pivot->passing_rate));
+                //     return number_format($avg, 2);
+                // })
+                //                 ->getStateUsing(fn ($record) => $record->userTests()->avg('passing_rate'))
+                // ->formatStateUsing(fn ($state) => $state ? number_format($state, 2) : '0')
+                // ->sortable(query: function ($query, $direction) {
+                //     return $query->orderBy(
+                //         UserMaterial::selectRaw('COALESCE(SUM(rate), 0)')
+                //             ->whereColumn('material_id', 'materials.id'),
+                //         $direction
+                // );
+                // }),
+                ,
+
+
                 TextColumn::make('created_at')
                     ->label(__('messages.created_at'))
                     ->sortable()
@@ -155,7 +176,7 @@ class TestResource extends Resource
                     // ->relationship('lesson','name')
                     ->options(
                         function () {
-                            $user = auth()->user();
+                            $user = Auth::user();
                             $roleNames = $user->getRoleNames();
 
                             if ($roleNames->contains('admin'))
@@ -186,7 +207,8 @@ class TestResource extends Resource
     {
         return [
             QuestionsRelationManager::class,
-            InquiriesRelationManager::class,
+            UsersRelationManager::class,
+            // InquiriesRelationManager::class,
         ];
     }
 
@@ -202,7 +224,7 @@ class TestResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-        $user =  auth()->user();
+        $user =  Auth::user();
         $roleNames = $user->getRoleNames();
 
 

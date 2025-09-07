@@ -38,7 +38,7 @@ class MaterialPolicy
      */
     public function update(User $user, Material $material): bool
     {
-       return $user->hasRole('admin');
+       return $user->hasRole(['admin','teacher']);
     }
 
     /**
