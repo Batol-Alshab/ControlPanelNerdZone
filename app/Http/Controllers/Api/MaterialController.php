@@ -57,7 +57,7 @@ class MaterialController extends Controller
                 ->map(fn($material) => [
                     'id' => $material->id,
                     'name' => $material->name,
-                    'image' => $material->image,
+                    'image' => asset('storage/' .$material->image),
                 ]);
             return $this->successResponse($materials);
         } else {
@@ -65,7 +65,7 @@ class MaterialController extends Controller
                 'id' => $material->id,
                 'name' => $material->name,
                 'rate' => $material->pivot->rate,
-                'image' => $material->image,
+                'image' => asset('storage/' .$material->image),
             ]);
             return $this->successResponse($materials);
         }

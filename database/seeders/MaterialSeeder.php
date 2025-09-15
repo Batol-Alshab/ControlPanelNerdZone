@@ -4,8 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Material;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
 class MaterialSeeder extends Seeder
 {
     /**
@@ -13,7 +11,7 @@ class MaterialSeeder extends Seeder
      */
     public function run(): void
     {
-        $scientific_materials =[
+        $s_material=[
             'الرياضيات',
             'الفيزياء',
             'الكيمياء',
@@ -24,7 +22,29 @@ class MaterialSeeder extends Seeder
             ' التربية الوطنية ',
             'التربية الدينية',
         ];
-        $literary_materials =[
+        $url='Material/';
+        $image=[
+            $url.'رياضيات.jfif',
+            $url.'فيزياء.jfif',
+            $url.'كيميا.jfif',
+            $url.'عربي.jfif',
+            $url.'علوم.jfif',
+            $url.'انكليزي.png',
+            $url.'فرنسي.jfif',
+            $url.'وطنية.jpg',
+            $url.'ديانة.jfif',
+        ];
+        $image2=[
+            $url.'فلسفة.jfif',
+            $url.'تاريخ.jfif',
+            $url.'جغرافيا.jpg',
+            $url.'عربي.jfif',
+            $url.'انكليزي.png',
+            $url.'فرنسي.jfif',
+            $url.'وطنية.jpg',
+            $url.'ديانة.jfif',
+        ];
+        $l_material=[
             'الفلسفة',
             'التاريخ',
             'الجغرافيا',
@@ -34,21 +54,21 @@ class MaterialSeeder extends Seeder
             'التربية الوطنية',
             'التربية الدينية'
         ];
-        
-        foreach($scientific_materials as $scientific_material)
-        {
+        for ($i=0; $i <sizeof($s_material) ; $i++) {
             Material::create([
-                'name' => $scientific_material,
-                'section_id' => 1,
+                'name' => $s_material[$i],
+                'image'=>$image[$i],
+                'section_id' => '1',
             ]);
         }
 
-        foreach($literary_materials as $literary_material)
-        {
+        for ($i=0; $i <sizeof($l_material) ; $i++){
             Material::create([
-                'name' => $literary_material,
-                'section_id' => 2,
+                'name' => $l_material[$i],
+                'image'=>$image2[$i],
+                'section_id' => '2'
             ]);
         }
+
     }
 }
