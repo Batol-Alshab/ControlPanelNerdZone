@@ -1,11 +1,10 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
-use App\Models\Section;
-use Illuminate\Http\Request;
-use App\Traits\ApiResponseTrait;
 use App\Http\Controllers\Controller;
+use App\Models\Section;
+use App\Traits\ApiResponseTrait;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class MaterialController extends Controller
@@ -14,7 +13,8 @@ class MaterialController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() {}
+    public function index()
+    {}
 
     /**
      * Store a newly created resource in storage.
@@ -55,17 +55,17 @@ class MaterialController extends Controller
         if (! $user) {
             $materials = Section::find($id)->materials
                 ->map(fn($material) => [
-                    'id' => $material->id,
-                    'name' => $material->name,
-                    'image' => asset('storage/' .$material->image),
+                    'id'    => $material->id,
+                    'name'  => $material->name,
+                    'image' => asset('storage/' . $material->image),
                 ]);
             return $this->successResponse($materials);
         } else {
             $materials = $user->materials->map(fn($material) => [
-                'id' => $material->id,
-                'name' => $material->name,
-                'rate' => $material->pivot->rate,
-                'image' => asset('storage/' .$material->image),
+                'id'    => $material->id,
+                'name'  => $material->name,
+                'rate'  => $material->pivot->rate,
+                'image' => asset('storage/' . $material->image),
             ]);
             return $this->successResponse($materials);
         }

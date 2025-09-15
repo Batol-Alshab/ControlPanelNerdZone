@@ -99,12 +99,12 @@ class UsersRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                CreateAction::make('addUserToLesson')
-                    ->model(User::class) // يختار من users
+                // CreateAction::make('addUserToLesson')
+                //     ->model(User::class) // يختار من users
 
-                    ->action(function (array $data, $record) {
-                        static::getOwnerRecord()->users()->attach($data['user_id'], ['passing_rate' => $data['passing_rate']]);
-                    }),
+                //     ->action(function (array $data, $record) {
+                //         static::getOwnerRecord()->users()->attach($data['user_id'], ['passing_rate' => $data['passing_rate']]);
+                //     }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
